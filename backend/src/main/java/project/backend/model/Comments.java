@@ -3,7 +3,7 @@ package project.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
@@ -26,6 +26,6 @@ public class Comments {
     @JoinColumn(name = "post_id")
     private Posts post;
 
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

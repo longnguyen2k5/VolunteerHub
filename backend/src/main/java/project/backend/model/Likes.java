@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "likes")
@@ -27,5 +28,5 @@ public class Likes {
     @JoinColumn(name = "post_id")
     private Posts post;
 
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 import project.backend.model.enums.EventStatus;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "event_registrations")
@@ -29,6 +30,6 @@ public class EventRegistrations {
     private Events events;
 
     private EventStatus status;
-    private Timestamp registeredAt;
-    private Timestamp updatedAt;
+    private LocalDateTime registeredAt;
+    private LocalDateTime updatedAt;
 }
