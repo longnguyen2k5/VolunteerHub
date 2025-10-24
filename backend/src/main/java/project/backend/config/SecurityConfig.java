@@ -1,57 +1,36 @@
 package project.backend.config;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.boot.CommandLineRunner;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
-import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
-import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
+import java.util.Arrays;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-
     /**
-     * Chain 1: OAuth2 Authorization Server
-     * Endpoints: /oauth2/authorize, /oauth2/token, /.well-known/*
-     * Authentication: HTTP Basic (username + password trực tiếp)
+     * Security Filter Chain cho OAuth2 Authorization Server
+     * Order = 1 (highest priority)
      */
     @Bean
     @Order(1)
@@ -77,145 +56,54 @@ public class SecurityConfig {
     }
 
     /**
-     * Chain 2: API Endpoints
-     * Endpoints: /api/**
-     * Authentication: JWT Bearer Token
+     * Security Filter Chain cho các endpoint thông thường (API)
+     * Order = 2
      */
     @Bean
     @Order(2)
-    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**")
-                .authorizeHttpRequests(auth -> auth
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        // Public endpoints
                         .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/events/public/**").permitAll()
+                        .requestMatchers("/login", "/error").permitAll()
+
+                        // Admin endpoints
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // Event Manager endpoints
+                        .requestMatchers("/api/events").hasAnyRole("EVENT_MANAGER", "ADMIN")
+
+                        // All other endpoints need authentication
                         .anyRequest().authenticated()
                 )
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
                 .formLogin(Customizer.withDefaults())
-                .oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(Customizer.withDefaults())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(Customizer.withDefaults())
                 );
 
         return http.build();
     }
 
-    /**
-     * Chain 3: Default
-     */
     @Bean
-    @Order(3)
-    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                )
-                .formLogin(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable);
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-        return http.build();
-    }
-
-    // ========== OAuth2 Configuration ==========
-
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(
-            JdbcTemplate jdbcTemplate) {
-        return new JdbcRegisteredClientRepository(jdbcTemplate);
-    }
-
-    /**
-     * Tự động đăng ký PKCE client khi khởi động
-     */
-    @Bean
-    public CommandLineRunner initPKCEClient(
-            RegisteredClientRepository clientRepository,
-            PasswordEncoder passwordEncoder) {
-
-        return args -> {
-            try {
-                RegisteredClient pkceClient = RegisteredClient
-                        .withId(UUID.randomUUID().toString())
-                        .clientId("pkce-client")
-                        // PKCE public client - không có secret
-                        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                        .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                        .redirectUri("http://localhost:3000/callback")
-                        .redirectUri("https://oauth.pstmn.io/v1/callback")
-                        .scope(OidcScopes.OPENID)
-                        .scope(OidcScopes.PROFILE)
-                        .scope("read")
-                        .scope("write")
-                        .clientSettings(ClientSettings.builder()
-                                .requireProofKey(true)  // Enable PKCE
-                                .requireAuthorizationConsent(false)
-                                .build())
-                        .build();
-
-                clientRepository.save(pkceClient);
-                System.out.println("✅ PKCE Client registered successfully!");
-                System.out.println("   Client ID: pkce-client");
-                System.out.println("   Redirect URI: https://oauth.pstmn.io/v1/callback");
-            } catch (Exception e) {
-                System.out.println("ℹ️  PKCE Client already exists");
-            }
-        };
-    }
-
-    @Bean
-    public OAuth2AuthorizationService authorizationService(
-            JdbcTemplate jdbcTemplate,
-            RegisteredClientRepository registeredClientRepository) {
-        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-    }
-
-    @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService(
-            JdbcTemplate jdbcTemplate,
-            RegisteredClientRepository registeredClientRepository) {
-        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
-    }
-
-    @Bean
-    public JWKSource<SecurityContext> jwkSource() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, context) -> jwkSelector.select(jwkSet);
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
-
-    @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
-
 }

@@ -27,7 +27,7 @@ public class Events {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
-    private Users user;
+    private Users manager;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

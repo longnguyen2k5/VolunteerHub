@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c32ab890-e77a-4acd-b223-d2b0b4d71411" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/Comments.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/EventRegistrations.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/Events.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/Likes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/Posts.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/Users.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/enums/EventStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/enums/EventStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/enums/RegistrationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/model/enums/RegistrationStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/CommentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/CommentRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/EventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/EventRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/LikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/LikeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/PostRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/RegistrationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/project/backend/repository/UserRepository.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="34EJec9u4C7muTfFFKbiHk8bMPC" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.backend [clean].executor": "Run",
+    "Maven.backend [compile].executor": "Run",
+    "Maven.backend [package].executor": "Run",
+    "Maven.backend [test].executor": "Run",
+    "Maven.backend [validate].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "347",
+    "RequestMappingsPanelWidth1": "347",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "git-widget-placeholder": "back-end",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/uet/VolunteerHub",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="project.backend.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c32ab890-e77a-4acd-b223-d2b0b4d71411" name="Changes" comment="" />
+      <created>1760772893520</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760772893520</updated>
+      <workItem from="1760772894831" duration="828000" />
+      <workItem from="1760782340933" duration="665000" />
+      <workItem from="1760783029198" duration="140000" />
+      <workItem from="1761127790193" duration="827000" />
+      <workItem from="1761140073803" duration="2378000" />
+      <workItem from="1761146470261" duration="2921000" />
+      <workItem from="1761162008967" duration="2250000" />
+      <workItem from="1761188250319" duration="5741000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

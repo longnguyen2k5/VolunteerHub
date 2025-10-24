@@ -1,53 +1,37 @@
 package project.backend.service;
 
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import project.backend.dto.request.LoginRequest;
 import project.backend.dto.request.RegisterRequest;
-import project.backend.dto.response.AuthResponse;
+import project.backend.exception.BadRequestException;
 import project.backend.model.Users;
 import project.backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+
     private final UserRepository userRepository;
-//    private final AuthenticationConfiguration  authenticationConfiguration;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AuthResponse register (RegisterRequest registerRequest, HttpServletRequest httpServletRequest) {
-        Users user = userRepository.findUsersByEmail(registerRequest.email()).orElse(null);
-        if (user == null) {
-            Users newUser = new Users();
-            newUser.setFullName(registerRequest.fullName());
-            newUser.setEmail(registerRequest.email());
-            newUser.setPassword(passwordEncoder.encode(registerRequest.password()));
-            userRepository.save(newUser);
-            HttpSession httpSession = httpServletRequest.getSession(true);
-            return AuthResponse.registerSuccess(newUser.getEmail(),
-                    newUser.getFullName(),
-                    newUser.getRole(),
-                    httpSession.getId());
+    public void register(RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new BadRequestException("Email already exists");
         }
-        return AuthResponse.error("Invalid email or password");
-    }
 
+        Users user = new Users();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        user.setIsLocked(false);
+
+        userRepository.save(user);
+    }
+}
 //    public AuthResponse loginForOAuth2(LoginRequest request, HttpServletRequest httpRequest)
 //            throws Exception {
 //        try {
@@ -77,4 +61,3 @@ public class AuthService {
 //        }
 //    }
 
-}

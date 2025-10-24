@@ -1,7 +1,9 @@
 package project.backend.model.enums;
 
 public enum RegistrationStatus {
-    PENDING_APPROVAL,
-    APPROVED,
-    REJECTED,
+    PENDING,    // Chờ duyệt
+    APPROVED,   // Đã duyệt
+    REJECTED,   // Từ chối
+    COMPLETED,  // Hoàn thành
+    CANCELLED   // Đã hủy
 }

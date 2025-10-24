@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import project.backend.model.enums.EventStatus;
+import project.backend.model.enums.RegistrationStatus;
 
 import java.security.Timestamp;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class EventRegistrations {
     @JoinColumn(name = "event_id")
     private Events events;
 
-    private EventStatus status;
+    private RegistrationStatus status;
     private LocalDateTime registeredAt;
     private LocalDateTime updatedAt;
 }
