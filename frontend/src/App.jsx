@@ -1,6 +1,7 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import { CircularProgress, Box } from '@mui/material';
 
 // Pages
 import Login from './pages/Login'
@@ -12,11 +13,21 @@ import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/auth/PrivateRoute'
 import Layout from './components/common/Layout'
 
+
+// Event Pages
+import EventBrowse from './pages/volunteer/EventBrowse';
+import EventDetailPage from './pages/volunteer/EventDetailPage';
+
+
 function App() {
     const { user, loading } = useAuth()
 
     if (loading) {
-        return <div>Loading...</div>
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                <CircularProgress />
+            </Box>
+        );
     }
 
     return (
@@ -26,11 +37,20 @@ function App() {
                 <Route path="login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
                 <Route path="register" element={!user ? <Register /> : <Navigate to="/dashboard" />} />
 
+                {/* Event Routes (Public) */}
+                <Route path="events" element={<EventBrowse />} />
+                <Route path="events/:id" element={<EventDetailPage />} />
+
+                {/* Protected Routes */}
                 <Route path="dashboard" element={
                     <PrivateRoute>
                         <Dashboard />
                     </PrivateRoute>
                 } />
+
+                {/* 404 */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+
             </Route>
         </Routes>
     )

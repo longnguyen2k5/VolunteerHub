@@ -1,38 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import {
     Container,
     Box,
-    TextField,
     Button,
     Typography,
     Card,
     CardContent,
-    CircularProgress,
 } from '@mui/material';
+import { Login as LoginIcon } from '@mui/icons-material';
 
 const Login = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
-    const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        const result = await login(formData.email, formData.password);
-
-        if (result.success) {
+    // Redirect if already logged in
+    React.useEffect(() => {
+        if (user) {
             navigate('/dashboard');
         }
+    }, [user, navigate]);
 
-        setLoading(false);
+    const handleLogin = () => {
+        // Start OAuth2 PKCE flow
+        login();
     };
 
     return (
@@ -44,43 +36,19 @@ const Login = () => {
                             Đăng nhập
                         </Typography>
                         <Typography variant="body2" align="center" color="text.secondary" sx={{ mb: 3 }}>
-                            Chào mừng bạn trở lại VolunteerHub
+                            Sử dụng OAuth 2.0 với PKCE để đăng nhập an toàn
                         </Typography>
 
-                        <form onSubmit={handleSubmit}>
-                            <TextField
-                                fullWidth
-                                label="Email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                margin="normal"
-                                required
-                                autoComplete="email"
-                            />
-                            <TextField
-                                fullWidth
-                                label="Mật khẩu"
-                                name="password"
-                                type="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                margin="normal"
-                                required
-                                autoComplete="current-password"
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                size="large"
-                                disabled={loading}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                {loading ? <CircularProgress size={24} /> : 'Đăng nhập'}
-                            </Button>
-                        </form>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            size="large"
+                            startIcon={<LoginIcon />}
+                            onClick={handleLogin}
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Đăng nhập với OAuth2
+                        </Button>
 
                         <Box sx={{ textAlign: 'center', mt: 2 }}>
                             <Typography variant="body2">
@@ -88,6 +56,13 @@ const Login = () => {
                                 <Link to="/register" style={{ textDecoration: 'none', color: '#2196f3' }}>
                                     Đăng ký ngay
                                 </Link>
+                            </Typography>
+                        </Box>
+
+                        <Box sx={{ mt: 3, p: 2, bgcolor: 'info.light', borderRadius: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                                💡 Lưu ý: Sau khi nhấn "Đăng nhập", bạn sẽ được chuyển đến trang đăng nhập
+                                của Authorization Server. Nhập email và mật khẩu đã đăng ký để tiếp tục.
                             </Typography>
                         </Box>
                     </CardContent>

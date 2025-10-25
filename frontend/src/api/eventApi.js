@@ -13,10 +13,6 @@ export const eventAPI = {
         return axiosInstance.get('/events/upcoming');
     },
 
-    getByCategory: (category) => {
-        return axiosInstance.get(`/events/category/${category}`);
-    },
-
     create: (eventData) => {
         return axiosInstance.post('/events', eventData);
     },
@@ -31,17 +27,5 @@ export const eventAPI = {
 
     getMyEvents: () => {
         return axiosInstance.get('/events/my-events');
-    },
-
-    approve: (id) => {
-        return axiosInstance.put(`/events/${id}/approve`);
-    },
-
-    reject: (id) => {
-        return axiosInstance.put(`/events/${id}/reject`);
-    },
-
-    getPending: () => {
-        return axiosInstance.get('/events/pending');
     },
 };
