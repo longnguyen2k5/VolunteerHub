@@ -53,7 +53,7 @@ public class AuthorizationServerConfig {
                     .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                     .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                     // Redirect URI sau khi authorization
-                    .redirectUri("http://localhost:5173/callback")
+                    .redirectUri("http://localhost:3000/callback")
                     .redirectUri("http://localhost:3000/authorized")
                     // Scopes
                     .scope(OidcScopes.OPENID)
