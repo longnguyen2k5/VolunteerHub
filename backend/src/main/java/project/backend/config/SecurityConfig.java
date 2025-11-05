@@ -43,6 +43,8 @@ public class SecurityConfig {
         http
                 .securityMatcher(authServerConfigurer.getEndpointsMatcher())
                 .with(authServerConfigurer, configurer -> configurer.oidc(Customizer.withDefaults()))
+                // ⚠️ CRITICAL: Enable CORS for OAuth2 endpoints including /oauth2/token
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().authenticated()
                 )
