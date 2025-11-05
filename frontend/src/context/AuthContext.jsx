@@ -92,24 +92,14 @@ export const AuthProvider = ({ children }) => {
         code_challenge_method: oauth2Config.codeChallengeMethod,
       });
 
-      // 5. Log and redirect to authorization endpoint
+      // 5. Redirect to authorization endpoint
       const authUrl = `${
         oauth2Config.authorizationEndpoint
       }?${params.toString()}`;
-      console.log("Redirecting to auth URL:", authUrl);
-      console.log("Authorization parameters:", {
-        response_type: params.get("response_type"),
-        client_id: params.get("client_id"),
-        redirect_uri: params.get("redirect_uri"),
-        scope: params.get("scope"),
-        state: params.get("state"),
-        code_challenge: params.get("code_challenge"),
-        code_challenge_method: params.get("code_challenge_method"),
-      });
 
       window.location.href = authUrl;
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed:", error.message);
       toast.error("Failed to initiate login");
     }
   };
@@ -121,13 +111,17 @@ export const AuthProvider = ({ children }) => {
     try {
       // 1. Verify state
       if (!verifyState(state)) {
-        throw new Error("Invalid state parameter");
+        throw new Error(
+          "Invalid state parameter - possible CSRF attack or session expired"
+        );
       }
 
       // 2. Get code verifier
       const codeVerifier = getCodeVerifier();
       if (!codeVerifier) {
-        throw new Error("Code verifier not found");
+        throw new Error(
+          "Code verifier not found - session may have expired. Please try logging in again."
+        );
       }
 
       // 3. Exchange code for tokens
@@ -139,6 +133,11 @@ export const AuthProvider = ({ children }) => {
 
       // 4. Store tokens
       const { access_token, refresh_token, expires_in } = tokenResponse.data;
+
+      if (!access_token) {
+        throw new Error("Access token not received from server");
+      }
+
       localStorage.setItem(oauth2Config.accessTokenKey, access_token);
 
       if (refresh_token) {
@@ -164,14 +163,16 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
-      console.error("Callback handling failed:", error);
-      toast.error(
-        "Login failed: " +
-          (error.response?.data?.error_description || error.message)
-      );
+      const errorMessage =
+        error.response?.data?.error_description ||
+        error.response?.data?.error ||
+        error.message ||
+        "Unknown error occurred";
+
+      toast.error("Login failed: " + errorMessage);
       clearCodeVerifier();
       navigate("/login");
-      return { success: false, error: error.message };
+      return { success: false, error: errorMessage };
     }
   };
 

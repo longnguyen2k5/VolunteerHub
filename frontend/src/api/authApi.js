@@ -13,7 +13,7 @@ export const authAPI = {
         `${axiosInstance.defaults.baseURL}/auth/register`
       );
       console.log("Registration request data:", formData);
-      
+
       const response = await axiosInstance.post("/auth/register", formData);
       console.log("Registration success response:", response.data);
       return response;
@@ -22,7 +22,7 @@ export const authAPI = {
         message: error.message,
         response: error.response?.data,
         status: error.response?.status,
-        headers: error.response?.headers
+        headers: error.response?.headers,
       });
       throw error;
     }
@@ -40,11 +40,16 @@ export const authAPI = {
       code_verifier: codeVerifier,
     });
 
-    return axios.post(oauth2Config.tokenEndpoint, params, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
+    return axios
+      .post(oauth2Config.tokenEndpoint, params, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      })
+      .catch((error) => {
+        console.error("Token exchange failed:", error.response?.status);
+        throw error;
+      });
   },
 
   /**
@@ -68,10 +73,15 @@ export const authAPI = {
    * Get current user info
    */
   getUserInfo: (token) => {
-    return axios.get(oauth2Config.userInfoEndpoint, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return axios
+      .get(oauth2Config.userInfoEndpoint, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((error) => {
+        console.error("Failed to fetch user info:", error.response?.status);
+        throw error;
+      });
   },
 };
