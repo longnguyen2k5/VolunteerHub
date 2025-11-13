@@ -28,6 +28,38 @@ export const authAPI = {
     }
   },
 
+  // /**
+  //  * Login with email and password/ có thể sẽ xóa hàm này
+  //  */
+  // login: async (credentials) => {
+  //   try {
+  //     const response = await axiosInstance.post("/auth/login", credentials);
+      
+  //     // Store tokens if returned
+  //     if (response.data.token) {
+  //       localStorage.setItem(oauth2Config.accessTokenKey, response.data.token);
+  //     }
+      
+  //     return response;
+  //   } catch (error) {
+  //     console.error("Login error details:", {
+  //       message: error.message,
+  //       response: error.response?.data,
+  //       status: error.response?.status,
+  //     });
+  //     throw error;
+  //   }
+  // },
+
+  // /**
+  //  * Logout current user
+  //  */
+  // logout: () => {
+  //   localStorage.removeItem(oauth2Config.accessTokenKey);
+  //   localStorage.removeItem(oauth2Config.refreshTokenKey);
+  //   localStorage.removeItem(oauth2Config.codeVerifierKey);
+  // },
+
   /**
    * Exchange authorization code for access token
    */
