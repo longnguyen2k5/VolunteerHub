@@ -57,12 +57,33 @@ const Header = () => {
 
                 {user ? (
                     <Box>
+                        {/* Common menu items for all authenticated users */}
                         <Button color="inherit" component={Link} to="/events">
                             Sự kiện
                         </Button>
                         <Button color="inherit" component={Link} to="/dashboard">
                             Dashboard
                         </Button>
+                        
+                        {/* EVENT_MANAGER only */}
+                        {(user.role === 'EVENT_MANAGER' || user.role === 'ADMIN') && (
+                            <Button color="inherit" component={Link} to="/events/manage">
+                                Quản lý sự kiện
+                            </Button>
+                        )}
+                        
+                        {/* ADMIN only */}
+                        {user.role === 'ADMIN' && (
+                            <>
+                                <Button color="inherit" component={Link} to="/admin/events">
+                                    Duyệt sự kiện
+                                </Button>
+                                <Button color="inherit" component={Link} to="/admin/users">
+                                    Quản lý users
+                                </Button>
+                            </>
+                        )}
+                        
                         <IconButton
                             size="large"
                             onClick={handleMenu}
