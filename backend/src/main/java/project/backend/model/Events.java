@@ -23,6 +23,9 @@ public class Events {
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private EventStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,4 +35,14 @@ public class Events {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

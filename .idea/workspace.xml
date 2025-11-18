@@ -72,7 +72,8 @@
 }</component>
   <component name="RunManager">
     <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="backend" />
+      <option name="ALTERNATIVE_JRE_PATH" value="ms-21" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="project.backend.BackendApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -105,6 +106,7 @@
       <workItem from="1761374662718" duration="30000" />
       <workItem from="1762370179152" duration="160000" />
       <workItem from="1762370353731" duration="153000" />
+      <workItem from="1763439230459" duration="386000" />
     </task>
     <servers />
   </component>

@@ -28,6 +28,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtAuthenticationConverter jwtAuthenticationConverter;
+
     /**
      * Security Filter Chain cho OAuth2 Authorization Server
      * Order = 1 (highest priority)
@@ -71,20 +73,21 @@ public class SecurityConfig {
                         // Public endpoints
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/events/public/**").permitAll()
+                        .requestMatchers("/api/events/upcoming").permitAll()
                         .requestMatchers("/login", "/error").permitAll()
 
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                        // Event Manager endpoints
-                        .requestMatchers("/api/events").hasAnyRole("EVENT_MANAGER", "ADMIN")
+                        // Event endpoints - rely on @PreAuthorize in controller
+                        .requestMatchers("/api/events/**").authenticated()
 
                         // All other endpoints need authentication
                         .anyRequest().authenticated()
                 )
                 .formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults())
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 );
 
         return http.build();

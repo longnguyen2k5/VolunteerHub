@@ -97,7 +97,11 @@ public class EventController {
      */
     private Long getUserIdFromAuth(Authentication authentication) {
         if (authentication.getPrincipal() instanceof Jwt jwt) {
-            return jwt.getClaim("user_id");
+            Long userId = jwt.getClaim("user_id");
+            if (userId == null) {
+                throw new RuntimeException("user_id claim not found in JWT token. Please logout and login again.");
+            }
+            return userId;
         }
         throw new RuntimeException("Invalid authentication");
     }
