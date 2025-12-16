@@ -17,6 +17,14 @@ import { eventAPI } from '../../api/eventApi';
 import { toast } from 'react-toastify';
 
 const EventBrowse = () => {
+    const CATEGORY_LABELS = {
+        EDUCATION: "Giáo dục",
+        ENVIRONMENT: "Môi trường",
+        HEALTH: "Y tế",
+        COMMUNITY: "Cộng đồng",
+        EMERGENCY_RELIEF: "Cứu trợ khẩn cấp",
+        OTHER: "Khác",
+    };
     const [events, setEvents] = useState([]);
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -63,7 +71,7 @@ const EventBrowse = () => {
         setFilteredEvents(filtered);
     };
 
-    const categories = [...new Set(events.map(e => e.category).filter(Boolean))];
+
 
     if (loading) {
         return (
@@ -98,8 +106,8 @@ const EventBrowse = () => {
                         label="Danh mục"
                     >
                         <MenuItem value="all">Tất cả</MenuItem>
-                        {categories.map(cat => (
-                            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                        {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                            <MenuItem key={key} value={key}>{label}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>

@@ -25,6 +25,7 @@ import EventChannel from "./pages/volunteer/EventChannel";
 import EventList from "./pages/organizer/EventList";
 import CreateEvent from "./pages/organizer/CreateEvent";
 import EditEvent from "./pages/organizer/EditEvent";
+import EventRegistrations from "./pages/organizer/EventRegistrations";
 
 // Admin Pages
 import EventApproval from "./pages/admin/EventApproval";
@@ -88,6 +89,15 @@ function App() {
           element={
             <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
               <EventList />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="events/manage/:id/registrations"
+          element={
+            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
+              <EventRegistrations />
             </RoleGuard>
           }
         />

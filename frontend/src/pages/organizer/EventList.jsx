@@ -30,6 +30,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
+  People as PeopleIcon,
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { eventAPI } from "../../api/eventApi";
@@ -205,6 +206,14 @@ const EventList = () => {
                       title="Chỉnh sửa"
                     >
                       <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      color="secondary"
+                      onClick={() => navigate(`/events/manage/${event.id}/registrations`)}
+                      title="Quản lý đăng ký"
+                    >
+                      <PeopleIcon />
                     </IconButton>
                     <IconButton
                       size="small"

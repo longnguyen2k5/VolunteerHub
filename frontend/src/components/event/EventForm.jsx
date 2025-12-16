@@ -6,6 +6,7 @@ import {
   Stack,
   Paper,
   Typography,
+  MenuItem,
 } from "@mui/material";
 import { format } from "date-fns";
 
@@ -15,12 +16,23 @@ const EventForm = ({
   submitLabel = "Lưu",
   loading = false,
 }) => {
+  const CATEGORIES = {
+    EDUCATION: "Giáo dục",
+    ENVIRONMENT: "Môi trường",
+    HEALTH: "Y tế",
+    COMMUNITY: "Cộng đồng",
+    EMERGENCY_RELIEF: "Cứu trợ khẩn cấp",
+    OTHER: "Khác",
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     location: "",
     startTime: "",
     endTime: "",
+    maxParticipants: "",
+    category: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -38,6 +50,8 @@ const EventForm = ({
         endTime: initialData.endTime
           ? formatToDateTimeLocal(initialData.endTime)
           : "",
+        maxParticipants: initialData.maxParticipants || "",
+        category: initialData.category || "",
       });
     }
   }, [initialData]);
@@ -100,6 +114,12 @@ const EventForm = ({
       }
     }
 
+    if (!formData.maxParticipants) {
+      newErrors.maxParticipants = "Vui lòng nhập số lượng người tham gia tối đa";
+    } else if (formData.maxParticipants < 1) {
+      newErrors.maxParticipants = "Số lượng người tham gia tối đa phải ít nhất là 1";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -114,6 +134,8 @@ const EventForm = ({
         location: formData.location.trim(),
         startTime: new Date(formData.startTime).toISOString(),
         endTime: new Date(formData.endTime).toISOString(),
+        maxParticipants: formData.maxParticipants ? parseInt(formData.maxParticipants) : null,
+        category: formData.category,
       };
       onSubmit(submitData);
     }
@@ -134,6 +156,25 @@ const EventForm = ({
             required
             disabled={loading}
           />
+
+          <TextField
+            select
+            label="Danh mục"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            error={!!errors.category}
+            helperText={errors.category}
+            fullWidth
+            required
+            disabled={loading}
+          >
+            {Object.entries(CATEGORIES).map(([key, label]) => (
+              <MenuItem key={key} value={key}>
+                {label}
+              </MenuItem>
+            ))}
+          </TextField>
 
           <TextField
             label="Mô tả"
@@ -159,6 +200,20 @@ const EventForm = ({
             fullWidth
             required
             disabled={loading}
+          />
+
+          <TextField
+            label="Số lượng người tham gia tối đa"
+            name="maxParticipants"
+            type="number"
+            value={formData.maxParticipants}
+            onChange={handleChange}
+            error={!!errors.maxParticipants}
+            helperText={errors.maxParticipants}
+            fullWidth
+            required
+            disabled={loading}
+            inputProps={{ min: 1 }}
           />
 
           <TextField

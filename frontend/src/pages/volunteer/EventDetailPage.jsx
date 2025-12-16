@@ -123,10 +123,19 @@ const EventDetailPage = () => {
         return texts[status] || status;
     };
 
+    const CATEGORY_LABELS = {
+        EDUCATION: "Giáo dục",
+        ENVIRONMENT: "Môi trường",
+        HEALTH: "Y tế",
+        COMMUNITY: "Cộng đồng",
+        EMERGENCY_RELIEF: "Cứu trợ khẩn cấp",
+        OTHER: "Khác",
+    };
+
     const canRegister = () => {
         if (!user || user.role !== 'VOLUNTEER') return false;
         if (myRegistration) return false;
-        if (event?.currentParticipants >= event?.maxParticipants) return false;
+        if (event?.maxParticipants && event?.currentParticipants >= event.maxParticipants) return false;
         if (new Date(event?.startTime) < new Date()) return false;
         if (event?.status !== 'APPROVED') return false;
         return true;
@@ -165,7 +174,7 @@ const EventDetailPage = () => {
                         <CardContent sx={{ p: 4 }}>
                             <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
                                 <Chip
-                                    label={event.category || 'Chung'}
+                                    label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
                                     color="primary"
                                     variant="outlined"
                                 />
@@ -231,11 +240,11 @@ const EventDetailPage = () => {
                             <Divider sx={{ my: 3 }} />
 
                             <Typography variant="body2" color="text.secondary">
-                                Được tổ chức bởi: <strong>{event.organizerName}</strong>
+                                Được tổ chức bởi: <strong>{event.managerName}</strong>
                             </Typography>
 
                             {/* Channel Button */}
-                            {event.status === 'APPROVED' && myRegistration?.status === 'APPROVED' && (
+                            {event.status === 'APPROVED' && (myRegistration?.status === 'APPROVED' || myRegistration?.status === 'COMPLETED') && (
                                 <Box sx={{ mt: 3 }}>
                                     <Button
                                         fullWidth
@@ -304,8 +313,10 @@ const EventDetailPage = () => {
                                         <Typography variant="body2" color="text.secondary">
                                             {!user && 'Vui lòng đăng nhập để đăng ký'}
                                             {user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký'}
-                                            {event.currentParticipants >= event.maxParticipants && 'Sự kiện đã đủ người'}
-                                            {new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'}
+                                            {event.currentParticipants >= event.maxParticipants && 'Đã đủ người tham gia'}
+                                            {new Date(event.endTime) < new Date()
+                                                ? 'Sự kiện đã kết thúc'
+                                                : new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'}
                                             {event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'}
                                         </Typography>
                                     )}

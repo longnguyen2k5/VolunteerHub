@@ -37,6 +37,16 @@ const EventCard = ({ event }) => {
             COMPLETED: 'Hoàn thành',
         };
         return texts[status] || status;
+        return texts[status] || status;
+    };
+
+    const CATEGORY_LABELS = {
+        EDUCATION: "Giáo dục",
+        ENVIRONMENT: "Môi trường",
+        HEALTH: "Y tế",
+        COMMUNITY: "Cộng đồng",
+        EMERGENCY_RELIEF: "Cứu trợ khẩn cấp",
+        OTHER: "Khác",
     };
 
     return (
@@ -44,7 +54,7 @@ const EventCard = ({ event }) => {
             <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Chip
-                        label={event.category || 'Chung'}
+                        label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
                         size="small"
                         color="primary"
                         variant="outlined"
