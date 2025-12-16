@@ -40,7 +40,16 @@ public class EventService {
         event.setDescription(request.getDescription());
         event.setLocation(request.getLocation());
         event.setStartTime(request.getStartTime());
+        event.setStartTime(request.getStartTime());
         event.setEndTime(request.getEndTime());
+        event.setMaxParticipants(request.getMaxParticipants());
+        if (request.getCategory() != null) {
+            try {
+                event.setCategory(project.backend.model.enums.EventCategory.valueOf(request.getCategory()));
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid category or set default?
+            }
+        }
         event.setStatus(EventStatus.PENDING_APPROVAL);
         event.setManager(manager);
 
@@ -66,6 +75,13 @@ public class EventService {
         event.setLocation(request.getLocation());
         event.setStartTime(request.getStartTime());
         event.setEndTime(request.getEndTime());
+        event.setMaxParticipants(request.getMaxParticipants());
+        if (request.getCategory() != null) {
+             try {
+                 event.setCategory(project.backend.model.enums.EventCategory.valueOf(request.getCategory()));
+             } catch (IllegalArgumentException e) {
+             }
+        }
 
         Events updatedEvent = eventRepository.save(event);
         return mapToResponse(updatedEvent);
@@ -133,7 +149,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    private EventResponse mapToResponse(Events event) {
+    public EventResponse mapToResponse(Events event) {
         EventResponse response = new EventResponse();
         response.setId(event.getId());
         response.setName(event.getName());
@@ -141,6 +157,8 @@ public class EventService {
         response.setLocation(event.getLocation());
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
+        response.setMaxParticipants(event.getMaxParticipants());
+        response.setCategory(event.getCategory());
         response.setStatus(event.getStatus());
         response.setManagerId(event.getManager().getId());
         response.setManagerName(event.getManager().getFullName());

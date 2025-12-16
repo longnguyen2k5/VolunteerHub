@@ -28,6 +28,11 @@ public class EventController {
     }
 
     @GetMapping("/public/{id}")
+    public ResponseEntity<EventResponse> getPublicEventById(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getEventById(id));
+    }
+
+    @GetMapping("/{id}")
     public ResponseEntity<EventResponse> getEventById(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventById(id));
     }

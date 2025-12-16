@@ -23,4 +23,10 @@ public class EventRequest {
 
     @NotNull(message = "End time is required")
     private LocalDateTime endTime;
+
+    @NotNull(message = "Max participants is required")
+    @Min(value = 1, message = "Min participants is 1")
+    private Integer maxParticipants;
+    
+    private String category;
 }

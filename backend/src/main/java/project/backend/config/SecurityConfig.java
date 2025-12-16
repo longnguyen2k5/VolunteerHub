@@ -88,6 +88,13 @@ public class SecurityConfig {
                 .formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
+                )
+                .logout(logout -> logout
+                        .logoutRequestMatcher(request -> request.getMethod().equals("GET") && request.getRequestURI().equals("/logout"))
+                        .logoutSuccessUrl("http://localhost:3000/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
                 );
 
         return http.build();

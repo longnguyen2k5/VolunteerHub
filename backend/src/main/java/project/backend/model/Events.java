@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.backend.model.enums.EventStatus;
+import project.backend.model.enums.EventCategory;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +24,11 @@ public class Events {
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    
+    private Integer maxParticipants;
+    
+    @Enumerated(EnumType.STRING)
+    private EventCategory category;
     
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

@@ -1,6 +1,7 @@
 package project.backend.dto.response;
 
 import project.backend.model.enums.EventStatus;
+import project.backend.model.enums.EventCategory;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -12,6 +13,8 @@ public class EventResponse {
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private Integer maxParticipants;
+    private EventCategory category;
     private EventStatus status;
     private Long managerId;
     private String managerName;
