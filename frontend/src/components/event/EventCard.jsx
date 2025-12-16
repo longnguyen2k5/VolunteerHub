@@ -57,7 +57,7 @@ const EventCard = ({ event }) => {
                 </Box>
 
                 <Typography gutterBottom variant="h6" component="div">
-                    {event.title}
+                    {event.name}
                 </Typography>
 
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -76,7 +76,7 @@ const EventCard = ({ event }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <CalendarToday fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
                     <Typography variant="body2" color="text.secondary">
-                        {format(new Date(event.startDate), 'dd/MM/yyyy HH:mm')}
+                        {format(new Date(event.startTime), 'dd/MM/yyyy HH:mm')}
                     </Typography>
                 </Box>
 

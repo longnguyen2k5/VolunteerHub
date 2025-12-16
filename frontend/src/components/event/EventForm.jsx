@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -6,16 +6,21 @@ import {
   Stack,
   Paper,
   Typography,
-} from '@mui/material';
-import { format } from 'date-fns';
+} from "@mui/material";
+import { format } from "date-fns";
 
-const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = false }) => {
+const EventForm = ({
+  initialData,
+  onSubmit,
+  submitLabel = "Lưu",
+  loading = false,
+}) => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    location: '',
-    startTime: '',
-    endTime: '',
+    name: "",
+    description: "",
+    location: "",
+    startTime: "",
+    endTime: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -24,11 +29,15 @@ const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = fals
     if (initialData) {
       // Convert backend LocalDateTime format to datetime-local format
       setFormData({
-        name: initialData.name || '',
-        description: initialData.description || '',
-        location: initialData.location || '',
-        startTime: initialData.startTime ? formatToDateTimeLocal(initialData.startTime) : '',
-        endTime: initialData.endTime ? formatToDateTimeLocal(initialData.endTime) : '',
+        name: initialData.name || "",
+        description: initialData.description || "",
+        location: initialData.location || "",
+        startTime: initialData.startTime
+          ? formatToDateTimeLocal(initialData.startTime)
+          : "",
+        endTime: initialData.endTime
+          ? formatToDateTimeLocal(initialData.endTime)
+          : "",
       });
     }
   }, [initialData]);
@@ -36,7 +45,7 @@ const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = fals
   const formatToDateTimeLocal = (dateTime) => {
     // Backend sends: "2024-12-25T10:00:00"
     // datetime-local needs: "2024-12-25T10:00"
-    if (!dateTime) return '';
+    if (!dateTime) return "";
     const date = new Date(dateTime);
     return format(date, "yyyy-MM-dd'T'HH:mm");
   };
@@ -51,7 +60,7 @@ const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = fals
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
@@ -60,34 +69,34 @@ const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = fals
     const newErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Tên sự kiện không được để trống';
+      newErrors.name = "Tên sự kiện không được để trống";
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = 'Mô tả không được để trống';
+      newErrors.description = "Mô tả không được để trống";
     }
 
     if (!formData.location.trim()) {
-      newErrors.location = 'Địa điểm không được để trống';
+      newErrors.location = "Địa điểm không được để trống";
     }
 
     if (!formData.startTime) {
-      newErrors.startTime = 'Thời gian bắt đầu không được để trống';
+      newErrors.startTime = "Thời gian bắt đầu không được để trống";
     } else {
       const startDate = new Date(formData.startTime);
       const now = new Date();
       if (startDate < now) {
-        newErrors.startTime = 'Thời gian bắt đầu phải là thời gian tương lai';
+        newErrors.startTime = "Thời gian bắt đầu phải là thời gian tương lai";
       }
     }
 
     if (!formData.endTime) {
-      newErrors.endTime = 'Thời gian kết thúc không được để trống';
+      newErrors.endTime = "Thời gian kết thúc không được để trống";
     } else if (formData.startTime) {
       const startDate = new Date(formData.startTime);
       const endDate = new Date(formData.endTime);
       if (endDate <= startDate) {
-        newErrors.endTime = 'Thời gian kết thúc phải sau thời gian bắt đầu';
+        newErrors.endTime = "Thời gian kết thúc phải sau thời gian bắt đầu";
       }
     }
 
@@ -180,14 +189,14 @@ const EventForm = ({ initialData, onSubmit, submitLabel = 'Lưu', loading = fals
             disabled={loading}
           />
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               disabled={loading}
             >
-              {loading ? 'Đang xử lý...' : submitLabel}
+              {loading ? "Đang xử lý..." : submitLabel}
             </Button>
           </Box>
         </Stack>

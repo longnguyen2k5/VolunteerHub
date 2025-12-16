@@ -127,7 +127,7 @@ const EventDetailPage = () => {
         if (!user || user.role !== 'VOLUNTEER') return false;
         if (myRegistration) return false;
         if (event?.currentParticipants >= event?.maxParticipants) return false;
-        if (new Date(event?.startDate) < new Date()) return false;
+        if (new Date(event?.startTime) < new Date()) return false;
         if (event?.status !== 'APPROVED') return false;
         return true;
     };
@@ -135,7 +135,7 @@ const EventDetailPage = () => {
     const canCancel = () => {
         if (!myRegistration) return false;
         if (myRegistration.status === 'COMPLETED' || myRegistration.status === 'CANCELLED') return false;
-        if (new Date(event?.startDate) < new Date()) return false;
+        if (new Date(event?.startTime) < new Date()) return false;
         return true;
     };
 
@@ -160,7 +160,7 @@ const EventDetailPage = () => {
             </Button>
 
             <Grid container spacing={4}>
-                <Grid item xs={12} md={8}>
+                <Grid size={{ xs: 12, md: 8 }}>
                     <Card>
                         <CardContent sx={{ p: 4 }}>
                             <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
@@ -176,7 +176,7 @@ const EventDetailPage = () => {
                             </Box>
 
                             <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-                                {event.title}
+                                {event.name}
                             </Typography>
 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3, flexWrap: 'wrap' }}>
@@ -187,7 +187,7 @@ const EventDetailPage = () => {
                                             Bắt đầu
                                         </Typography>
                                         <Typography variant="body1" fontWeight={500}>
-                                            {format(new Date(event.startDate), 'dd/MM/yyyy HH:mm', { locale: vi })}
+                                            {format(new Date(event.startTime), 'dd/MM/yyyy HH:mm', { locale: vi })}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -199,7 +199,7 @@ const EventDetailPage = () => {
                                             Kết thúc
                                         </Typography>
                                         <Typography variant="body1" fontWeight={500}>
-                                            {format(new Date(event.endDate), 'dd/MM/yyyy HH:mm', { locale: vi })}
+                                            {format(new Date(event.endTime), 'dd/MM/yyyy HH:mm', { locale: vi })}
                                         </Typography>
                                     </Box>
                                 </Box>
@@ -251,7 +251,7 @@ const EventDetailPage = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} md={4}>
+                <Grid size={{ xs: 12, md: 4 }}>
                     <Card sx={{ position: 'sticky', top: 20 }}>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -305,7 +305,7 @@ const EventDetailPage = () => {
                                             {!user && 'Vui lòng đăng nhập để đăng ký'}
                                             {user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký'}
                                             {event.currentParticipants >= event.maxParticipants && 'Sự kiện đã đủ người'}
-                                            {new Date(event.startDate) < new Date() && 'Sự kiện đã bắt đầu'}
+                                            {new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'}
                                             {event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'}
                                         </Typography>
                                     )}

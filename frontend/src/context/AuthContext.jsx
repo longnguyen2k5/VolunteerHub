@@ -250,7 +250,8 @@ export const AuthProvider = ({ children }) => {
     clearCodeVerifier();
     setUser(null);
     toast.info("Logged out successfully");
-    navigate("/login");
+    // Redirect to backend to clear session/cookies
+    window.location.href = "http://localhost:8386/logout";
   };
 
   return (

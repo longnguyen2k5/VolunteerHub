@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -24,22 +24,22 @@ import {
   DialogActions,
   CircularProgress,
   Alert,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
-} from '@mui/icons-material';
-import { format } from 'date-fns';
-import { eventAPI } from '../../api/eventApi';
-import { toast } from 'react-toastify';
+} from "@mui/icons-material";
+import { format } from "date-fns";
+import { eventAPI } from "../../api/eventApi";
+import { toast } from "react-toastify";
 
 const EventList = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState("ALL");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
 
@@ -53,8 +53,8 @@ const EventList = () => {
       const response = await eventAPI.getMyEvents();
       setEvents(response.data || []);
     } catch (error) {
-      toast.error('Không thể tải danh sách sự kiện');
-      console.error('Error loading events:', error);
+      toast.error("Không thể tải danh sách sự kiện");
+      console.error("Error loading events:", error);
     } finally {
       setLoading(false);
     }
@@ -65,13 +65,13 @@ const EventList = () => {
 
     try {
       await eventAPI.delete(eventToDelete.id);
-      toast.success('Xóa sự kiện thành công');
+      toast.success("Xóa sự kiện thành công");
       setDeleteDialogOpen(false);
       setEventToDelete(null);
       loadEvents();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Không thể xóa sự kiện');
-      console.error('Error deleting event:', error);
+      toast.error(error.response?.data?.message || "Không thể xóa sự kiện");
+      console.error("Error deleting event:", error);
     }
   };
 
@@ -87,28 +87,31 @@ const EventList = () => {
 
   const getStatusChip = (status) => {
     const statusConfig = {
-      PENDING_APPROVAL: { label: 'Chờ duyệt', color: 'warning' },
-      APPROVED: { label: 'Đã duyệt', color: 'success' },
-      REJECTED: { label: 'Từ chối', color: 'error' },
+      PENDING_APPROVAL: { label: "Chờ duyệt", color: "warning" },
+      APPROVED: { label: "Đã duyệt", color: "success" },
+      REJECTED: { label: "Từ chối", color: "error" },
     };
 
-    const config = statusConfig[status] || { label: status, color: 'default' };
+    const config = statusConfig[status] || { label: status, color: "default" };
     return <Chip label={config.label} color={config.color} size="small" />;
   };
 
   const formatDateTime = (dateTime) => {
-    if (!dateTime) return '';
-    return format(new Date(dateTime), 'dd/MM/yyyy HH:mm');
+    if (!dateTime) return "";
+    return format(new Date(dateTime), "dd/MM/yyyy HH:mm");
   };
 
   const filteredEvents = events.filter((event) => {
-    if (statusFilter === 'ALL') return true;
+    if (statusFilter === "ALL") return true;
     return event.status === statusFilter;
   });
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+      <Container
+        maxWidth="lg"
+        sx={{ mt: 4, display: "flex", justifyContent: "center" }}
+      >
         <CircularProgress />
       </Container>
     );
@@ -116,7 +119,14 @@ const EventList = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box
+        sx={{
+          mb: 3,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography variant="h4" component="h1">
           Quản lý sự kiện
         </Typography>
@@ -124,7 +134,7 @@ const EventList = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => navigate('/events/create')}
+          onClick={() => navigate("/events/create")}
         >
           Tạo sự kiện mới
         </Button>
@@ -148,9 +158,9 @@ const EventList = () => {
 
       {filteredEvents.length === 0 ? (
         <Alert severity="info">
-          {statusFilter === 'ALL'
+          {statusFilter === "ALL"
             ? 'Bạn chưa tạo sự kiện nào. Nhấn "Tạo sự kiện mới" để bắt đầu.'
-            : 'Không có sự kiện nào với trạng thái này.'}
+            : "Không có sự kiện nào với trạng thái này."}
         </Alert>
       ) : (
         <TableContainer component={Paper}>
@@ -217,7 +227,9 @@ const EventList = () => {
         <DialogTitle>Xác nhận xóa</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Bạn có chắc chắn muốn xóa sự kiện <strong>{eventToDelete?.name}</strong>? Hành động này không thể hoàn tác.
+            Bạn có chắc chắn muốn xóa sự kiện{" "}
+            <strong>{eventToDelete?.name}</strong>? Hành động này không thể hoàn
+            tác.
           </DialogContentText>
         </DialogContent>
         <DialogActions>

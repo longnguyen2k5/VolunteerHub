@@ -19,11 +19,16 @@ import Layout from "./components/common/Layout";
 // Event Pages
 import EventBrowse from "./pages/volunteer/EventBrowse";
 import EventDetailPage from "./pages/volunteer/EventDetailPage";
+import EventChannel from "./pages/volunteer/EventChannel";
 
 // Organizer Pages
 import EventList from "./pages/organizer/EventList";
 import CreateEvent from "./pages/organizer/CreateEvent";
 import EditEvent from "./pages/organizer/EditEvent";
+
+// Admin Pages
+import EventApproval from "./pages/admin/EventApproval";
+import UserManagement from "./pages/admin/UserManagement";
 
 function App() {
   const { user, loading } = useAuth();
@@ -58,13 +63,14 @@ function App() {
 
         {/* OAuth Callback */}
         <Route path="callback" element={<OAuthCallback />} />
-        
+
         {/* Forbidden */}
         <Route path="forbidden" element={<Forbidden />} />
 
         {/* Event Routes (Public) */}
         <Route path="events" element={<EventBrowse />} />
         <Route path="events/:id" element={<EventDetailPage />} />
+        <Route path="events/:id/channel" element={<EventChannel />} />
 
         {/* Protected Routes - All authenticated users */}
         <Route
@@ -75,50 +81,50 @@ function App() {
             </PrivateRoute>
           }
         />
-        
+
         {/* EVENT_MANAGER Routes */}
         <Route
           path="events/manage"
           element={
-            <RoleGuard allowedRoles={['EVENT_MANAGER', 'ADMIN']}>
+            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
               <EventList />
             </RoleGuard>
           }
         />
-        
+
         <Route
           path="events/create"
           element={
-            <RoleGuard allowedRoles={['EVENT_MANAGER', 'ADMIN']}>
+            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
               <CreateEvent />
             </RoleGuard>
           }
         />
-        
+
         <Route
           path="events/edit/:id"
           element={
-            <RoleGuard allowedRoles={['EVENT_MANAGER', 'ADMIN']}>
+            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
               <EditEvent />
             </RoleGuard>
           }
         />
-        
+
         {/* ADMIN Routes */}
         <Route
           path="admin/events"
           element={
-            <RoleGuard allowedRoles={['ADMIN']}>
-              <div>Admin - Approve Events (TODO: Phase 3)</div>
+            <RoleGuard allowedRoles={["ADMIN"]}>
+              <EventApproval />
             </RoleGuard>
           }
         />
-        
+
         <Route
           path="admin/users"
           element={
-            <RoleGuard allowedRoles={['ADMIN']}>
-              <div>Admin - Manage Users (TODO: Phase 3)</div>
+            <RoleGuard allowedRoles={["ADMIN"]}>
+              <UserManagement />
             </RoleGuard>
           }
         />

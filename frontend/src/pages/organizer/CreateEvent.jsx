@@ -1,16 +1,10 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  Box,
-  Button,
-  Paper,
-} from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import EventForm from '../../components/event/EventForm';
-import { eventAPI } from '../../api/eventApi';
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Typography, Box, Button, Paper } from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
+import EventForm from "../../components/event/EventForm";
+import { eventAPI } from "../../api/eventApi";
+import { toast } from "react-toastify";
 
 const CreateEvent = () => {
   const navigate = useNavigate();
@@ -20,12 +14,12 @@ const CreateEvent = () => {
     try {
       setLoading(true);
       await eventAPI.create(eventData);
-      toast.success('Tạo sự kiện thành công! Sự kiện đang chờ admin duyệt.');
-      navigate('/events/manage');
+      toast.success("Tạo sự kiện thành công! Sự kiện đang chờ admin duyệt.");
+      navigate("/events/manage");
     } catch (error) {
-      console.error('Error creating event:', error);
-      console.error('Response data:', error.response?.data);
-      toast.error(error.response?.data?.message || 'Không thể tạo sự kiện');
+      console.error("Error creating event:", error);
+      console.error("Response data:", error.response?.data);
+      toast.error(error.response?.data?.message || "Không thể tạo sự kiện");
     } finally {
       setLoading(false);
     }
@@ -36,7 +30,7 @@ const CreateEvent = () => {
       <Box sx={{ mb: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/events/manage')}
+          onClick={() => navigate("/events/manage")}
           sx={{ mb: 2 }}
         >
           Quay lại danh sách

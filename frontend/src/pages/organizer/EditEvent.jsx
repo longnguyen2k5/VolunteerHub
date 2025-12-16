@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -7,11 +7,11 @@ import {
   Button,
   CircularProgress,
   Alert,
-} from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
-import EventForm from '../../components/event/EventForm';
-import { eventAPI } from '../../api/eventApi';
-import { toast } from 'react-toastify';
+} from "@mui/material";
+import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
+import EventForm from "../../components/event/EventForm";
+import { eventAPI } from "../../api/eventApi";
+import { toast } from "react-toastify";
 
 const EditEvent = () => {
   const navigate = useNavigate();
@@ -31,8 +31,8 @@ const EditEvent = () => {
       const response = await eventAPI.getPublicById(id);
       setEvent(response.data);
     } catch (error) {
-      setError('Không thể tải thông tin sự kiện');
-      console.error('Error loading event:', error);
+      setError("Không thể tải thông tin sự kiện");
+      console.error("Error loading event:", error);
     } finally {
       setLoading(false);
     }
@@ -42,15 +42,17 @@ const EditEvent = () => {
     try {
       setSubmitting(true);
       await eventAPI.update(id, eventData);
-      toast.success('Cập nhật sự kiện thành công!');
-      navigate('/events/manage');
+      toast.success("Cập nhật sự kiện thành công!");
+      navigate("/events/manage");
     } catch (error) {
       if (error.response?.status === 403) {
-        toast.error('Bạn không có quyền chỉnh sửa sự kiện này');
+        toast.error("Bạn không có quyền chỉnh sửa sự kiện này");
       } else {
-        toast.error(error.response?.data?.message || 'Không thể cập nhật sự kiện');
+        toast.error(
+          error.response?.data?.message || "Không thể cập nhật sự kiện"
+        );
       }
-      console.error('Error updating event:', error);
+      console.error("Error updating event:", error);
     } finally {
       setSubmitting(false);
     }
@@ -58,7 +60,10 @@ const EditEvent = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="md" sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+      <Container
+        maxWidth="md"
+        sx={{ mt: 4, display: "flex", justifyContent: "center" }}
+      >
         <CircularProgress />
       </Container>
     );
@@ -70,7 +75,10 @@ const EditEvent = () => {
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/events/manage')}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate("/events/manage")}
+        >
           Quay lại danh sách
         </Button>
       </Container>
@@ -82,7 +90,7 @@ const EditEvent = () => {
       <Box sx={{ mb: 3 }}>
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/events/manage')}
+          onClick={() => navigate("/events/manage")}
           sx={{ mb: 2 }}
         >
           Quay lại danh sách

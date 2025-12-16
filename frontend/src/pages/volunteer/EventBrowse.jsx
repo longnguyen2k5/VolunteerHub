@@ -49,7 +49,7 @@ const EventBrowse = () => {
         // Filter by search term
         if (searchTerm) {
             filtered = filtered.filter(event =>
-                event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                event.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 event.location.toLowerCase().includes(searchTerm.toLowerCase())
             );
@@ -115,7 +115,7 @@ const EventBrowse = () => {
             ) : (
                 <Grid container spacing={3}>
                     {filteredEvents.map((event) => (
-                        <Grid item xs={12} sm={6} md={4} key={event.id}>
+                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
                             <EventCard event={event} />
                         </Grid>
                     ))}
