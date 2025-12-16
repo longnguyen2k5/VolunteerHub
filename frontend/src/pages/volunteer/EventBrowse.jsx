@@ -14,6 +14,8 @@ import {
 import { Search } from '@mui/icons-material';
 import EventCard from '../../components/event/EventCard';
 import { eventAPI } from '../../api/eventApi';
+import { registrationAPI } from '../../api/registrationApi';
+import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 
 const EventBrowse = () => {
@@ -30,6 +32,8 @@ const EventBrowse = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
+    const [myRegistrations, setMyRegistrations] = useState([]);
+    const { user } = useAuth();
 
     useEffect(() => {
         fetchEvents();
@@ -44,6 +48,11 @@ const EventBrowse = () => {
             const response = await eventAPI.getAllApproved();
             setEvents(response.data);
             setFilteredEvents(response.data);
+
+            if (user?.role === 'VOLUNTEER') {
+                const regResponse = await registrationAPI.getMyRegistrations();
+                setMyRegistrations(regResponse.data);
+            }
         } catch (error) {
             toast.error('Không thể tải danh sách sự kiện:', error);
         } finally {
@@ -124,7 +133,10 @@ const EventBrowse = () => {
                 <Grid container spacing={3}>
                     {filteredEvents.map((event) => (
                         <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
-                            <EventCard event={event} />
+                            <EventCard
+                                event={event}
+                                registration={myRegistrations.find(r => r.eventId === event.id)}
+                            />
                         </Grid>
                     ))}
                 </Grid>

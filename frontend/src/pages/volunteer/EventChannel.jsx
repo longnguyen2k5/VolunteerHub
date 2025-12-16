@@ -13,7 +13,8 @@ import {
     Divider,
     Stack,
     CircularProgress,
-    Tooltip
+    Tooltip,
+    Chip
 } from '@mui/material';
 import {
     ArrowBack,
@@ -58,8 +59,9 @@ const EventChannel = () => {
             setEvent(eventRes.data);
             setPosts(postsRes.data);
         } catch (error) {
-            toast.error('Không thể tải dữ liệu kênh thảo luận');
-            navigate(`/events/${id}`);
+            console.error("Error fetching channel data:", error);
+            toast.error(error.response?.data?.message || 'Không thể tải dữ liệu kênh thảo luận');
+            // navigate(`/events/${id}`); // Don't redirect, let user see error
         } finally {
             setLoading(false);
         }
@@ -230,6 +232,11 @@ const EventChannel = () => {
 
             {/* Posts Feed */}
             <Stack spacing={3}>
+                {posts.length === 0 && (
+                    <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+                        <Typography>Chưa có bài viết nào. Hãy là người đầu tiên đăng bài!</Typography>
+                    </Box>
+                )}
                 {posts.map(post => (
                     <Card key={post.id} sx={{ bgcolor: '#f9f9f9' }}>
                         <CardContent>

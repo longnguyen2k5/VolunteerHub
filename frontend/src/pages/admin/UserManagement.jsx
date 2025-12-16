@@ -76,7 +76,7 @@ const UserManagement = () => {
   const getRoleChip = (role) => {
     const roleConfig = {
       VOLUNTEER: { label: "Tình nguyện viên", color: "info" },
-      EVENT_MANAGER: { label: "Quản lý sự kiện", color: "primary" },
+      EVENT_MANAGER: { label: "Quản lý sự kiện", color: "secondary" },
       ADMIN: { label: "Quản trị viên", color: "error" },
     };
 
@@ -199,8 +199,8 @@ const UserManagement = () => {
                         user.id === currentUser?.id
                           ? "Không thể khóa tài khoản của chính mình"
                           : user.isLocked
-                          ? "Mở khóa tài khoản"
-                          : "Khóa tài khoản"
+                            ? "Mở khóa tài khoản"
+                            : "Khóa tài khoản"
                       }
                     >
                       <span>

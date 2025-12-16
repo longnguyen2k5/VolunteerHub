@@ -16,7 +16,7 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
-const EventCard = ({ event }) => {
+const EventCard = ({ event, registration }) => {
     const navigate = useNavigate();
 
     const getStatusColor = (status) => {
@@ -60,9 +60,21 @@ const EventCard = ({ event }) => {
                         variant="outlined"
                     />
                     <Chip
-                        label={getStatusText(event.status)}
+                        label={
+                            (registration && registration.status !== 'CANCELLED') ? getStatusText(registration.status) :
+                                (new Date(event.endTime) < new Date()) ? 'Đã kết thúc' :
+                                    (event.currentParticipants >= event.maxParticipants) ? 'Đã đủ người' :
+                                        (new Date(event.startTime) <= new Date()) ? 'Đang diễn ra' :
+                                            'Sắp diễn ra'
+                        }
                         size="small"
-                        color={getStatusColor(event.status)}
+                        color={
+                            (registration && registration.status !== 'CANCELLED') ? getStatusColor(registration.status) :
+                                (new Date(event.endTime) < new Date()) ? 'default' :
+                                    (event.currentParticipants >= event.maxParticipants) ? 'error' :
+                                        (new Date(event.startTime) <= new Date()) ? 'secondary' :
+                                            'info'
+                        }
                     />
                 </Box>
 

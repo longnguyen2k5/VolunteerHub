@@ -179,8 +179,20 @@ const EventDetailPage = () => {
                                     variant="outlined"
                                 />
                                 <Chip
-                                    label={getStatusText(event.status)}
-                                    color={getStatusColor(event.status)}
+                                    label={
+                                        (myRegistration && myRegistration.status !== 'CANCELLED') ? getStatusText(myRegistration.status) :
+                                            (new Date(event.endTime) < new Date()) ? 'Đã kết thúc' :
+                                                (event.currentParticipants >= event.maxParticipants) ? 'Đã đủ người' :
+                                                    (new Date(event.startTime) <= new Date()) ? 'Đang diễn ra' :
+                                                        'Sắp diễn ra'
+                                    }
+                                    color={
+                                        (myRegistration && myRegistration.status !== 'CANCELLED') ? getStatusColor(myRegistration.status) :
+                                            (new Date(event.endTime) < new Date()) ? 'default' :
+                                                (event.currentParticipants >= event.maxParticipants) ? 'error' :
+                                                    (new Date(event.startTime) <= new Date()) ? 'secondary' :
+                                                        'info'
+                                    }
                                 />
                             </Box>
 
@@ -311,13 +323,13 @@ const EventDetailPage = () => {
                                         </>
                                     ) : (
                                         <Typography variant="body2" color="text.secondary">
-                                            {!user && 'Vui lòng đăng nhập để đăng ký'}
-                                            {user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký'}
-                                            {event.currentParticipants >= event.maxParticipants && 'Đã đủ người tham gia'}
-                                            {new Date(event.endTime) < new Date()
-                                                ? 'Sự kiện đã kết thúc'
-                                                : new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'}
-                                            {event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'}
+                                            {[
+                                                !user && 'Vui lòng đăng nhập để đăng ký',
+                                                user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký',
+                                                event.currentParticipants >= event.maxParticipants && 'Đã đủ người tham gia',
+                                                new Date(event.endTime) < new Date() ? 'Sự kiện đã kết thúc' : (new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'),
+                                                event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'
+                                            ].filter(Boolean).join(' | ')}
                                         </Typography>
                                     )}
                                 </Box>

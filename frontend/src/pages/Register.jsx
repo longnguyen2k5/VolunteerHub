@@ -141,7 +141,7 @@ const Register = () => {
                   label="Vai trò"
                 >
                   <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
-                  <MenuItem value="ORGANIZER">Quản lý sự kiện</MenuItem>
+                  <MenuItem value="EVENT_MANAGER">Nhà tổ chức sự kiện</MenuItem>
                 </Select>
               </FormControl>
               <Button
