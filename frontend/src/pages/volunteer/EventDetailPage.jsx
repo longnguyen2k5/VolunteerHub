@@ -134,7 +134,9 @@ const EventDetailPage = () => {
 
     const canRegister = () => {
         if (!user || user.role !== 'VOLUNTEER') return false;
-        if (myRegistration) return false;
+        // Allow if not registered OR if registered but status is CANCELLED/REJECTED
+        if (myRegistration && !['CANCELLED', 'REJECTED'].includes(myRegistration.status)) return false;
+
         if (event?.maxParticipants && event?.currentParticipants >= event.maxParticipants) return false;
         if (new Date(event?.startTime) < new Date()) return false;
         if (event?.status !== 'APPROVED') return false;
@@ -300,6 +302,21 @@ const EventDetailPage = () => {
                                             disabled={registering}
                                         >
                                             Hủy đăng ký
+                                        </Button>
+                                    )}
+
+                                    {/* Re-register Button for Cancelled/Rejected users */}
+                                    {['CANCELLED', 'REJECTED'].includes(myRegistration.status) && canRegister() && (
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            size="large"
+                                            startIcon={<PersonAdd />}
+                                            onClick={() => setConfirmDialog({ open: true, action: 'register' })}
+                                            disabled={registering}
+                                            sx={{ mt: 2 }}
+                                        >
+                                            {registering ? <CircularProgress size={24} /> : 'Đăng ký lại'}
                                         </Button>
                                     )}
                                 </Box>
