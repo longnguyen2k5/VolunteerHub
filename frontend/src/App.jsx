@@ -4,7 +4,6 @@ import { useAuth } from "./hooks/useAuth";
 import { CircularProgress, Box } from "@mui/material";
 
 // Pages
-import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -53,10 +52,6 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route
-          path="login"
-          element={!user ? <Login /> : <Navigate to="/dashboard" />}
-        />
         <Route
           path="register"
           element={!user ? <Register /> : <Navigate to="/dashboard" />}

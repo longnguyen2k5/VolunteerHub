@@ -26,7 +26,7 @@ const Register = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -159,12 +159,17 @@ const Register = () => {
             <Box sx={{ textAlign: "center", mt: 2 }}>
               <Typography variant="body2">
                 Đã có tài khoản?{" "}
-                <Link
-                  to="/login"
-                  style={{ textDecoration: "none", color: "#2196f3" }}
+                <Typography
+                  component="span"
+                  onClick={() => login && login()}
+                  sx={{
+                    cursor: 'pointer',
+                    color: '#2196f3',
+                    '&:hover': { textDecoration: 'underline' }
+                  }}
                 >
                   Đăng nhập
-                </Link>
+                </Typography>
               </Typography>
             </Box>
           </CardContent>

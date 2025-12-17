@@ -14,7 +14,7 @@ import {
 import { AccountCircle } from "@mui/icons-material";
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, login } = useAuth();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -108,7 +108,7 @@ const Header = () => {
           </Box>
         ) : (
           <Box>
-            <Button color="inherit" component={Link} to="/login">
+            <Button color="inherit" onClick={() => login && login()}>
               Đăng nhập
             </Button>
             <Button color="inherit" component={Link} to="/register">
@@ -117,7 +117,7 @@ const Header = () => {
           </Box>
         )}
       </Toolbar>
-    </AppBar>
+    </AppBar >
   );
 };
 

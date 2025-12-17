@@ -3,6 +3,21 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { CircularProgress, Box } from '@mui/material';
 
+// Helper component to trigger login side-effect
+const RedirectToAuth = () => {
+    const { login } = useAuth();
+
+    React.useEffect(() => {
+        login();
+    }, [login]);
+
+    return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <CircularProgress />
+        </Box>
+    );
+};
+
 const PrivateRoute = ({ children, allowedRoles = [] }) => {
     const { user, loading } = useAuth();
 
@@ -15,7 +30,7 @@ const PrivateRoute = ({ children, allowedRoles = [] }) => {
     }
 
     if (!user) {
-        return <Navigate to="/login" replace />;
+        return <RedirectToAuth />;
     }
 
     if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
