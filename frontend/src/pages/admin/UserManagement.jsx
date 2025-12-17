@@ -3,6 +3,7 @@ import {
   Box,
   Container,
   Typography,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -19,9 +20,9 @@ import {
   Alert,
   Tooltip,
 } from "@mui/material";
-import { Lock as LockIcon, LockOpen as UnlockIcon } from "@mui/icons-material";
+import { Lock as LockIcon, LockOpen as UnlockIcon, Download } from "@mui/icons-material";
 import { format } from "date-fns";
-import { getAllUsers, lockUser, unlockUser } from "../../api/adminApi";
+import { getAllUsers, lockUser, unlockUser, exportUsers } from "../../api/adminApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -35,6 +36,24 @@ const UserManagement = () => {
   useEffect(() => {
     loadUsers();
   }, []);
+
+  const handleExport = async () => {
+    try {
+      const blob = await exportUsers();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'users.csv';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast.success('Xuất dữ liệu thành công');
+    } catch (error) {
+      toast.error('Không thể xuất dữ liệu');
+      console.error(error);
+    }
+  };
 
   const loadUsers = async () => {
     try {
@@ -152,6 +171,14 @@ const UserManagement = () => {
           size="small"
           sx={{ flexGrow: 1 }}
         />
+
+        <Button
+          variant="outlined"
+          startIcon={<Download />}
+          onClick={handleExport}
+        >
+          Export CSV
+        </Button>
       </Stack>
 
       {filteredUsers.length === 0 ? (

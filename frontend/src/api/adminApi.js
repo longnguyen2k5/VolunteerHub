@@ -23,3 +23,13 @@ export const unlockUser = async (userId) => {
   const response = await axiosInstance.put(`/admin/users/${userId}/unlock`);
   return response.data;
 };
+
+/**
+ * ADMIN: Export users to CSV
+ */
+export const exportUsers = async () => {
+  const response = await axiosInstance.get("/admin/users/export", {
+    responseType: 'blob',
+  });
+  return response.data;
+};

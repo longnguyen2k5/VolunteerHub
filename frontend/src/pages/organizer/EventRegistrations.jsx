@@ -8,6 +8,7 @@ import {
     Table,
     TableBody,
     TableCell,
+    Grid,
     TableContainer,
     TableHead,
     TableRow,
@@ -17,6 +18,8 @@ import {
     CircularProgress,
     Stack,
     Tooltip,
+    Card,
+    CardContent,
 } from '@mui/material';
 import {
     ArrowBack,
@@ -24,6 +27,7 @@ import {
     Cancel,
     Done,
     TaskAlt,
+    FileDownload,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
@@ -82,6 +86,23 @@ const EventRegistrations = () => {
         }
     };
 
+    const handleExport = async () => {
+        try {
+            const blob = await registrationAPI.exportEventRegistrations(id);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `registrations_event_${id}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            toast.success('Xuất dữ liệu thành công');
+        } catch (error) {
+            toast.error('Không thể xuất dữ liệu: ' + (error.message || 'Lỗi không xác định'));
+        }
+    };
+
     const getStatusChip = (status) => {
         const config = {
             PENDING: { label: 'Chờ duyệt', color: 'warning' },
@@ -114,8 +135,57 @@ const EventRegistrations = () => {
                     Sự kiện: <strong>{event?.name}</strong>
                 </Typography>
                 <Typography variant="body2">
-                    Tổng số đăng ký: {registrations.length} | Đã duyệt: {registrations.filter(r => r.status === 'APPROVED').length}
+                    Tổng số đăng ký: {registrations.length}
                 </Typography>
+            </Box>
+
+            {/* Statistics Cards */}
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ mb: 4 }}>
+                <Card sx={{ flex: 1 }}>
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Tổng số đăng ký
+                        </Typography>
+                        <Typography variant="h4">
+                            {registrations.length}
+                        </Typography>
+                    </CardContent>
+                </Card>
+                <Card sx={{ flex: 1 }}>
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Đã duyệt
+                        </Typography>
+                        <Typography variant="h4" color="success.main">
+                            {registrations.filter(r => r.status === 'APPROVED' || r.status === 'COMPLETED').length}
+                        </Typography>
+                    </CardContent>
+                </Card>
+                <Card sx={{ flex: 1 }}>
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Tỷ lệ hoàn thành
+                        </Typography>
+                        <Typography variant="h4" color="info.main">
+                            {(() => {
+                                const approved = registrations.filter(r => r.status === 'APPROVED' || r.status === 'COMPLETED').length;
+                                const completed = registrations.filter(r => r.status === 'COMPLETED').length;
+                                return approved > 0 ? Math.round((completed / approved) * 100) + '%' : '0%';
+                            })()}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            </Stack>
+
+            {/* Toolbar with Export */}
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                    variant="outlined"
+                    startIcon={<FileDownload />}
+                    onClick={handleExport}
+                >
+                    Xuất danh sách (CSV)
+                </Button>
             </Box>
 
             <TableContainer component={Paper}>

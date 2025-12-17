@@ -30,4 +30,11 @@ export const registrationAPI = {
     markAsCompleted: (registrationId) => {
         return axiosInstance.put(`/registrations/${registrationId}/complete`);
     },
+
+    exportEventRegistrations: async (eventId) => {
+        const response = await axiosInstance.get(`/registrations/events/${eventId}/export`, {
+            responseType: 'blob',
+        });
+        return response.data;
+    },
 };
