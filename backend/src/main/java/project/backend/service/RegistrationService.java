@@ -38,11 +38,28 @@ public class RegistrationService {
         }
         
         // Check if already registered
-        if (registrationRepository.existsByEventIdAndUserId(eventId, userId)) {
-             throw new IllegalArgumentException("User already registered for this event");
+        java.util.Optional<EventRegistrations> existingRegistrationOpt = registrationRepository.findByEventIdAndUserId(eventId, userId);
+
+        if (existingRegistrationOpt.isPresent()) {
+            EventRegistrations existingRegistration = existingRegistrationOpt.get();
+            if (existingRegistration.getStatus() == RegistrationStatus.PENDING || 
+                existingRegistration.getStatus() == RegistrationStatus.APPROVED ||
+                existingRegistration.getStatus() == RegistrationStatus.COMPLETED) {
+                throw new IllegalArgumentException("User already registered for this event");
+            }
+            // If CANCELLED or REJECTED -> Reactivate
+             // Check capacity
+            Long currentParticipants = registrationRepository.countApprovedByEventId(eventId);
+            if (event.getMaxParticipants() != null && currentParticipants >= event.getMaxParticipants()) {
+                throw new IllegalArgumentException("Event is full");
+            }
+
+            existingRegistration.setStatus(RegistrationStatus.PENDING);
+            existingRegistration.setRegisteredAt(LocalDateTime.now());
+            EventRegistrations saved = registrationRepository.save(existingRegistration);
+            return RegistrationResponse.fromEntity(saved);
         }
 
-        // Check capacity
         // Check capacity
         Long currentParticipants = registrationRepository.countApprovedByEventId(eventId);
         if (event.getMaxParticipants() != null && currentParticipants >= event.getMaxParticipants()) {
