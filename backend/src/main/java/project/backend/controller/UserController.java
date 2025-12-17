@@ -56,4 +56,17 @@ public class UserController {
         return ResponseEntity.ok(userService.unlockUser(id));
     }
 
+    /**
+     * ADMIN: Export users to CSV
+     */
+    @GetMapping("/admin/users/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> exportUsersToCsv() {
+        byte[] csvData = project.backend.utils.CsvExportUtil.exportUsersToCsv(userService.getAllUsersEntity());
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.csv")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(csvData);
+    }
+
 }

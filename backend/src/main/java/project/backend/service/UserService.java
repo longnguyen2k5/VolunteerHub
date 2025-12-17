@@ -36,6 +36,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<Users> getAllUsersEntity() {
+        return userRepository.findAll();
+    }
+
     /**
      * ADMIN: Lock a user account
      */

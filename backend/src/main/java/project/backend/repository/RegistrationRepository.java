@@ -17,6 +17,9 @@ public interface RegistrationRepository extends JpaRepository<EventRegistrations
     @Query("SELECT r FROM EventRegistrations r WHERE r.events.id = :eventId")
     List<EventRegistrations> findByEventId(@Param("eventId") Long eventId);
 
+    @Query("SELECT r FROM EventRegistrations r JOIN FETCH r.user JOIN FETCH r.events WHERE r.events.id = :eventId")
+    List<EventRegistrations> findByEventIdWithDetails(@Param("eventId") Long eventId);
+
     @Query("SELECT r FROM EventRegistrations r WHERE r.events.id = :eventId AND r.status = :status")
     List<EventRegistrations> findByEventIdAndStatus(@Param("eventId") Long eventId, @Param("status") RegistrationStatus status);
 

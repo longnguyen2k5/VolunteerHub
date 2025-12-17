@@ -57,6 +57,16 @@ public class RegistrationController {
         return ResponseEntity.ok(registrationService.getEventRegistrations(eventId, userId));
     }
 
+    @GetMapping("/events/{eventId}/export")
+    @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
+    public ResponseEntity<byte[]> exportRegistrationsToCsv(@PathVariable Long eventId) {
+        byte[] csvData = project.backend.utils.CsvExportUtil.exportRegistrationsToCsv(registrationService.getEventRegistrationsEntity(eventId));
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=registrations_" + eventId + ".csv")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(csvData);
+    }
+
     @PutMapping("/{id}/approve")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<RegistrationResponse> approveRegistration(@PathVariable Long id) {

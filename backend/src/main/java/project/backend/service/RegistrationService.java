@@ -114,6 +114,11 @@ public class RegistrationService {
                  .collect(Collectors.toList());
     }
 
+    public List<EventRegistrations> getEventRegistrationsEntity(Long eventId) {
+        // Validation check if needed, or trust Controller
+        return registrationRepository.findByEventIdWithDetails(eventId);
+    }
+
     @Transactional
     public RegistrationResponse updateStatus(Long registrationId, RegistrationStatus status) {
         EventRegistrations registration = registrationRepository.findById(registrationId)
