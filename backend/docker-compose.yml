@@ -9,5 +9,8 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: volunteer_hub
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - volunteer_hub_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  volunteer_hub_data:
