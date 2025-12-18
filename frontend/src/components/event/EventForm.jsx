@@ -7,8 +7,10 @@ import {
   Paper,
   Typography,
   MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import { format } from "date-fns";
+import * as yup from "yup";
 
 const EventForm = ({
   initialData,
@@ -36,6 +38,33 @@ const EventForm = ({
   });
 
   const [errors, setErrors] = useState({});
+
+  // Define Yup Schema
+  const validationSchema = yup.object().shape({
+    name: yup.string().required("Tên sự kiện không được để trống").trim(),
+    category: yup.string().required("Vui lòng chọn danh mục"),
+    description: yup.string().required("Mô tả không được để trống").trim(),
+    location: yup.string().required("Địa điểm không được để trống").trim(),
+    maxParticipants: yup
+      .number()
+      .typeError("Vui lòng nhập số hợp lệ")
+      .required("Vui lòng nhập số lượng người tham gia tối đa")
+      .min(1, "Số lượng người tham gia tối đa phải ít nhất là 1")
+      .integer("Số lượng phải là số nguyên"),
+    startTime: yup
+      .date()
+      .required("Thời gian bắt đầu không được để trống")
+      .typeError("Thời gian không hợp lệ")
+      .min(new Date(), "Thời gian bắt đầu phải là thời gian tương lai"),
+    endTime: yup
+      .date()
+      .required("Thời gian kết thúc không được để trống")
+      .typeError("Thời gian không hợp lệ")
+      .min(
+        yup.ref("startTime"),
+        "Thời gian kết thúc phải sau thời gian bắt đầu"
+      ),
+  });
 
   useEffect(() => {
     if (initialData) {
@@ -70,7 +99,7 @@ const EventForm = ({
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types
+    // Clear error when user types (optional, or rely on submit)
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -79,71 +108,44 @@ const EventForm = ({
     }
   };
 
-  const validate = () => {
-    const newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Tên sự kiện không được để trống";
-    }
-
-    if (!formData.description.trim()) {
-      newErrors.description = "Mô tả không được để trống";
-    }
-
-    if (!formData.location.trim()) {
-      newErrors.location = "Địa điểm không được để trống";
-    }
-
-    if (!formData.startTime) {
-      newErrors.startTime = "Thời gian bắt đầu không được để trống";
-    } else {
-      const startDate = new Date(formData.startTime);
-      const now = new Date();
-      if (startDate < now) {
-        newErrors.startTime = "Thời gian bắt đầu phải là thời gian tương lai";
-      }
-    }
-
-    if (!formData.endTime) {
-      newErrors.endTime = "Thời gian kết thúc không được để trống";
-    } else if (formData.startTime) {
-      const startDate = new Date(formData.startTime);
-      const endDate = new Date(formData.endTime);
-      if (endDate <= startDate) {
-        newErrors.endTime = "Thời gian kết thúc phải sau thời gian bắt đầu";
-      }
-    }
-
-    if (!formData.maxParticipants) {
-      newErrors.maxParticipants = "Vui lòng nhập số lượng người tham gia tối đa";
-    } else if (formData.maxParticipants < 1) {
-      newErrors.maxParticipants = "Số lượng người tham gia tối đa phải ít nhất là 1";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      // Convert datetime-local format to ISO string for backend
+    try {
+      // Validate with Yup
+      await validationSchema.validate(formData, { abortEarly: false });
+
+      // If valid, clear errors and submit
+      setErrors({});
+
       const submitData = {
         name: formData.name.trim(),
         description: formData.description.trim(),
         location: formData.location.trim(),
         startTime: new Date(formData.startTime).toISOString(),
         endTime: new Date(formData.endTime).toISOString(),
-        maxParticipants: formData.maxParticipants ? parseInt(formData.maxParticipants) : null,
+        maxParticipants: parseInt(formData.maxParticipants),
         category: formData.category,
       };
+
       onSubmit(submitData);
+
+    } catch (err) {
+      if (err instanceof yup.ValidationError) {
+        // Transform Yup errors to object
+        const newErrors = {};
+        err.inner.forEach((error) => {
+          newErrors[error.path] = error.message;
+        });
+        setErrors(newErrors);
+      } else {
+        console.error("Validation error:", err);
+      }
     }
   };
 
   return (
     <Paper sx={{ p: 3 }}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <Stack spacing={3}>
           <TextField
             label="Tên sự kiện"
