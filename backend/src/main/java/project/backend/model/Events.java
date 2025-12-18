@@ -22,6 +22,7 @@ public class Events {
     private String name;
     private String description;
     private String location;
+    private String imageUrl;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     

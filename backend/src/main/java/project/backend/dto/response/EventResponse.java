@@ -11,6 +11,7 @@ public class EventResponse {
     private String name;
     private String description;
     private String location;
+    private String imageUrl;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer maxParticipants;

@@ -18,6 +18,8 @@ public class EventRequest {
     @Size(max = 255)
     private String location;
 
+    private String imageUrl;
+
     @NotNull(message = "Start time is required")
     private LocalDateTime startTime;
 

@@ -39,7 +39,7 @@ public class EventService {
         event.setName(request.getName());
         event.setDescription(request.getDescription());
         event.setLocation(request.getLocation());
-        event.setStartTime(request.getStartTime());
+        event.setImageUrl(request.getImageUrl());
         event.setStartTime(request.getStartTime());
         event.setEndTime(request.getEndTime());
         event.setMaxParticipants(request.getMaxParticipants());
@@ -73,6 +73,7 @@ public class EventService {
         event.setName(request.getName());
         event.setDescription(request.getDescription());
         event.setLocation(request.getLocation());
+        event.setImageUrl(request.getImageUrl());
         event.setStartTime(request.getStartTime());
         event.setEndTime(request.getEndTime());
         event.setMaxParticipants(request.getMaxParticipants());
@@ -170,6 +171,7 @@ public class EventService {
         response.setName(event.getName());
         response.setDescription(event.getDescription());
         response.setLocation(event.getLocation());
+        response.setImageUrl(event.getImageUrl());
         response.setStartTime(event.getStartTime());
         response.setEndTime(event.getEndTime());
         response.setMaxParticipants(event.getMaxParticipants());
