@@ -31,8 +31,17 @@ import EventRegistrations from "./pages/organizer/EventRegistrations";
 import EventApproval from "./pages/admin/EventApproval";
 import UserManagement from "./pages/admin/UserManagement";
 
+import { usePushNotifications } from "./hooks/usePushNotifications";
+
 function App() {
   const { user, loading } = useAuth();
+  const { subscribeToPush } = usePushNotifications();
+
+  React.useEffect(() => {
+    if (user) {
+      subscribeToPush();
+    }
+  }, [user]);
 
   if (loading) {
     return (

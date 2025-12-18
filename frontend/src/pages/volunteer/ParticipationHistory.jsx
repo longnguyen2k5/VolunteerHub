@@ -45,7 +45,7 @@ const ParticipationHistory = () => {
             APPROVED: { label: "Đã duyệt", color: "info" },
             REJECTED: { label: "Bị từ chối", color: "error" },
             COMPLETED: { label: "Hoàn thành", color: "success" },
-            CANCELED: { label: "Đã hủy", color: "default" },
+            CANCELLED: { label: "Đã hủy", color: "default" },
         };
         const item = config[status] || { label: status, color: "default" };
         return <Chip label={item.label} color={item.color} size="small" />;
