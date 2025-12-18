@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import project.backend.dto.request.CommentRequest;
 import project.backend.dto.request.PostRequest;
 import project.backend.dto.response.CommentResponse;
-import project.backend.dto.response.LikeStatusResponse;
 import project.backend.dto.response.PostResponse;
 import project.backend.service.PostService;
 
@@ -27,12 +26,43 @@ public class PostController {
     private final PostService postService;
     private final UserRepository userRepository;
 
-    // ... (omitted methods)
+    // --- Posts ---
+
+    @GetMapping("/{eventId}/posts")
+    public ResponseEntity<List<PostResponse>> getEventPosts(
+            @PathVariable Long eventId,
+            Authentication authentication) {
+        Long userId = getUserIdFromAuth(authentication);
+        // userId logic moved to getUserIdFromAuth with fallbacks
+        // Long userId = getUserIdFromAuth(authentication);
+        return ResponseEntity.ok(postService.getEventPosts(eventId, userId));
+    }
+
+    @PostMapping("/{eventId}/posts")
+    public ResponseEntity<PostResponse> createPost(
+            @PathVariable Long eventId,
+            @Valid @RequestBody PostRequest request,
+            Authentication authentication) {
+        Long userId = getUserIdFromAuth(authentication);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(postService.createPost(eventId, request, userId));
+    }
+
+    @DeleteMapping("/{eventId}/posts/{postId}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable Long eventId,
+            @PathVariable Long postId,
+            Authentication authentication) {
+        Long userId = getUserIdFromAuth(authentication);
+        boolean isAdminOrManager = isAdminOrManager(authentication);
+        postService.deletePost(eventId, postId, userId, isAdminOrManager);
+        return ResponseEntity.noContent().build();
+    }
 
     // --- Likes ---
 
     @PostMapping("/{eventId}/posts/{postId}/like")
-    public ResponseEntity<LikeStatusResponse> likePost(
+    public ResponseEntity<project.backend.dto.response.LikeStatusResponse> likePost(
             @PathVariable Long eventId,
             @PathVariable Long postId,
             Authentication authentication) {
@@ -41,7 +71,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{eventId}/posts/{postId}/like")
-    public ResponseEntity<LikeStatusResponse> unlikePost(
+    public ResponseEntity<project.backend.dto.response.LikeStatusResponse> unlikePost(
             @PathVariable Long eventId,
             @PathVariable Long postId,
             Authentication authentication) {
