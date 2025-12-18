@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Card,
+    CardMedia,
     CardContent,
     CardActions,
     Typography,
@@ -38,7 +39,6 @@ const EventCard = ({ event, registration }) => {
             COMPLETED: 'Hoàn thành',
         };
         return texts[status] || status;
-        return texts[status] || status;
     };
 
     const CATEGORY_LABELS = {
@@ -50,8 +50,20 @@ const EventCard = ({ event, registration }) => {
         OTHER: "Khác",
     };
 
+    const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1174";
+
     return (
         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardMedia
+                component="img"
+                height="140"
+                image={event.imageUrl || DEFAULT_IMAGE}
+                alt={event.name}
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_IMAGE;
+                }}
+            />
             <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
                     <Chip

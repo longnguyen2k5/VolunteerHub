@@ -31,6 +31,7 @@ const EventForm = ({
     name: "",
     description: "",
     location: "",
+    imageUrl: "",
     startTime: "",
     endTime: "",
     maxParticipants: "",
@@ -45,6 +46,7 @@ const EventForm = ({
     category: yup.string().required("Vui lòng chọn danh mục"),
     description: yup.string().required("Mô tả không được để trống").trim(),
     location: yup.string().required("Địa điểm không được để trống").trim(),
+    imageUrl: yup.string().url("Vui lòng nhập đúng định dạng URL"),
     maxParticipants: yup
       .number()
       .typeError("Vui lòng nhập số hợp lệ")
@@ -73,6 +75,7 @@ const EventForm = ({
         name: initialData.name || "",
         description: initialData.description || "",
         location: initialData.location || "",
+        imageUrl: initialData.imageUrl || "",
         startTime: initialData.startTime
           ? formatToDateTimeLocal(initialData.startTime)
           : "",
@@ -121,6 +124,7 @@ const EventForm = ({
         name: formData.name.trim(),
         description: formData.description.trim(),
         location: formData.location.trim(),
+        imageUrl: formData.imageUrl ? formData.imageUrl.trim() : "",
         startTime: new Date(formData.startTime).toISOString(),
         endTime: new Date(formData.endTime).toISOString(),
         maxParticipants: parseInt(formData.maxParticipants),
@@ -201,6 +205,17 @@ const EventForm = ({
             helperText={errors.location}
             fullWidth
             required
+            disabled={loading}
+          />
+
+          <TextField
+            label="Link Ảnh (URL)"
+            name="imageUrl"
+            value={formData.imageUrl}
+            onChange={handleChange}
+            error={!!errors.imageUrl}
+            helperText={errors.imageUrl || "Copy link ảnh từ internet vào đây"}
+            fullWidth
             disabled={loading}
           />
 
