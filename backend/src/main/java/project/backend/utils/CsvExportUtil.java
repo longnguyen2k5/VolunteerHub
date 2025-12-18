@@ -70,6 +70,39 @@ public class CsvExportUtil {
         }
     }
 
+    public static byte[] exportEventsToCsv(List<project.backend.model.Events> events) {
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+             PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8))) {
+            
+            // BOM for Excel compatibility
+            baos.write(0xEF);
+            baos.write(0xBB);
+            baos.write(0xBF);
+
+            // Header
+            writer.println("ID,Name,Manager,Location,Start Time,End Time,Status,Category,Created At");
+
+            // Data
+            for (project.backend.model.Events event : events) {
+                writer.printf("%d,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                        event.getId(),
+                        escapeSpecialCharacters(event.getName()),
+                        event.getManager() != null ? escapeSpecialCharacters(event.getManager().getFullName()) : "",
+                        escapeSpecialCharacters(event.getLocation()),
+                        event.getStartTime(),
+                        event.getEndTime(),
+                        event.getStatus(),
+                        event.getCategory(),
+                        event.getCreatedAt()
+                );
+            }
+            writer.flush();
+            return baos.toByteArray();
+        } catch (Exception e) {
+            throw new RuntimeException("Error exporting CSV: " + e.getMessage());
+        }
+    }
+
     private static String escapeSpecialCharacters(String data) {
         if (data == null) {
             return "";

@@ -93,8 +93,33 @@ public class EventController {
 
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<EventResponse>> getPendingEvents() {
-        return ResponseEntity.ok(eventService.getPendingEvents());
+    public ResponseEntity<List<EventResponse>> getAdminEvents(@RequestParam(required = false) project.backend.model.enums.EventStatus status) {
+        if (status == null) {
+            // Default to PENDING if not specified, or ALL? 
+            // Existing frontend expects PENDING logic on this path if we keep it.
+            // But let's support explicit status.
+            return ResponseEntity.ok(eventService.getPendingEvents());
+        }
+        return ResponseEntity.ok(eventService.getEventsByStatus(status));
+    }
+
+    @GetMapping("/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<byte[]> exportEventsToCsv(@RequestParam(required = false) project.backend.model.enums.EventStatus status) {
+        List<project.backend.model.Events> events;
+        if (status == null) {
+            events = eventService.getAllEventsEntity();
+        } else {
+            events = eventService.getEventsByStatusEntity(status);
+        }
+        
+        byte[] csvData = project.backend.utils.CsvExportUtil.exportEventsToCsv(events);
+        String filename = status != null ? "events_" + status.name().toLowerCase() + ".csv" : "events_all.csv";
+        
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename)
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(csvData);
     }
 
     /**

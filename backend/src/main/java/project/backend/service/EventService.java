@@ -149,6 +149,21 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    public List<EventResponse> getEventsByStatus(EventStatus status) {
+        return eventRepository.findByStatus(status)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<Events> getAllEventsEntity() {
+        return eventRepository.findAll();
+    }
+
+    public List<Events> getEventsByStatusEntity(EventStatus status) {
+        return eventRepository.findByStatus(status);
+    }
+
     public EventResponse mapToResponse(Events event) {
         EventResponse response = new EventResponse();
         response.setId(event.getId());
