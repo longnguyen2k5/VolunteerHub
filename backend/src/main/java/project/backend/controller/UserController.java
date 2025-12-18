@@ -69,4 +69,14 @@ public class UserController {
                 .body(csvData);
     }
 
+    /**
+     * ADMIN: Create new Admin
+     */
+    @PostMapping("/admin/users/create-admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<project.backend.dto.response.MessageResponse> createAdmin(@RequestBody @jakarta.validation.Valid project.backend.dto.request.RegisterRequest request) {
+        userService.createAdmin(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new project.backend.dto.response.MessageResponse("Admin created successfully"));
+    }
 }

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     public UserResponse getUserInfo (String email) {
         Users users = userRepository.findUsersByEmail(email).orElse(null);
@@ -62,5 +63,24 @@ public class UserService {
         user.setIsLocked(false);
         userRepository.save(user);
         return UserResponse.success(user, "User unlocked successfully");
+    }
+    /**
+     * ADMIN: Create another Admin account
+     */
+    @Transactional
+    public Users createAdmin(project.backend.dto.request.RegisterRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new project.backend.exception.BadRequestException("Email already exists");
+        }
+
+        Users user = new Users();
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        // Note: PasswordEncoder needs to be injected. Since checking existing fields, let's inject it.
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(project.backend.model.enums.UserRole.ADMIN);
+        user.setIsLocked(false);
+
+        return userRepository.save(user);
     }
 }
