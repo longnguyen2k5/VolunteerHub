@@ -13,6 +13,7 @@ import {
     LocationOn,
     CalendarToday,
     People,
+    Person,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
@@ -87,6 +88,13 @@ const EventCard = ({ event, registration }) => {
                         ? `${event.description.substring(0, 100)}...`
                         : event.description}
                 </Typography>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Person fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
+                    <Typography variant="body2" color="text.secondary">
+                        {event.managerName || "Ẩn danh"}
+                    </Typography>
+                </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                     <LocationOn fontSize="small" sx={{ mr: 1, color: 'text.secondary' }} />
