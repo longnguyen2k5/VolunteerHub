@@ -72,6 +72,13 @@ const Header = () => {
               </Button>
             )}
 
+            {/* VOLUNTEER only */}
+            {user.role === "VOLUNTEER" && (
+              <Button color="inherit" component={Link} to="/my-registrations">
+                Lịch sử tham gia
+              </Button>
+            )}
+
             {/* ADMIN only */}
             {user.role === "ADMIN" && (
               <>

@@ -19,6 +19,7 @@ import Layout from "./components/common/Layout";
 import EventBrowse from "./pages/volunteer/EventBrowse";
 import EventDetailPage from "./pages/volunteer/EventDetailPage";
 import EventChannel from "./pages/volunteer/EventChannel";
+import ParticipationHistory from "./pages/volunteer/ParticipationHistory";
 
 // Organizer Pages
 import EventList from "./pages/organizer/EventList";
@@ -130,6 +131,16 @@ function App() {
           element={
             <RoleGuard allowedRoles={["ADMIN"]}>
               <UserManagement />
+            </RoleGuard>
+          }
+        />
+
+        {/* VOLUNTEER Routes */}
+        <Route
+          path="my-registrations"
+          element={
+            <RoleGuard allowedRoles={["VOLUNTEER"]}>
+              <ParticipationHistory />
             </RoleGuard>
           }
         />
