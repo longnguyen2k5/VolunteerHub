@@ -27,8 +27,6 @@ const kenburns = {
 const Home = () => {
     const navigate = useNavigate();
 
-    // --- BẮT ĐẦU PHẦN THÊM MỚI ---
-
     // 3. TẠO STATE ĐỂ THEO DÕI SLIDE HIỆN TẠI
     const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -43,54 +41,24 @@ const Home = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // --- KẾT THÚC PHẦN THÊM MỚI ---
-
-    const features = [
-        {
-            icon: <Event sx={{ fontSize: 60, color: 'primary.main' }} />,
-            title: 'Sự kiện đa dạng',
-            description: 'Tham gia các hoạt động tình nguyện ý nghĩa: trồng cây, dọn rác, từ thiện...'
-        },
-        {
-            icon: <Handshake sx={{ fontSize: 60, color: 'secondary.main' }} />,
-            title: 'Cộng đồng nhiệt huyết',
-            description: 'Kết nối với hàng nghìn tình nguyện viên trên khắp cả nước'
-        },
-        {
-            icon: <Group sx={{ fontSize: 60, color: 'success.main' }} />,
-            title: 'Quản lý dễ dàng',
-            description: 'Công cụ tổ chức và quản lý sự kiện chuyên nghiệp, hiệu quả'
-        },
-        {
-            icon: <Link sx={{ fontSize: 60, color: 'info.main' }} />,
-            title: 'Kết nối hiệu quả',
-            description: 'Cầu nối giữa tổ chức và tình nguyện viên, giúp tìm kiếm và tham gia sự kiện'
-        },
-    ];
 
     return (
         <Box>
-            {/* Hero Section - ĐÃ CẬP NHẬT */}
+            {/* Hero Section */}
             <Box
                 sx={{
-                    position: 'relative', // Cần thiết để chứa các ảnh absolute
+                    position: 'relative',
                     color: 'white',
-                    overflow: 'hidden', // Ẩn phần ảnh bị zoom ra ngoài
-                    ...kenburns, // Áp dụng định nghĩa @keyframes
-
-                    // --- PHẦN SỬA ĐỔI CHIỀU CAO ---
-                    // Xóa 'py: 10' và thay bằng:
-                    minHeight: '80vh', // Đặt chiều cao tối thiểu là 60% chiều cao màn hình
-
-                    // Thêm các thuộc tính flexbox để căn giữa nội dung
+                    overflow: 'hidden',
+                    ...kenburns,
+                    minHeight: '90vh',
                     display: 'flex',
-                    alignItems: 'center',    // Căn giữa theo chiều dọc
-                    justifyContent: 'center', // Căn giữa theo chiều ngang
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     textAlign: 'center',
-                    // --- KẾT THÚC SỬA ĐỔI ---
                 }}
             >
-                {/* 5. LỚP SLIDER ẢNH (NỀN) */}
+                {/* Background Slider */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -98,7 +66,7 @@ const Home = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        zIndex: 0, // Nằm dưới cùng
+                        zIndex: 0,
                     }}
                 >
                     {images.map((image, index) => (
@@ -113,24 +81,16 @@ const Home = () => {
                                 left: 0,
                                 width: '100%',
                                 height: '100%',
-                                objectFit: 'cover', // Đảm bảo ảnh che phủ toàn bộ
-
-                                // HIỆU ỨNG FADE (OPACITY)
+                                objectFit: 'cover',
                                 opacity: index === currentSlide ? 1 : 0,
-                                transition: 'opacity 1.5s ease-in-out', // Thời gian chuyển mờ
-
-                                // HIỆU ỨNG KEN BURNS (ZOOM)
-                                // Chỉ áp dụng cho slide đang active
-                                animation:
-                                    index === currentSlide
-                                        ? 'kenburns 7s ease-in-out infinite alternate' // Chạy 7s, lặp lại và đảo ngược (zoom ra/vào)
-                                        : 'none',
+                                transition: 'opacity 1.5s ease-in-out',
+                                animation: index === currentSlide ? 'kenburns 10s ease-in-out infinite alternate' : 'none',
                             }}
                         />
                     ))}
                 </Box>
 
-                {/* 6. LỚP PHỦ MỜ (ĐỂ CHỮ DỄ ĐỌC HƠN) */}
+                {/* Dark Overlay Gradient */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -138,46 +98,89 @@ const Home = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        bgcolor: 'rgba(0, 0, 0, 0.4)', // Lớp phủ đen 40%
-                        zIndex: 1, // Nằm trên ảnh
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 50%, rgba(18,18,18,1) 100%)',
+                        zIndex: 1,
                     }}
                 />
 
-                {/* 7. LỚP NỘI DUNG (TEXT VÀ BUTTONS) */}
-                <Container
-                    sx={{
-                        position: 'relative', // Phải là relative
-                        zIndex: 2, // Nằm trên lớp phủ
-                    }}
-                >
-                    <Typography variant="h2" gutterBottom>
+                {/* Hero Content */}
+                <Container sx={{ position: 'relative', zIndex: 2 }}>
+                    <Typography
+                        variant="h1"
+                        sx={{
+                            fontWeight: 800,
+                            fontSize: { xs: '3rem', md: '5rem' },
+                            mb: 2,
+                            // Fallback color
+                            color: '#FF8E53',
+                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                        }}
+                    >
                         VolunteerHub
                     </Typography>
-                    <Typography variant="h5" sx={{ mb: 4, opacity: 0.9 }}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            mb: 6,
+                            opacity: 1,
+                            fontWeight: 400,
+                            maxWidth: '800px',
+                            mx: 'auto',
+                            lineHeight: 1.6,
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                        }}
+                    >
                         Nhiệt huyết tình nguyện viên - Kết nối yêu thương
+                        <br />
+                        Chung tay xây dựng cộng đồng bền vững
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+
+                    <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center' }}>
                         <Button
-                            variant="outlined"
+                            // REMOVED conflicted component={Link}
+                            onClick={() => navigate('/register')}
+                            variant="contained"
                             size="large"
                             sx={{
-                                color: 'white',
-                                borderColor: 'white',
-                                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' } // Thêm hiệu ứng hover
+                                px: 5,
+                                py: 1.5,
+                                borderRadius: '50px',
+                                fontSize: '1.1rem',
+                                fontWeight: 600,
+                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                                transition: 'all 0.3s',
+                                '&:hover': {
+                                    transform: 'translateY(-3px)',
+                                    boxShadow: '0 6px 15px 4px rgba(255, 105, 135, .4)',
+                                }
                             }}
-                            onClick={() => navigate('/register')}
                         >
                             Đăng ký ngay
                         </Button>
                         <Button
+                            onClick={() => navigate('/events')}
                             variant="outlined"
                             size="large"
                             sx={{
+                                px: 5,
+                                py: 1.5,
+                                borderRadius: '50px',
+                                fontSize: '1.1rem',
+                                fontWeight: 600,
                                 color: 'white',
-                                borderColor: 'white',
-                                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.1)' } // Thêm hiệu ứng hover
+                                borderColor: 'rgba(255,255,255,0.8)',
+                                borderWidth: '2px',
+                                backdropFilter: 'blur(5px)',
+                                '&:hover': {
+                                    borderColor: 'white',
+                                    bgcolor: 'rgba(255,255,255,0.1)',
+                                    transform: 'translateY(-3px)',
+                                }
                             }}
-                            onClick={() => navigate('/events')}
                         >
                             Xem sự kiện
                         </Button>
@@ -185,50 +188,169 @@ const Home = () => {
                 </Container>
             </Box>
 
-            {/* Features Section */}
-            <Container sx={{ py: 8 }}>
-                <Typography variant="h4" align="center" gutterBottom>
-                    Tại sao chọn VolunteerHub?
-                </Typography>
-                <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 6 }}>
-                    Nền tảng tình nguyện hàng đầu Việt Nam
-                </Typography>
+            {/* Impact Stats Section */}
+            <Box sx={{ bgcolor: '#1a1a1a', py: 6, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <Container>
+                    <Grid container spacing={4} justifyContent="center" sx={{ textAlign: 'center' }}>
+                        {[
+                            { number: '1.000+', label: 'Tình nguyện viên' },
+                            { number: '500+', label: 'Sự kiện đã tổ chức' },
+                            { number: '20.000+', label: 'Giờ đóng góp' },
+                            { number: '50+', label: 'Đối tác' }
+                        ].map((stat, index) => (
+                            <Grid item xs={6} md={3} key={index}>
+                                <Typography variant="h3" sx={{ fontWeight: 700, color: '#FE6B8B' }}>
+                                    {stat.number}
+                                </Typography>
+                                <Typography variant="body1" sx={{ color: 'gray' }}>
+                                    {stat.label}
+                                </Typography>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
 
-                <Grid container spacing={4} justifyContent="center">
-                    {features.map((feature, index) => (
-                        <Grid item xs={12} sm={6} key={index}>
-                            <Card sx={{ height: '100%', textAlign: 'center', p: 2 }}>
-                                <CardContent>
-                                    <Box sx={{ mb: 2 }}>
-                                        {feature.icon}
-                                    </Box>
-                                    <Typography variant="h6" gutterBottom>
-                                        {feature.title}
+            {/* Fields of Action Section */}
+            <Box sx={{ py: 10, bgcolor: '#121212', position: 'relative' }}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '10%',
+                    right: '-10%',
+                    width: '600px',
+                    height: '600px',
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(255,142,83,0.05) 0%, rgba(0,0,0,0) 70%)',
+                }} />
+
+                <Container>
+                    <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 1 }}>
+                        Các lĩnh vực <span style={{ color: '#FF8E53' }}>hoạt động</span>
+                    </Typography>
+                    <Typography variant="h6" align="center" sx={{ mb: 8, color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                        Chúng tôi kết nối bạn với những sứ mệnh ý nghĩa nhất
+                    </Typography>
+
+                    <Grid container spacing={4} justifyContent="center">
+                        {[
+                            { title: 'Bảo vệ Môi trường', icon: '🌱', desc: 'Trồng cây, dọn rác, tái chế và bảo vệ thiên nhiên.' },
+                            { title: 'Hỗ trợ Giáo dục', icon: '📚', desc: 'Dạy học, quyên góp sách và hỗ trợ trẻ em nghèo.' },
+                            { title: 'Cứu trợ Xã hội', icon: '🤝', desc: 'Giúp đỡ người già neo đơn, người vô gia cư và cứu trợ thiên tai.' },
+                            { title: 'Chăm sóc Sức khỏe', icon: '⚕️', desc: 'Hiến máu nhân đạo, tư vấn sức khỏe cộng đồng.' },
+                        ].map((item, index) => (
+                            <Grid item xs={12} sm={6} md={3} key={index}>
+                                <Card
+                                    sx={{
+                                        height: '100%',
+                                        textAlign: 'center',
+                                        p: 3,
+                                        bgcolor: 'rgba(255, 255, 255, 0.03)',
+                                        backdropFilter: 'blur(20px)',
+                                        borderRadius: '24px',
+                                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                                        color: 'white',
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        '&:hover': {
+                                            transform: 'translateY(-8px)',
+                                            bgcolor: 'rgba(255, 255, 255, 0.06)',
+                                            border: '1px solid #FE6B8B',
+                                        }
+                                    }}
+                                >
+                                    <CardContent>
+                                        <Typography variant="h1" sx={{ mb: 2, fontSize: '4rem' }}>
+                                            {item.icon}
+                                        </Typography>
+                                        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                                            {item.title}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.6 }}>
+                                            {item.desc}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
+
+            {/* How It Works Section */}
+            <Box sx={{ py: 10, bgcolor: '#0f0f0f' }}>
+                <Container>
+                    <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 6 }}>
+                        Quy trình tham gia
+                    </Typography>
+                    <Grid container spacing={4} justifyContent="center" sx={{ position: 'relative' }}>
+                        {[
+                            { step: '01', title: 'Đăng ký tài khoản', desc: 'Tạo hồ sơ tình nguyện viên của bạn chỉ trong 30 giây.' },
+                            { step: '02', title: 'Tìm kiếm sự kiện', desc: 'Lựa chọn hoạt động phù hợp với sở thích và thời gian.' },
+                            { step: '03', title: 'Tham gia', desc: 'Góp sức mình vào các hoạt động thực tế đầy ý nghĩa.' },
+                            { step: '04', title: 'Nhận chứng nhận', desc: 'Được ghi nhận đóng góp và nhận giấy chứng nhận Online.' }
+                        ].map((step, index) => (
+                            <Grid item xs={12} sm={6} md={3} key={index}>
+                                <Box sx={{
+                                    p: 3,
+                                    borderLeft: '2px solid #333',
+                                    height: '100%',
+                                    position: 'relative',
+                                    transition: 'all 0.3s',
+                                    '&:hover': {
+                                        borderLeftColor: '#FF8E53',
+                                        bgcolor: 'rgba(255,255,255,0.02)'
+                                    }
+                                }}>
+                                    <Typography variant="h2" sx={{ color: 'rgba(255,255,255,0.1)', fontWeight: 900, position: 'absolute', top: 0, right: 20 }}>
+                                        {step.step}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {feature.description}
+                                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 700, mb: 1, position: 'relative' }}>
+                                        {step.title}
                                     </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
-                </Grid>
-            </Container>
+                                    <Typography variant="body2" sx={{ color: 'gray' }}>
+                                        {step.desc}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
 
             {/* CTA Section */}
-            <Box sx={{ bgcolor: 'grey.100', py: 8 }}>
-                <Container>
+            <Box sx={{
+                py: 12,
+                background: 'linear-gradient(135deg, #1e1e1e 0%, #000000 100%)',
+                color: 'white',
+                borderTop: '1px solid rgba(255,255,255,0.05)'
+            }}>
+                <Container maxWidth="md">
                     <Box sx={{ textAlign: 'center' }}>
-                        <Typography variant="h4" gutterBottom>
+                        <Typography variant="h3" gutterBottom sx={{ fontWeight: 800 }}>
                             Sẵn sàng tạo sự thay đổi?
                         </Typography>
-                        <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                            Hãy tham gia cùng chúng tôi ngay hôm nay!
+                        <Typography variant="h6" sx={{ mb: 5, color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                            Tham gia cùng hàng nghìn tình nguyện viên khác và bắt đầu hành trình ý nghĩa của bạn ngay hôm nay.
                         </Typography>
                         <Button
                             variant="contained"
                             size="large"
                             onClick={() => navigate('/register')}
+                            sx={{
+                                px: 6,
+                                py: 2,
+                                borderRadius: '50px',
+                                fontSize: '1.2rem',
+                                fontWeight: 700,
+                                background: 'white',
+                                color: 'black',
+                                transition: 'all 0.3s',
+                                '&:hover': {
+                                    transform: 'scale(1.05)',
+                                    boxShadow: '0 0 30px rgba(255,255,255,0.3)',
+                                    bgcolor: '#f5f5f5'
+                                }
+                            }}
                         >
                             Bắt đầu ngay
                         </Button>
