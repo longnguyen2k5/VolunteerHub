@@ -26,6 +26,8 @@ CREATE TABLE events (
                         end_time TIMESTAMP NOT NULL COMMENT 'Thời gian kết thúc sự kiện',
                         status ENUM('PENDING_APPROVAL', 'APPROVED', 'REJECTED')
                             NOT NULL DEFAULT 'PENDING_APPROVAL' COMMENT 'Trạng thái sự kiện',
+                        category ENUM('EDUCATION', 'ENVIRONMENT', 'HEALTH', 'COMMUNITY', 'EMERGENCY_RELIEF', 'OTHER') DEFAULT 'OTHER' COMMENT 'Danh mục sự kiện',
+                        max_participants INT DEFAULT 100 COMMENT 'Số lượng người tham gia tối đa',
                         manager_id BIGINT NOT NULL COMMENT 'ID của người quản lý sự kiện',
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -97,3 +99,16 @@ CREATE TABLE likes (
                            ON DELETE CASCADE ON UPDATE CASCADE,
                        CONSTRAINT uq_likes UNIQUE (user_id, post_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Lưu trữ lượt thích cho các bài đăng';
+
+
+-- ========================
+-- 6. BẢNG PUSH_SUBSCRIPTIONS (Web Push Notifications)
+-- ========================
+CREATE TABLE push_subscriptions (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    endpoint VARCHAR(2048),
+    p256dh VARCHAR(255),
+    auth VARCHAR(255),
+    CONSTRAINT fk_push_subscriptions_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Lưu trữ thông tin đăng ký nhận thông báo đẩy (Web Push)';

@@ -29,6 +29,7 @@ public class EventRegistrations {
     @JoinColumn(name = "event_id")
     private Events events;
 
+    @Enumerated(EnumType.STRING)
     private RegistrationStatus status;
     private LocalDateTime registeredAt;
     private LocalDateTime updatedAt;

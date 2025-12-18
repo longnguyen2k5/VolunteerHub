@@ -66,6 +66,8 @@ public class NotificationService {
         pushSubscriptionRepository.deleteByEndpoint(endpoint);
     }
 
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+
     @Async
     public void sendPushNotification(Long userId, String title, String message) {
         List<PushSubscription> subscriptions = pushSubscriptionRepository.findByUserId(userId);
@@ -73,19 +75,26 @@ public class NotificationService {
             return;
         }
 
-        String payload = String.format("{\"title\": \"%s\", \"body\": \"%s\"}", title, message);
+        try {
+            java.util.Map<String, String> payloadMap = new java.util.HashMap<>();
+            payloadMap.put("title", title);
+            payloadMap.put("body", message);
+            String payload = objectMapper.writeValueAsString(payloadMap);
 
-        for (PushSubscription sub : subscriptions) {
-            try {
-                Subscription webPushSub = new Subscription(sub.getEndpoint(), new Subscription.Keys(sub.getP256dh(), sub.getAuth()));
-                Notification notification = new Notification(webPushSub, payload);
-                pushService.send(notification);
-            } catch (Exception e) {
-                log.error("Error sending push notification: {}", e.getMessage());
-                if (e.getMessage().contains("410")) {
-                    pushSubscriptionRepository.delete(sub);
+            for (PushSubscription sub : subscriptions) {
+                try {
+                    Subscription webPushSub = new Subscription(sub.getEndpoint(), new Subscription.Keys(sub.getP256dh(), sub.getAuth()));
+                    Notification notification = new Notification(webPushSub, payload);
+                    pushService.send(notification);
+                } catch (Exception e) {
+                    log.error("Error sending push notification: {}", e.getMessage());
+                    if (e.getMessage() != null && e.getMessage().contains("410")) {
+                        pushSubscriptionRepository.delete(sub);
+                    }
                 }
             }
+        } catch (Exception e) {
+             log.error("Error creating push notification payload: {}", e.getMessage());
         }
     }
 }
