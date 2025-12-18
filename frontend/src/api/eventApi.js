@@ -95,4 +95,16 @@ export const eventAPI = {
   rejectEvent: (id) => {
     return axiosInstance.put(`/events/${id}/reject`);
   },
+
+  /**
+   * ADMIN: Export events to CSV (optional status filter)
+   */
+  exportEvents: async (status) => {
+    const params = status ? { status } : {};
+    const response = await axiosInstance.get("/events/export", {
+      params,
+      responseType: 'blob',
+    });
+    return response.data;
+  },
 };

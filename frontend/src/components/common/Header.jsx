@@ -66,7 +66,7 @@ const Header = () => {
             </Button>
 
             {/* EVENT_MANAGER only */}
-            {(user.role === "EVENT_MANAGER" || user.role === "ADMIN") && (
+            {user.role === "EVENT_MANAGER" && (
               <Button color="inherit" component={Link} to="/events/manage">
                 Quản lý sự kiện
               </Button>
