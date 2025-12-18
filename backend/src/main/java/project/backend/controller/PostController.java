@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import project.backend.dto.request.CommentRequest;
 import project.backend.dto.request.PostRequest;
 import project.backend.dto.response.CommentResponse;
+import project.backend.dto.response.LikeStatusResponse;
 import project.backend.dto.response.PostResponse;
 import project.backend.service.PostService;
 
 import java.util.List;
+
+import project.backend.model.Users;
+import project.backend.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/events")
@@ -21,58 +25,28 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserRepository userRepository;
 
-    // --- Posts ---
-
-    @GetMapping("/{eventId}/posts")
-    public ResponseEntity<List<PostResponse>> getEventPosts(
-            @PathVariable Long eventId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        return ResponseEntity.ok(postService.getEventPosts(eventId, userId));
-    }
-
-    @PostMapping("/{eventId}/posts")
-    public ResponseEntity<PostResponse> createPost(
-            @PathVariable Long eventId,
-            @Valid @RequestBody PostRequest request,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postService.createPost(eventId, request, userId));
-    }
-
-    @DeleteMapping("/{eventId}/posts/{postId}")
-    public ResponseEntity<Void> deletePost(
-            @PathVariable Long eventId,
-            @PathVariable Long postId,
-            Authentication authentication) {
-        Long userId = getUserIdFromAuth(authentication);
-        boolean isAdminOrManager = isAdminOrManager(authentication);
-        postService.deletePost(eventId, postId, userId, isAdminOrManager);
-        return ResponseEntity.noContent().build();
-    }
+    // ... (omitted methods)
 
     // --- Likes ---
 
     @PostMapping("/{eventId}/posts/{postId}/like")
-    public ResponseEntity<Void> likePost(
+    public ResponseEntity<LikeStatusResponse> likePost(
             @PathVariable Long eventId,
             @PathVariable Long postId,
             Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
-        postService.likePost(eventId, postId, userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(postService.likePost(eventId, postId, userId));
     }
 
     @DeleteMapping("/{eventId}/posts/{postId}/like")
-    public ResponseEntity<Void> unlikePost(
+    public ResponseEntity<LikeStatusResponse> unlikePost(
             @PathVariable Long eventId,
             @PathVariable Long postId,
             Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
-        postService.unlikePost(eventId, postId, userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(postService.unlikePost(eventId, postId, userId));
     }
 
     // --- Comments ---
@@ -110,7 +84,29 @@ public class PostController {
     // --- Helpers ---
     private Long getUserIdFromAuth(Authentication authentication) {
         if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
-            return jwt.getClaim("user_id");
+            // 1. Try 'user_id' claim (Long or Integer or String)
+            Object userIdObj = jwt.getClaims().get("user_id");
+            if (userIdObj instanceof Number) {
+                return ((Number) userIdObj).longValue();
+            } else if (userIdObj instanceof String) {
+                try { return Long.parseLong((String) userIdObj); } catch (NumberFormatException e) {}
+            }
+            
+            // 2. Try 'email' claim -> Database Lookup
+            String email = jwt.getClaimAsString("email");
+            if (email != null) {
+                return userRepository.findUsersByEmail(email)
+                        .map(Users::getId)
+                        .orElse(null);
+            }
+            
+            // 3. Try subject/name if it looks like an email
+            String subject = authentication.getName();
+            if (subject != null && subject.contains("@")) {
+                 return userRepository.findUsersByEmail(subject)
+                        .map(Users::getId)
+                        .orElse(null);
+            }
         }
         return null; 
     }

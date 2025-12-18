@@ -24,5 +24,7 @@ public class PostResponse {
     // Statistics
     private int likeCount;
     private int commentCount;
+    
+    @com.fasterxml.jackson.annotation.JsonProperty("isLikedByCurrentUser")
     private boolean isLikedByCurrentUser;
 }
