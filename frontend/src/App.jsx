@@ -30,6 +30,7 @@ import EventRegistrations from "./pages/organizer/EventRegistrations";
 // Admin Pages
 import EventApproval from "./pages/admin/EventApproval";
 import UserManagement from "./pages/admin/UserManagement";
+import CreateAdmin from "./pages/admin/CreateAdmin";
 
 import { usePushNotifications } from "./hooks/usePushNotifications";
 
@@ -140,6 +141,15 @@ function App() {
           element={
             <RoleGuard allowedRoles={["ADMIN"]}>
               <UserManagement />
+            </RoleGuard>
+          }
+        />
+
+        <Route
+          path="admin/users/create"
+          element={
+            <RoleGuard allowedRoles={["ADMIN"]}>
+              <CreateAdmin />
             </RoleGuard>
           }
         />

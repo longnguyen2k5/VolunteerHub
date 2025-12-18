@@ -88,6 +88,9 @@ const Header = () => {
                 <Button color="inherit" component={Link} to="/admin/users">
                   Quản lý users
                 </Button>
+                <Button color="inherit" component={Link} to="/admin/users/create">
+                  Tạo Admin
+                </Button>
               </>
             )}
 

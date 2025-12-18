@@ -39,7 +39,8 @@ const UserManagement = () => {
 
   const handleExport = async () => {
     try {
-      const blob = await exportUsers();
+      const response = await exportUsers();
+      const blob = response.data;
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -58,8 +59,9 @@ const UserManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      const data = await getAllUsers();
-      setUsers(data || []);
+      setLoading(true);
+      const response = await getAllUsers();
+      setUsers(response.data || []);
     } catch (error) {
       toast.error("Không thể tải danh sách người dùng");
       console.error("Error loading users:", error);

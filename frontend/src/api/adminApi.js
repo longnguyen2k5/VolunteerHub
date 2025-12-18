@@ -1,35 +1,35 @@
-import axiosInstance from "./axiosConfig";
+import axiosClient from './axiosConfig';
 
-/**
- * ADMIN: Get all users
- */
-export const getAllUsers = async () => {
-  const response = await axiosInstance.get("/admin/users");
-  return response.data;
+
+
+export const getAllUsers = () => {
+  return axiosClient.get('/admin/users');
 };
 
-/**
- * ADMIN: Lock a user account
- */
-export const lockUser = async (userId) => {
-  const response = await axiosInstance.put(`/admin/users/${userId}/lock`);
-  return response.data;
+export const lockUser = (userId) => {
+  return axiosClient.put(`/admin/users/${userId}/lock`);
 };
 
-/**
- * ADMIN: Unlock a user account
- */
-export const unlockUser = async (userId) => {
-  const response = await axiosInstance.put(`/admin/users/${userId}/unlock`);
-  return response.data;
+export const unlockUser = (userId) => {
+  return axiosClient.put(`/admin/users/${userId}/unlock`);
 };
 
-/**
- * ADMIN: Export users to CSV
- */
-export const exportUsers = async () => {
-  const response = await axiosInstance.get("/admin/users/export", {
-    responseType: 'blob',
+export const exportUsers = () => {
+  return axiosClient.get('/admin/users/export', {
+    responseType: 'blob'
   });
-  return response.data;
 };
+
+export const createAdmin = (data) => {
+  return axiosClient.post('/admin/users/create-admin', data);
+};
+
+const adminApi = {
+  getAllUsers,
+  lockUser,
+  unlockUser,
+  exportUsers,
+  createAdmin
+};
+
+export default adminApi;
