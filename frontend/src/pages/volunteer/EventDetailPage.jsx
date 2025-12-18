@@ -258,7 +258,7 @@ const EventDetailPage = () => {
                             </Typography>
 
                             {/* Channel Button */}
-                            {event.status === 'APPROVED' && (myRegistration?.status === 'APPROVED' || myRegistration?.status === 'COMPLETED') && (
+                            {event.status === 'APPROVED' && ((myRegistration?.status === 'APPROVED' || myRegistration?.status === 'COMPLETED') || (user?.id === event.managerId)) && (
                                 <Box sx={{ mt: 3 }}>
                                     <Button
                                         fullWidth

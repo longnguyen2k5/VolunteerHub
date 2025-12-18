@@ -57,6 +57,7 @@ const EventChannel = () => {
                 postAPI.getEventPosts(id)
             ]);
             setEvent(eventRes.data);
+
             setPosts(postsRes.data);
         } catch (error) {
             console.error("Error fetching channel data:", error);
@@ -91,7 +92,7 @@ const EventChannel = () => {
     };
 
     const handleLikePost = async (postId, currentLikeStatus) => {
-        // Optimistic update
+        // Optimistic update (providing instant feedback)
         const updatedPosts = posts.map(p => {
             if (p.id === postId) {
                 return {
@@ -102,17 +103,36 @@ const EventChannel = () => {
             }
             return p;
         });
-        setPosts(updatedPosts);
+        setPosts(updatedPosts); // Show optimistic state immediately
 
         try {
+            let response;
             if (currentLikeStatus) {
-                await postAPI.unlikePost(id, postId);
+                console.log("Calling API: UNLIKE");
+                response = await postAPI.unlikePost(id, postId);
             } else {
-                await postAPI.likePost(id, postId);
+                console.log("Calling API: LIKE");
+                response = await postAPI.likePost(id, postId);
             }
+
+            // Authoritative Update from Server
+            const { isLiked, likeCount } = response.data;
+
+            setPosts(currentPosts => currentPosts.map(p => {
+                if (p.id === postId) {
+                    return {
+                        ...p,
+                        isLikedByCurrentUser: isLiked, // Use server truth
+                        likeCount: likeCount           // Use server truth
+                    };
+                }
+                return p;
+            }));
+
         } catch (error) {
-            // Revert on error
+            console.error("API Failed", error);
             toast.error('Thao tác thất bại');
+            // Revert state on error (reload from server)
             fetchData();
         }
     };
