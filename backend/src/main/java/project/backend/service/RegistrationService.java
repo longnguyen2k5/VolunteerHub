@@ -1,6 +1,7 @@
 package project.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.dto.response.RegistrationResponse;
@@ -20,11 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RegistrationService {
 
     private final RegistrationRepository registrationRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public RegistrationResponse registerForEvent(Long eventId, Long userId) {
@@ -138,6 +141,31 @@ public class RegistrationService {
         }
 
         registration.setStatus(status);
-        return RegistrationResponse.fromEntity(registrationRepository.save(registration));
+        EventRegistrations saved = registrationRepository.save(registration);
+        
+        // Notify User
+        try {
+            String title = "Cập nhật trạng thái đăng ký";
+            String message = String.format("Sự kiện '%s': Trạng thái mới là %s.", 
+                    registration.getEvents().getName(), status.name());
+                    
+            if (status == RegistrationStatus.APPROVED) {
+                title = "Đăng ký thành công!";
+                message = String.format("Chúc mừng! Bạn đã được duyệt tham gia sự kiện '%s'.", registration.getEvents().getName());
+            } else if (status == RegistrationStatus.REJECTED) {
+                 title = "Đăng ký bị từ chối";
+                 message = String.format("Rất tiếc, đăng ký tham gia sự kiện '%s' của bạn đã bị từ chối.", registration.getEvents().getName());
+            } else if (status == RegistrationStatus.COMPLETED) {
+                 title = "Hoàn thành sự kiện";
+                 message = String.format("Bạn đã hoàn thành tham gia sự kiện '%s'.", registration.getEvents().getName());
+            }
+
+            notificationService.sendPushNotification(registration.getUser().getId(), title, message);
+        } catch (Exception e) {
+            // Log but don't fail the transaction
+            log.error("Failed to send push notification: {}", e.getMessage());
+        }
+
+        return RegistrationResponse.fromEntity(saved);
     }
 }
