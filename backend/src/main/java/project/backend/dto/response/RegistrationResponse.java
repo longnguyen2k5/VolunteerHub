@@ -19,6 +19,10 @@ public class RegistrationResponse {
     private String userName;
     private String status;
     private LocalDateTime registeredAt;
+    
+    // New fields for Participation History
+    private LocalDateTime eventStartTime;
+    private String eventLocation;
 
     public static RegistrationResponse fromEntity(EventRegistrations entity) {
         return RegistrationResponse.builder()
@@ -29,6 +33,8 @@ public class RegistrationResponse {
                 .userName(entity.getUser().getFullName())
                 .status(entity.getStatus().name())
                 .registeredAt(entity.getRegisteredAt())
+                .eventStartTime(entity.getEvents().getStartTime())
+                .eventLocation(entity.getEvents().getLocation())
                 .build();
     }
 }
