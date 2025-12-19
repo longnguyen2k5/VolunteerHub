@@ -29,6 +29,6 @@ public interface RegistrationRepository extends JpaRepository<EventRegistrations
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM EventRegistrations r WHERE r.events.id = :eventId AND r.user.id = :userId")
     Boolean existsByEventIdAndUserId(@Param("eventId") Long eventId, @Param("userId") Long userId);
 
-    @Query("SELECT COUNT(r) FROM EventRegistrations r WHERE r.events.id = :eventId AND r.status = project.backend.model.enums.RegistrationStatus.APPROVED")
+    @Query("SELECT COUNT(r) FROM EventRegistrations r WHERE r.events.id = :eventId AND (r.status = project.backend.model.enums.RegistrationStatus.APPROVED OR r.status = project.backend.model.enums.RegistrationStatus.COMPLETED)")
     Long countApprovedByEventId(@Param("eventId") Long eventId);
 }
