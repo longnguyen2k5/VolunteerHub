@@ -40,7 +40,7 @@ INSERT IGNORE INTO users (full_name, email, password, role, is_locked, created_a
 INSERT IGNORE INTO events (name, description, location, start_time, end_time, status, category, max_participants, manager_id, created_at) VALUES
 
 -- HEALTH
-('Hiến máu: Giọt hồng Đất Việt', 'Hiến máu nhân đạo đợt 1 năm 2025.', 'Viện Huyết học TW', DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 26 HOUR), 'APPROVED', 'HEALTH', 200, 2, NOW()),
+('Hiến máu: Giọt hồng Đất Việt', 'Hiến máu nhân đạo đợt 1 năm 2025.', 'Viện Huyết học TW', DATE_ADD(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 50 HOUR), 'APPROVED', 'HEALTH', 200, 2, NOW()),
 ('Tư vấn sức khỏe cộng đồng', 'Đội ngũ bác sĩ BV Bạch Mai tư vấn miễn phí.', 'Công viên Thống Nhất', DATE_ADD(NOW(), INTERVAL 5 DAY), DATE_ADD(NOW(), INTERVAL 125 HOUR), 'APPROVED', 'HEALTH', 100, 2, NOW()),
 ('Chạy bộ gây quỹ: Beat Cancer', 'Giải chạy marathon gây quỹ hỗ trợ bệnh nhân ung thư.', 'Hồ Hoàn Kiếm', DATE_ADD(NOW(), INTERVAL 20 DAY), DATE_ADD(NOW(), INTERVAL 484 HOUR), 'PENDING_APPROVAL', 'HEALTH', 1000, 2, NOW()),
 
