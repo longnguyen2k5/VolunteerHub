@@ -12,6 +12,10 @@ import {
 import { format } from "date-fns";
 import * as yup from "yup";
 import { useThemeContext } from "../../context/ThemeContext";
+import { CloudUpload } from "@mui/icons-material";
+import { uploadApi } from "../../api/uploadApi";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
 
 const EventForm = ({
   initialData,
@@ -48,7 +52,7 @@ const EventForm = ({
     category: yup.string().required("Vui lòng chọn danh mục"),
     description: yup.string().required("Mô tả không được để trống").trim(),
     location: yup.string().required("Địa điểm không được để trống").trim(),
-    imageUrl: yup.string().url("Vui lòng nhập đúng định dạng URL"),
+    imageUrl: yup.string(),
     maxParticipants: yup
       .number()
       .typeError("Vui lòng nhập số hợp lệ")
@@ -110,6 +114,35 @@ const EventForm = ({
         ...prev,
         [name]: "",
       }));
+    }
+  };
+
+
+
+  const [uploadLoading, setUploadLoading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploadLoading(true);
+      const response = await uploadApi.uploadImage(file);
+      // Assuming backend returns { fileName: "...", fileUrl: "http://..." }
+      const newImageUrl = response.data.fileUrl;
+
+      setFormData(prev => ({
+        ...prev,
+        imageUrl: newImageUrl
+      }));
+      toast.success("Tải ảnh thành công!");
+    } catch (error) {
+      console.error("Upload failed:", error);
+      toast.error("Tải ảnh thất bại!");
+    } finally {
+      setUploadLoading(false);
+      // Reset input so same file can be selected again if needed
+      e.target.value = null;
     }
   };
 
@@ -252,17 +285,44 @@ const EventForm = ({
             sx={textFieldStyle}
           />
 
-          <TextField
-            label="Link Ảnh (URL)"
-            name="imageUrl"
-            value={formData.imageUrl}
-            onChange={handleChange}
-            error={!!errors.imageUrl}
-            helperText={errors.imageUrl || "Copy link ảnh từ internet vào đây"}
-            fullWidth
-            disabled={loading}
-            sx={textFieldStyle}
-          />
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
+            <TextField
+              label="Link Ảnh (URL)"
+              name="imageUrl"
+              value={formData.imageUrl}
+              onChange={handleChange}
+              error={!!errors.imageUrl}
+              helperText={errors.imageUrl || "Nhập URL hoặc tải ảnh lên từ máy"}
+              fullWidth
+              disabled={loading || uploadLoading}
+              sx={{ ...textFieldStyle, flexGrow: 1 }}
+            />
+            <Button
+              variant="outlined"
+              component="label"
+              disabled={loading || uploadLoading}
+              sx={{
+                height: 56,
+                whiteSpace: 'nowrap',
+                borderRadius: '12px',
+                borderColor: 'divider',
+                minWidth: '120px'
+              }}
+            >
+              {uploadLoading ? <CircularProgress size={24} /> : (
+                <>
+                  <CloudUpload sx={{ mr: 1 }} />
+                  Tải ảnh
+                </>
+              )}
+              <input
+                type="file"
+                hidden
+                accept="image/*"
+                onChange={handleFileUpload}
+              />
+            </Button>
+          </Box>
 
           <TextField
             label="Số lượng người tham gia tối đa"

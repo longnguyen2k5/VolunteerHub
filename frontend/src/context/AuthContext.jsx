@@ -46,7 +46,8 @@ export const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        logout();
+        console.error("Auth check failed:", error);
+        handleAuthError();
       }
     }
 
@@ -62,7 +63,8 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data);
     } catch (error) {
       console.error("Failed to fetch user info:", error);
-      logout();
+      console.error("Failed to fetch user info:", error);
+      handleAuthError();
     }
   };
 
@@ -93,9 +95,8 @@ export const AuthProvider = ({ children }) => {
       });
 
       // 5. Redirect to authorization endpoint
-      const authUrl = `${
-        oauth2Config.authorizationEndpoint
-      }?${params.toString()}`;
+      const authUrl = `${oauth2Config.authorizationEndpoint
+        }?${params.toString()}`;
 
       window.location.href = authUrl;
     } catch (error) {
@@ -209,7 +210,7 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error("Token refresh failed:", error);
-      logout();
+      handleAuthError();
       return { success: false };
     }
   };
@@ -241,17 +242,32 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
-   * Logout user
+   * Handle auth errors (expired token, etc) without external redirect
    */
-  const logout = () => {
+  const handleAuthError = () => {
     localStorage.removeItem(oauth2Config.accessTokenKey);
     localStorage.removeItem(oauth2Config.refreshTokenKey);
     localStorage.removeItem(oauth2Config.tokenExpiryKey);
     clearCodeVerifier();
     setUser(null);
+    navigate("/login");
+  };
+
+  /**
+   * Logout user (explicit action)
+   */
+  const logout = () => {
+    // 1. Clear local state
+    handleAuthError();
     toast.info("Logged out successfully");
-    // Redirect to backend to clear session/cookies
-    window.location.href = "http://localhost:8386/logout";
+
+    // 2. Redirect to backend to clear session/cookies
+    // We replace /oauth2/authorize with /logout to keep the domain/port correct
+    const logoutUrl = oauth2Config.authorizationEndpoint.replace(
+      "/oauth2/authorize",
+      "/logout"
+    );
+    window.location.href = logoutUrl;
   };
 
   return (
