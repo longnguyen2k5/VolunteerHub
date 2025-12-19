@@ -233,7 +233,7 @@ const EventBrowse = () => {
                 ) : (
                     <Grid container spacing={4}>
                         {filteredEvents.map((event) => (
-                            <Grid item xs={12} sm={6} md={4} key={event.id}>
+                            <Grid key={event.id} size={{ xs: 12, sm: 6, md: 4 }}>
                                 <EventCard
                                     event={event}
                                     registration={myRegistrations.find(r => r.eventId === event.id)}

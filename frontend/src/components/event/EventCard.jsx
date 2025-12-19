@@ -55,6 +55,9 @@ const EventCard = ({ event, registration }) => {
     return (
         <Card sx={{
             height: '100%',
+            width: '100%',
+            minWidth: 0,
+            maxWidth: '100%',
             display: 'flex',
             flexDirection: 'column',
             bgcolor: 'rgba(255, 255, 255, 0.05)',
@@ -63,6 +66,7 @@ const EventCard = ({ event, registration }) => {
             borderRadius: '16px',
             color: 'white',
             transition: 'all 0.3s ease',
+            overflow: 'hidden',
             '&:hover': {
                 transform: 'translateY(-8px)',
                 boxShadow: '0 12px 24px rgba(0,0,0,0.4)',
@@ -106,7 +110,7 @@ const EventCard = ({ event, registration }) => {
                 </Box>
             </Box>
 
-            <CardContent sx={{ flexGrow: 1, p: 2.5 }}>
+            <CardContent sx={{ flexGrow: 1, p: 2.5, minWidth: 0, overflow: 'hidden' }}>
                 <Box sx={{ mb: 2 }}>
                     <Chip
                         label={
@@ -158,22 +162,23 @@ const EventCard = ({ event, registration }) => {
                         display: '-webkit-box',
                         WebkitLineClamp: 3,
                         WebkitBoxOrient: 'vertical',
-                        lineHeight: '1.5em'
+                        lineHeight: '1.5em',
+                        wordBreak: 'break-word'
                     }}
                 >
                     {event.description}
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <Person fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
+                    <Person fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', wordBreak: 'break-word', minWidth: 0 }}>
                         {event.managerName || "Ẩn danh"}
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <LocationOn fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
+                    <LocationOn fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
+                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', wordBreak: 'break-word', minWidth: 0 }}>
                         {event.location}
                     </Typography>
                 </Box>

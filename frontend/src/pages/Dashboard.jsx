@@ -79,7 +79,7 @@ const EventListSection = ({ title, events, registrations }) => {
             <SectionHeader title={title} />
             <Grid container spacing={3}>
                 {events.map(event => (
-                    <Grid item xs={12} sm={6} md={4} key={event.id}>
+                    <Grid key={event.id} size={{ xs: 12, sm: 6, md: 4 }}>
                         <EventCard
                             event={event}
                             registration={registrations.find(r => r.eventId === event.id)}
@@ -165,7 +165,7 @@ const Dashboard = () => {
                 {/* Admin / Manager Stats */}
                 {(user.role === 'ADMIN' || user.role === 'EVENT_MANAGER') && stats && (
                     <Grid container spacing={3} sx={{ mb: 6 }}>
-                        <Grid item xs={12} md={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                             <StatCard
                                 title="Tổng sự kiện"
                                 value={stats.totalEvents}
@@ -174,7 +174,7 @@ const Dashboard = () => {
                             />
                         </Grid>
                         {user.role === 'ADMIN' && (
-                            <Grid item xs={12} md={4}>
+                            <Grid size={{ xs: 12, md: 4 }}>
                                 <StatCard
                                     title="Tổng thành viên"
                                     value={stats.totalUsers}
@@ -183,7 +183,7 @@ const Dashboard = () => {
                                 />
                             </Grid>
                         )}
-                        <Grid item xs={12} md={4}>
+                        <Grid size={{ xs: 12, md: 4 }}>
                             <StatCard
                                 title="Tổng lượt đăng ký"
                                 value={stats.totalRegistrations || 0}
