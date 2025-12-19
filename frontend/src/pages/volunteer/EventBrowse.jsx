@@ -101,91 +101,149 @@ const EventBrowse = () => {
         setFilteredEvents(filtered);
     };
 
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+    const inputSx = {
+        '& .MuiOutlinedInput-root': {
+            color: 'white',
+            bgcolor: 'rgba(255,255,255,0.05)',
+            backdropFilter: 'blur(10px)',
+            '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+            '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
+            '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+        },
+        '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.6)' },
+        '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+        '& .MuiInputBase-input': { color: 'white' },
+        '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.6)' },
+        '& .MuiSelect-icon': { color: 'white' }
+    };
 
     return (
-        <Container sx={{ py: 4 }}>
-            <Typography variant="h4" gutterBottom>
-                Danh sách sự kiện
-            </Typography>
+        <Box sx={{
+            minHeight: '100vh',
+            bgcolor: '#121212',
+            color: 'white',
+            pb: 8
+        }}>
+            {/* Background Accent */}
+            <Box sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '400px',
+                background: 'radial-gradient(circle at 80% 0%, rgba(254, 107, 139, 0.1) 0%, rgba(18, 18, 18, 0) 70%)',
+                zIndex: 0,
+                pointerEvents: 'none'
+            }} />
 
-            {/* Filters */}
-            <Box sx={{ mb: 4, display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-                <TextField
-                    placeholder="Tìm kiếm sự kiện..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    sx={{ flexGrow: 1, minWidth: 200 }}
-                    InputProps={{
-                        startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
-                    }}
-                />
-
-                <FormControl sx={{ minWidth: 150 }}>
-                    <InputLabel>Danh mục</InputLabel>
-                    <Select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        label="Danh mục"
+            <Container sx={{ position: 'relative', zIndex: 1, py: 4 }}>
+                <Box sx={{ mb: 6, mt: 4, textAlign: 'center' }}>
+                    <Typography
+                        variant="h3"
+                        gutterBottom
+                        sx={{
+                            fontWeight: 800,
+                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                        }}
                     >
-                        <MenuItem value="all">Tất cả</MenuItem>
-                        {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                            <MenuItem key={key} value={key}>{label}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-
-                <TextField
-                    label="Từ ngày"
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    sx={{ minWidth: 150 }}
-                />
-
-                <Typography variant="body1">-</Typography>
-
-                <TextField
-                    label="Đến ngày"
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    sx={{ minWidth: 150 }}
-                />
-            </Box>
-
-            {/* Events Grid */}
-            {filteredEvents.length === 0 ? (
-                <Box sx={{ textAlign: 'center', py: 8 }}>
-                    <Typography variant="h6" color="text.secondary">
-                        Không tìm thấy sự kiện nào trong khoảng thời gian này
+                        Khám phá Sự kiện
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                        Tìm kiếm và tham gia các hoạt động tình nguyện ý nghĩa
                     </Typography>
                 </Box>
-            ) : (
-                <Grid container spacing={3}>
-                    {filteredEvents.map((event) => (
-                        <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
-                            <EventCard
-                                event={event}
-                                registration={myRegistrations.find(r => r.eventId === event.id)}
-                            />
-                        </Grid>
-                    ))}
-                </Grid>
-            )}
-        </Container>
+
+                {/* Filters */}
+                <Box sx={{
+                    mb: 5,
+                    display: 'flex',
+                    gap: 2,
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    bgcolor: 'rgba(255,255,255,0.02)',
+                    p: 3,
+                    borderRadius: '24px',
+                    border: '1px solid rgba(255,255,255,0.05)'
+                }}>
+                    <TextField
+                        placeholder="Tìm kiếm sự kiện..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        sx={{ flexGrow: 1, minWidth: 200, ...inputSx }}
+                        InputProps={{
+                            startAdornment: <Search sx={{ mr: 1, color: 'rgba(255,255,255,0.5)' }} />,
+                        }}
+                    />
+
+                    <FormControl sx={{ minWidth: 150, ...inputSx }}>
+                        <InputLabel>Danh mục</InputLabel>
+                        <Select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            label="Danh mục"
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        bgcolor: '#1e1e1e',
+                                        color: 'white',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        '& .MuiMenuItem-root:hover': { bgcolor: 'rgba(255,255,255,0.05)' },
+                                        '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'rgba(254, 107, 139, 0.2)' }
+                                    }
+                                }
+                            }}
+                        >
+                            <MenuItem value="all">Tất cả</MenuItem>
+                            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                                <MenuItem key={key} value={key}>{label}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        label="Từ ngày"
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ minWidth: 150, ...inputSx }}
+                    />
+
+                    <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.5)' }}>-</Typography>
+
+                    <TextField
+                        label="Đến ngày"
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ minWidth: 150, ...inputSx }}
+                    />
+                </Box>
+
+                {/* Events Grid */}
+                {filteredEvents.length === 0 ? (
+                    <Box sx={{ textAlign: 'center', py: 8 }}>
+                        <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                            Không tìm thấy sự kiện nào trong khoảng thời gian này
+                        </Typography>
+                    </Box>
+                ) : (
+                    <Grid container spacing={4}>
+                        {filteredEvents.map((event) => (
+                            <Grid item xs={12} sm={6} md={4} key={event.id}>
+                                <EventCard
+                                    event={event}
+                                    registration={myRegistrations.find(r => r.eventId === event.id)}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                )}
+            </Container>
+        </Box>
     );
 };
 

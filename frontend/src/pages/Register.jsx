@@ -14,6 +14,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Grid
 } from "@mui/material";
 
 const Register = () => {
@@ -71,101 +72,229 @@ const Register = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 8, mb: 4 }}>
-        <Card>
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="h4" align="center" gutterBottom>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?q=80&w=2074&auto=format&fit=crop)', // Volunteer/Hands background
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay
+          backdropFilter: 'blur(5px)',
+        }
+      }}
+    >
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+        <Card
+          sx={{
+            bgcolor: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '24px',
+            boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+            color: 'white',
+          }}
+        >
+          <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                mb: 1
+              }}
+            >
               Đăng ký
             </Typography>
             <Typography
-              variant="body2"
+              variant="body1"
               align="center"
-              color="text.secondary"
-              sx={{ mb: 3 }}
+              sx={{ mb: 4, color: 'rgba(255,255,255,0.7)' }}
             >
-              Tạo tài khoản để tham gia VolunteerHub
+              Tham gia cộng đồng tình nguyện viên lớn nhất Việt Nam
             </Typography>
 
             {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
+              <Alert severity="error" sx={{ mb: 3, bgcolor: 'rgba(211, 47, 47, 0.1)', color: '#ffcdd2', border: '1px solid #e57373' }}>
                 {error}
               </Alert>
             )}
 
             <form onSubmit={handleSubmit}>
-              <TextField
-                fullWidth
-                label="Họ và tên"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-              <TextField
-                fullWidth
-                label="Số điện thoại"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                margin="normal"
-              />
-              <TextField
-                fullWidth
-                label="Mật khẩu"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                margin="normal"
-                required
-                helperText="Tối thiểu 6 ký tự"
-              />
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Vai trò</InputLabel>
-                <Select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  label="Vai trò"
-                >
-                  <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
-                  <MenuItem value="EVENT_MANAGER">Nhà tổ chức sự kiện</MenuItem>
-                </Select>
-              </FormControl>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Họ và tên"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'white' },
+                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'white' },
+                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Số điện thoại"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'white' },
+                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Mật khẩu"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    helperText={
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                        Tối thiểu 6 ký tự
+                      </Typography>
+                    }
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'white' },
+                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel sx={{ color: 'rgba(255,255,255,0.7)', '&.Mui-focused': { color: '#FF8E53' } }}>Vai trò</InputLabel>
+                    <Select
+                      name="role"
+                      value={formData.role}
+                      onChange={handleChange}
+                      label="Vai trò"
+                      sx={{
+                        color: 'white',
+                        '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#FF8E53' },
+                        '.MuiSvgIcon-root': { color: 'white' },
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          sx: {
+                            bgcolor: '#1e1e1e',
+                            color: 'white',
+                            '& .MuiMenuItem-root:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                            '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'rgba(254, 107, 139, 0.2)' },
+                          }
+                        }
+                      }}
+                    >
+                      <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
+                      <MenuItem value="EVENT_MANAGER">Nhà tổ chức sự kiện</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 size="large"
                 disabled={loading}
-                sx={{ mt: 3, mb: 2 }}
+                sx={{
+                  mt: 4,
+                  mb: 2,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  fontWeight: 700,
+                  borderRadius: '50px',
+                  background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                  boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                  transition: 'all 0.3s',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 15px 4px rgba(255, 105, 135, .4)',
+                  },
+                  '&:disabled': {
+                    background: 'rgba(255,255,255,0.1)',
+                    color: 'rgba(255,255,255,0.3)'
+                  }
+                }}
               >
-                {loading ? "Đang đăng ký..." : "Đăng ký"}
+                {loading ? "Đang xử lý..." : "Tạo tài khoản"}
               </Button>
             </form>
 
             <Box sx={{ textAlign: "center", mt: 2 }}>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
                 Đã có tài khoản?{" "}
                 <Typography
                   component="span"
                   onClick={() => login && login()}
                   sx={{
                     cursor: 'pointer',
-                    color: '#2196f3',
-                    '&:hover': { textDecoration: 'underline' }
+                    color: '#FF8E53',
+                    fontWeight: 600,
+                    '&:hover': { textDecoration: 'underline', color: '#FE6B8B' }
                   }}
                 >
                   Đăng nhập
@@ -174,8 +303,8 @@ const Register = () => {
             </Box>
           </CardContent>
         </Card>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

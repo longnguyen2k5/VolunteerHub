@@ -17,22 +17,36 @@ import EventCard from '../components/event/EventCard';
 import { Assessment, Event, People } from '@mui/icons-material';
 
 const StatCard = ({ title, value, icon, color }) => (
-    <Card sx={{ height: '100%' }}>
+    <Card sx={{
+        height: '100%',
+        bgcolor: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        color: 'white',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+            transform: 'translateY(-5px)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            border: `1px solid ${color}.main` // Highlight border on hover
+        }
+    }}>
         <CardContent sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
             <Box sx={{
                 p: 2,
-                borderRadius: 2,
-                bgcolor: `${color}.light`,
-                color: `${color}.main`,
-                mr: 3
+                borderRadius: '12px',
+                bgcolor: 'rgba(255,255,255,0.1)',
+                color: `${color}.light`,
+                mr: 3,
+                display: 'flex',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
             }}>
                 {icon}
             </Box>
             <Box>
-                <Typography color="text.secondary" variant="body2">
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 0.5 }}>
                     {title}
                 </Typography>
-                <Typography variant="h4" fontWeight="bold">
+                <Typography variant="h4" fontWeight="bold" sx={{ color: 'white' }}>
                     {value}
                 </Typography>
             </Box>
@@ -41,11 +55,20 @@ const StatCard = ({ title, value, icon, color }) => (
 );
 
 const SectionHeader = ({ title }) => (
-    <Box sx={{ mb: 3, mt: 5, display: 'flex', alignItems: 'center' }}>
-        <Typography variant="h5" fontWeight="bold" color="primary">
+    <Box sx={{ mb: 4, mt: 6, display: 'flex', alignItems: 'center' }}>
+        <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{
+                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block'
+            }}
+        >
             {title}
         </Typography>
-        <Divider sx={{ ml: 2, flexGrow: 1 }} />
+        <Divider sx={{ ml: 3, flexGrow: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
     </Box>
 );
 
@@ -56,7 +79,7 @@ const EventListSection = ({ title, events, registrations }) => {
             <SectionHeader title={title} />
             <Grid container spacing={3}>
                 {events.map(event => (
-                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
+                    <Grid item xs={12} sm={6} md={4} key={event.id}>
                         <EventCard
                             event={event}
                             registration={registrations.find(r => r.eventId === event.id)}
@@ -104,78 +127,97 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                <CircularProgress />
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8, minHeight: '100vh', bgcolor: '#121212' }}>
+                <CircularProgress sx={{ color: '#FF8E53' }} />
             </Box>
         );
     }
 
     return (
-        <Container sx={{ py: 4 }}>
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" gutterBottom fontWeight="bold">
-                    Xin chào, {user.fullName}! 👋
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Chào mừng bạn quay trở lại VolunteerHub
-                </Typography>
-            </Box>
+        <Box sx={{
+            minHeight: '100vh',
+            bgcolor: '#121212', // Base dark color
+            color: 'white',
+            pb: 8
+        }}>
+            {/* Background Accent */}
+            <Box sx={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '300px',
+                background: 'radial-gradient(circle at 50% 0%, rgba(254, 107, 139, 0.15) 0%, rgba(18, 18, 18, 0) 70%)',
+                zIndex: 0,
+                pointerEvents: 'none'
+            }} />
 
-            {/* Admin / Manager Stats */}
-            {(user.role === 'ADMIN' || user.role === 'EVENT_MANAGER') && stats && (
-                <Grid container spacing={3} sx={{ mb: 4 }}>
-                    <Grid item xs={12} md={4}>
-                        <StatCard
-                            title="Tổng sự kiện"
-                            value={stats.totalEvents}
-                            icon={<Event fontSize="large" />}
-                            color="primary"
-                        />
-                    </Grid>
-                    {user.role === 'ADMIN' && (
+            <Container sx={{ position: 'relative', zIndex: 1, py: 4 }}>
+                <Box sx={{ mb: 6, mt: 2 }}>
+                    <Typography variant="h3" gutterBottom fontWeight="800">
+                        Xin chào, <span style={{ color: '#FF8E53' }}>{user.fullName}</span>! 👋
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                        Chào mừng bạn quay trở lại VolunteerHub
+                    </Typography>
+                </Box>
+
+                {/* Admin / Manager Stats */}
+                {(user.role === 'ADMIN' || user.role === 'EVENT_MANAGER') && stats && (
+                    <Grid container spacing={3} sx={{ mb: 6 }}>
                         <Grid item xs={12} md={4}>
                             <StatCard
-                                title="Tổng thành viên"
-                                value={stats.totalUsers}
-                                icon={<People fontSize="large" />}
-                                color="info"
+                                title="Tổng sự kiện"
+                                value={stats.totalEvents}
+                                icon={<Event fontSize="large" />}
+                                color="primary"
                             />
                         </Grid>
-                    )}
-                    <Grid item xs={12} md={4}>
-                        <StatCard
-                            title="Tổng lượt đăng ký"
-                            value={stats.totalRegistrations || 0}
-                            icon={<Assessment fontSize="large" />}
-                            color="success"
-                        />
+                        {user.role === 'ADMIN' && (
+                            <Grid item xs={12} md={4}>
+                                <StatCard
+                                    title="Tổng thành viên"
+                                    value={stats.totalUsers}
+                                    icon={<People fontSize="large" />}
+                                    color="info"
+                                />
+                            </Grid>
+                        )}
+                        <Grid item xs={12} md={4}>
+                            <StatCard
+                                title="Tổng lượt đăng ký"
+                                value={stats.totalRegistrations || 0}
+                                icon={<Assessment fontSize="large" />}
+                                color="success"
+                            />
+                        </Grid>
                     </Grid>
-                </Grid>
-            )}
+                )}
 
-            {/* Event Sections */}
-            {stats && (
-                <>
-                    <EventListSection
-                        title="🔥 Sự kiện đang thu hút"
-                        events={stats.discussedEvents}
-                        registrations={myRegistrations}
-                    />
+                {/* Event Sections */}
+                {stats && (
+                    <>
+                        <EventListSection
+                            title="🔥 Sự kiện đang thu hút"
+                            events={stats.discussedEvents}
+                            registrations={myRegistrations}
+                        />
 
-                    <EventListSection
-                        title="🆕 Sự kiện mới công bố"
-                        events={stats.newEvents}
-                        registrations={myRegistrations}
-                    />
+                        <EventListSection
+                            title="🆕 Sự kiện mới công bố"
+                            events={stats.newEvents}
+                            registrations={myRegistrations}
+                        />
 
-                    <EventListSection
-                        title="📅 Sự kiện sắp diễn ra"
-                        events={stats.upcomingEvents}
-                        registrations={myRegistrations}
-                    />
-                </>
-            )}
-        </Container>
+                        <EventListSection
+                            title="📅 Sự kiện sắp diễn ra"
+                            events={stats.upcomingEvents}
+                            registrations={myRegistrations}
+                        />
+                    </>
+                )}
+            </Container>
+        </Box>
     );
 };
 

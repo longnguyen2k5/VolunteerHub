@@ -150,10 +150,12 @@ const EventDetailPage = () => {
         return true;
     };
 
+    const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1174";
+
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                <CircularProgress />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#121212' }}>
+                <CircularProgress sx={{ color: '#FF8E53' }} />
             </Box>
         );
     }
@@ -161,172 +163,255 @@ const EventDetailPage = () => {
     if (!event) return null;
 
     return (
-        <Container sx={{ py: 4 }}>
-            <Button
-                startIcon={<ArrowBack />}
-                onClick={() => navigate('/events')}
-                sx={{ mb: 3 }}
-            >
-                Quay lại
-            </Button>
+        <Box sx={{
+            minHeight: '100vh',
+            bgcolor: '#121212',
+            color: 'white',
+            pb: 8
+        }}>
+            {/* HERRO BANNER SECTION */}
+            <Box sx={{
+                position: 'relative',
+                height: '60vh',
+                minHeight: '500px',
+                width: '100%',
+                backgroundImage: `url(${event.imageUrl || DEFAULT_IMAGE})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                display: 'flex',
+                alignItems: 'flex-end',
+                '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(18,18,18,0.9) 90%, #121212 100%)',
+                    zIndex: 1
+                }
+            }}>
+                {/* Navigation (Back Button) absolute positioned on top */}
+                <Container maxWidth="xl" sx={{ position: 'absolute', top: 32, left: 0, right: 0, zIndex: 10, px: { xs: 2, md: 6 } }}>
+                    <Button
+                        startIcon={<ArrowBack />}
+                        onClick={() => navigate('/events')}
+                        sx={{
+                            color: 'white',
+                            bgcolor: 'rgba(0,0,0,0.4)',
+                            backdropFilter: 'blur(4px)',
+                            px: 3,
+                            py: 1,
+                            borderRadius: '30px',
+                            '&:hover': { bgcolor: 'rgba(0,0,0,0.6)' }
+                        }}
+                    >
+                        Quay lại
+                    </Button>
+                </Container>
 
-            <Grid container spacing={4}>
-                <Grid size={{ xs: 12, md: 8 }}>
-                    <Card>
-                        <CardContent sx={{ p: 4 }}>
-                            <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-                                <Chip
-                                    label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
-                                    color="primary"
-                                    variant="outlined"
-                                />
-                                <Chip
-                                    label={
-                                        (myRegistration && myRegistration.status !== 'CANCELLED') ? getStatusText(myRegistration.status) :
-                                            (new Date(event.endTime) < new Date()) ? 'Đã kết thúc' :
-                                                (event.currentParticipants >= event.maxParticipants) ? 'Đã đủ người' :
-                                                    (new Date(event.startTime) <= new Date()) ? 'Đang diễn ra' :
-                                                        'Sắp diễn ra'
-                                    }
-                                    color={
-                                        (myRegistration && myRegistration.status !== 'CANCELLED') ? getStatusColor(myRegistration.status) :
-                                            (new Date(event.endTime) < new Date()) ? 'default' :
-                                                (event.currentParticipants >= event.maxParticipants) ? 'error' :
-                                                    (new Date(event.startTime) <= new Date()) ? 'secondary' :
-                                                        'info'
-                                    }
-                                />
-                            </Box>
+                {/* Hero Content */}
+                <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, pb: 8, px: { xs: 2, md: 6 } }}>
+                    <Box sx={{ maxWidth: '900px' }}>
+                        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                            <Chip
+                                label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
+                                sx={{
+                                    bgcolor: '#FF8E53',
+                                    color: 'black',
+                                    fontWeight: 700,
+                                    fontSize: '0.9rem'
+                                }}
+                            />
+                            <Chip
+                                label={getStatusText(event.status === 'APPROVED' ? (new Date() < new Date(event.startTime) ? 'PENDING' : 'COMPLETED') : event.status)}
+                                sx={{
+                                    bgcolor: 'rgba(255,255,255,0.2)',
+                                    color: 'white',
+                                    backdropFilter: 'blur(4px)',
+                                    fontWeight: 600
+                                }}
+                            />
+                        </Box>
 
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 600 }}>
-                                {event.name}
-                            </Typography>
+                        <Typography variant="h1" sx={{
+                            fontWeight: 900,
+                            fontSize: { xs: '2.5rem', md: '4.5rem' },
+                            lineHeight: 1.1,
+                            mb: 3,
+                            textShadow: '0 4px 20px rgba(0,0,0,0.5)',
+                            background: 'linear-gradient(45deg, #FFF 30%, #FF8E53 90%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                        }}>
+                            {event.name}
+                        </Typography>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3, flexWrap: 'wrap' }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <CalendarToday sx={{ mr: 1, color: 'primary.main' }} />
-                                    <Box>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Bắt đầu
-                                        </Typography>
-                                        <Typography variant="body1" fontWeight={500}>
-                                            {format(new Date(event.startTime), 'dd/MM/yyyy HH:mm', { locale: vi })}
-                                        </Typography>
-                                    </Box>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 6, color: 'rgba(255,255,255,0.9)' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <CalendarToday sx={{ fontSize: 32, mr: 2, color: '#FF8E53' }} />
+                                <Box>
+                                    <Typography variant="body2" sx={{ opacity: 0.7 }}>Khởi hành</Typography>
+                                    <Typography variant="h6" fontWeight={600}>
+                                        {format(new Date(event.startTime), 'HH:mm - dd/MM/yyyy', { locale: vi })}
+                                    </Typography>
                                 </Box>
+                            </Box>
 
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <CalendarToday sx={{ mr: 1, color: 'error.main' }} />
-                                    <Box>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Kết thúc
-                                        </Typography>
-                                        <Typography variant="body1" fontWeight={500}>
-                                            {format(new Date(event.endTime), 'dd/MM/yyyy HH:mm', { locale: vi })}
-                                        </Typography>
-                                    </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <LocationOn sx={{ fontSize: 32, mr: 2, color: '#FF8E53' }} />
+                                <Box>
+                                    <Typography variant="body2" sx={{ opacity: 0.7 }}>Địa điểm</Typography>
+                                    <Typography variant="h6" fontWeight={600}>
+                                        {event.location}
+                                    </Typography>
                                 </Box>
                             </Box>
+                        </Box>
+                    </Box>
+                </Container>
+            </Box>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                <LocationOn sx={{ mr: 1, color: 'text.secondary' }} />
-                                <Typography variant="body1">
-                                    {event.location}
-                                </Typography>
-                            </Box>
-
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                                <People sx={{ mr: 1, color: 'text.secondary' }} />
-                                <Typography variant="body1">
-                                    {event.currentParticipants}/{event.maxParticipants} người tham gia
-                                </Typography>
-                            </Box>
-
-                            <Divider sx={{ my: 3 }} />
-
-                            <Typography variant="h6" gutterBottom>
-                                Mô tả chi tiết
+            {/* MAIN CONTENT */}
+            <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6 }, mt: -4, position: 'relative', zIndex: 3 }}>
+                <Grid container spacing={6}>
+                    {/* LEFT COLUMN: Description & Details */}
+                    <Grid item xs={12} md={8}>
+                        <Box sx={{ mb: 6 }}>
+                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3 }}>
+                                Giới thiệu sự kiện
                             </Typography>
-                            <Typography variant="body1" paragraph sx={{ whiteSpace: 'pre-line' }}>
+                            <Typography variant="body1" sx={{
+                                color: 'rgba(255,255,255,0.8)',
+                                fontSize: '1.1rem',
+                                lineHeight: 1.8,
+                                whiteSpace: 'pre-line'
+                            }}>
                                 {event.description}
                             </Typography>
+                        </Box>
 
-                            <Divider sx={{ my: 3 }} />
+                        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.1)', mb: 6 }} />
 
-                            <Typography variant="body2" color="text.secondary">
-                                Được tổ chức bởi: <strong>{event.managerName}</strong>
+                        <Box sx={{ mb: 6 }}>
+                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3 }}>
+                                Thông tin tổ chức
                             </Typography>
 
-                            {/* Channel Button */}
-                            {event.status === 'APPROVED' && ((myRegistration?.status === 'APPROVED' || myRegistration?.status === 'COMPLETED') || (user?.id === event.managerId)) && (
-                                <Box sx={{ mt: 3 }}>
+                            <Box sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 3,
+                                bgcolor: 'rgba(255,255,255,0.03)',
+                                p: 3,
+                                borderRadius: '16px',
+                                border: '1px solid rgba(255,255,255,0.1)'
+                            }}>
+                                <Box sx={{
+                                    width: 60,
+                                    height: 60,
+                                    bgcolor: '#FF8E53',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 700,
+                                    fontSize: '1.5rem',
+                                    color: 'white'
+                                }}>
+                                    {event.managerName?.charAt(0)}
+                                </Box>
+                                <Box>
+                                    <Typography variant="h6" sx={{ fontWeight: 600 }}>{event.managerName}</Typography>
+                                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Người quản lý sự kiện</Typography>
+                                </Box>
+
+                                {/* Channel Button in Organizr section if valid */}
+                                {event.status === 'APPROVED' && ((myRegistration?.status === 'APPROVED' || myRegistration?.status === 'COMPLETED') || (user?.id === event.managerId)) && (
                                     <Button
-                                        fullWidth
                                         variant="outlined"
                                         startIcon={<Forum />}
                                         onClick={() => navigate(`/events/${id}/channel`)}
+                                        sx={{
+                                            ml: 'auto',
+                                            borderColor: 'rgba(255,255,255,0.3)',
+                                            color: 'white',
+                                            '&:hover': {
+                                                borderColor: '#FF8E53',
+                                                color: '#FF8E53',
+                                                bgcolor: 'rgba(255, 142, 83, 0.1)'
+                                            }
+                                        }}
                                     >
-                                        Vào kênh trao đổi
+                                        Kênh trao đổi
                                     </Button>
-                                </Box>
-                            )}
-                        </CardContent>
-                    </Card>
-                </Grid>
+                                )}
+                            </Box>
+                        </Box>
+                    </Grid>
 
-                <Grid size={{ xs: 12, md: 4 }}>
-                    <Card sx={{ position: 'sticky', top: 20 }}>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>
-                                Đăng ký tham gia
-                            </Typography>
-
-                            {myRegistration ? (
-                                <Box>
-                                    <Chip
-                                        label={`Trạng thái: ${getStatusText(myRegistration.status)}`}
-                                        color={getStatusColor(myRegistration.status)}
-                                        sx={{ mb: 2 }}
-                                    />
-                                    <Typography variant="body2" color="text.secondary" paragraph>
-                                        Đăng ký lúc: {format(new Date(myRegistration.registeredAt), 'dd/MM/yyyy HH:mm')}
+                    {/* RIGHT COLUMN: Sticky Registration Card */}
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{
+                            position: 'sticky',
+                            top: 40,
+                            bgcolor: '#1e1e1e',
+                            backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '24px',
+                            color: 'white',
+                            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                            p: 1
+                        }}>
+                            <CardContent sx={{ p: 4 }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>
+                                        Số chỗ còn lại
                                     </Typography>
-
-                                    {canCancel() && (
-                                        <Button
-                                            fullWidth
-                                            variant="outlined"
-                                            color="error"
-                                            startIcon={<Cancel />}
-                                            onClick={() => setConfirmDialog({ open: true, action: 'cancel' })}
-                                            disabled={registering}
-                                        >
-                                            Hủy đăng ký
-                                        </Button>
-                                    )}
-
-                                    {/* Re-register Button for Cancelled/Rejected users */}
-                                    {['CANCELLED', 'REJECTED'].includes(myRegistration.status) && canRegister() && (
-                                        <Button
-                                            fullWidth
-                                            variant="contained"
-                                            size="large"
-                                            startIcon={<PersonAdd />}
-                                            onClick={() => setConfirmDialog({ open: true, action: 'register' })}
-                                            disabled={registering}
-                                            sx={{ mt: 2 }}
-                                        >
-                                            {registering ? <CircularProgress size={24} /> : 'Đăng ký lại'}
-                                        </Button>
-                                    )}
+                                    <Typography variant="h3" sx={{ fontWeight: 800, color: '#FF8E53' }}>
+                                        {event.maxParticipants - event.currentParticipants}
+                                    </Typography>
                                 </Box>
-                            ) : (
-                                <Box>
-                                    {canRegister() ? (
-                                        <>
-                                            <Typography variant="body2" color="text.secondary" paragraph>
-                                                Bạn có muốn tham gia sự kiện này không?
-                                            </Typography>
+
+                                <Box sx={{ p: 2, bgcolor: 'rgba(0,0,0,0.2)', borderRadius: '12px', mb: 4 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Tổng số lượng</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{event.maxParticipants} người</Typography>
+                                    </Box>
+                                    <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Đã đăng ký</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{event.currentParticipants} người</Typography>
+                                    </Box>
+                                </Box>
+
+                                {myRegistration ? (
+                                    <Box>
+                                        <Chip
+                                            label={`Trạng thái: ${getStatusText(myRegistration.status)}`}
+                                            color={getStatusColor(myRegistration.status)}
+                                            sx={{ mb: 3, width: '100%', borderRadius: '12px', fontWeight: 700, p: 2, height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal' } }}
+                                        />
+
+                                        <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', color: 'rgba(255,255,255,0.5)', mb: 2 }}>
+                                            Đăng ký lúc: {format(new Date(myRegistration.registeredAt), 'dd/MM/yyyy HH:mm')}
+                                        </Typography>
+
+                                        {canCancel() && (
+                                            <Button
+                                                fullWidth
+                                                variant="outlined"
+                                                color="error"
+                                                startIcon={<Cancel />}
+                                                onClick={() => setConfirmDialog({ open: true, action: 'cancel' })}
+                                                disabled={registering}
+                                                sx={{ borderRadius: '12px', py: 1.5 }}
+                                            >
+                                                Hủy đăng ký
+                                            </Button>
+                                        )}
+
+                                        {['CANCELLED', 'REJECTED'].includes(myRegistration.status) && canRegister() && (
                                             <Button
                                                 fullWidth
                                                 variant="contained"
@@ -334,69 +419,111 @@ const EventDetailPage = () => {
                                                 startIcon={<PersonAdd />}
                                                 onClick={() => setConfirmDialog({ open: true, action: 'register' })}
                                                 disabled={registering}
+                                                sx={{
+                                                    mt: 2,
+                                                    borderRadius: '12px',
+                                                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                                    color: 'white',
+                                                    py: 1.5,
+                                                    fontWeight: 700
+                                                }}
                                             >
-                                                {registering ? <CircularProgress size={24} /> : 'Đăng ký ngay'}
+                                                {registering ? <CircularProgress size={24} color="inherit" /> : 'Đăng ký lại'}
                                             </Button>
-                                        </>
-                                    ) : (
-                                        <Typography variant="body2" color="text.secondary">
-                                            {[
-                                                !user && 'Vui lòng đăng nhập để đăng ký',
-                                                user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký',
-                                                event.currentParticipants >= event.maxParticipants && 'Đã đủ người tham gia',
-                                                new Date(event.endTime) < new Date() ? 'Sự kiện đã kết thúc' : (new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'),
-                                                event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'
-                                            ].filter(Boolean).join(' | ')}
-                                        </Typography>
-                                    )}
-                                </Box>
-                            )}
-
-                            <Divider sx={{ my: 2 }} />
-
-                            <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
-                                    Số chỗ còn lại
-                                </Typography>
-                                <Typography variant="h4" color="primary">
-                                    {event.maxParticipants - event.currentParticipants}
-                                </Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
+                                        )}
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        {canRegister() ? (
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+                                                size="large"
+                                                startIcon={<PersonAdd />}
+                                                onClick={() => setConfirmDialog({ open: true, action: 'register' })}
+                                                disabled={registering}
+                                                sx={{
+                                                    borderRadius: '50px',
+                                                    py: 2,
+                                                    fontSize: '1.2rem',
+                                                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                                    boxShadow: '0 10px 30px rgba(255, 142, 83, 0.4)',
+                                                    fontWeight: 800,
+                                                    transition: 'all 0.3s',
+                                                    '&:hover': {
+                                                        transform: 'scale(1.02)',
+                                                        boxShadow: '0 15px 40px rgba(255, 142, 83, 0.6)',
+                                                    }
+                                                }}
+                                            >
+                                                {registering ? <CircularProgress size={24} color="inherit" /> : 'ĐĂNG KÝ THAM GIA'}
+                                            </Button>
+                                        ) : (
+                                            <Box sx={{ p: 2, textAlign: 'center', color: 'rgba(255,255,255,0.6)', bgcolor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                                                <Typography variant="body2">
+                                                    {[
+                                                        !user && 'Vui lòng đăng nhập để đăng ký',
+                                                        user?.role !== 'VOLUNTEER' && 'Chỉ tình nguyện viên mới có thể đăng ký',
+                                                        event.currentParticipants >= event.maxParticipants && 'Đã đủ người tham gia',
+                                                        new Date(event.endTime) < new Date() ? 'Sự kiện đã kết thúc' : (new Date(event.startTime) < new Date() && 'Sự kiện đã bắt đầu'),
+                                                        event.status !== 'APPROVED' && 'Sự kiện chưa được duyệt'
+                                                    ].filter(Boolean).join(' | ')}
+                                                </Typography>
+                                            </Box>
+                                        )}
+                                    </Box>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 </Grid>
-            </Grid>
 
-            {/* Confirmation Dialog */}
-            <Dialog
-                open={confirmDialog.open}
-                onClose={() => setConfirmDialog({ open: false, action: null })}
-            >
-                <DialogTitle>
-                    {confirmDialog.action === 'register' ? 'Xác nhận đăng ký' : 'Xác nhận hủy'}
-                </DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        {confirmDialog.action === 'register'
-                            ? 'Bạn có chắc chắn muốn đăng ký tham gia sự kiện này?'
-                            : 'Bạn có chắc chắn muốn hủy đăng ký sự kiện này?'}
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setConfirmDialog({ open: false, action: null })}>
-                        Hủy
-                    </Button>
-                    <Button
-                        onClick={confirmDialog.action === 'register' ? handleRegister : handleCancelRegistration}
-                        variant="contained"
-                        color={confirmDialog.action === 'register' ? 'primary' : 'error'}
-                        disabled={registering}
-                    >
-                        {registering ? <CircularProgress size={20} /> : 'Xác nhận'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
+                {/* Confirmation Dialog - Keeping same style */}
+                <Dialog
+                    open={confirmDialog.open}
+                    onClose={() => setConfirmDialog({ open: false, action: null })}
+                    PaperProps={{
+                        sx: {
+                            bgcolor: '#1e1e1e',
+                            color: 'white',
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            minWidth: 400
+                        }
+                    }}
+                >
+                    <DialogTitle sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                        {confirmDialog.action === 'register' ? 'Xác nhận đăng ký' : 'Xác nhận hủy'}
+                    </DialogTitle>
+                    <DialogContent sx={{ mt: 3 }}>
+                        <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>
+                            {confirmDialog.action === 'register'
+                                ? 'Bạn có chắc chắn muốn đăng ký tham gia sự kiện này?'
+                                : 'Bạn có chắc chắn muốn hủy đăng ký sự kiện này?'}
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions sx={{ p: 3 }}>
+                        <Button
+                            onClick={() => setConfirmDialog({ open: false, action: null })}
+                            sx={{ color: 'rgba(255,255,255,0.6)', mr: 2 }}
+                        >
+                            Hủy
+                        </Button>
+                        <Button
+                            onClick={confirmDialog.action === 'register' ? handleRegister : handleCancelRegistration}
+                            variant="contained"
+                            color={confirmDialog.action === 'register' ? 'primary' : 'error'}
+                            disabled={registering}
+                            sx={{
+                                px: 4,
+                                background: confirmDialog.action === 'register' ? 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' : undefined
+                            }}
+                        >
+                            {registering ? <CircularProgress size={20} color="inherit" /> : 'Xác nhận'}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </Container>
+        </Box>
     );
 };
 
