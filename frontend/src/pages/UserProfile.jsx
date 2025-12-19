@@ -7,7 +7,8 @@ import {
     Avatar,
     Grid,
     Divider,
-    Button
+    Button,
+    Chip
 } from '@mui/material';
 import {
     Email,
@@ -37,54 +38,67 @@ const UserProfile = () => {
     };
 
     return (
-        <Container maxWidth="md" sx={{ py: 5 }}>
-            <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
+        <Container maxWidth="md" sx={{ py: 8 }}>
+            <Paper elevation={0} sx={{
+                p: 6,
+                borderRadius: '24px',
+                bgcolor: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                color: 'white'
+            }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 6 }}>
                     <Avatar
                         sx={{
-                            width: 120,
-                            height: 120,
+                            width: 140,
+                            height: 140,
                             bgcolor: roleColors[user.role] || 'primary.main',
-                            fontSize: '3rem',
-                            mb: 2,
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                            fontSize: '3.5rem',
+                            mb: 3,
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                            border: '4px solid rgba(255,255,255,0.1)'
                         }}
                     >
                         {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                     </Avatar>
-                    <Typography variant="h4" fontWeight="bold">
+                    <Typography variant="h3" fontWeight={800} sx={{
+                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        mb: 1
+                    }}>
                         {user.fullName}
                     </Typography>
-                    <Typography
-                        variant="subtitle1"
+                    <Chip
+                        label={roleLabels[user.role] || user.role}
                         sx={{
-                            color: roleColors[user.role] || 'text.secondary',
+                            bgcolor: 'rgba(255,255,255,0.1)',
+                            color: 'white',
                             fontWeight: 600,
-                            mt: 0.5
+                            border: '1px solid rgba(255,255,255,0.2)'
                         }}
-                    >
-                        {roleLabels[user.role] || user.role}
-                    </Typography>
+                    />
                 </Box>
 
-                <Divider sx={{ mb: 4 }} />
+                <Divider sx={{ mb: 6, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-                <Grid container spacing={3}>
+                <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                             <Box sx={{
-                                bgcolor: 'grey.100',
-                                p: 1.5,
-                                borderRadius: 2,
-                                mr: 2
+                                bgcolor: 'rgba(255,255,255,0.05)',
+                                p: 2,
+                                borderRadius: '16px',
+                                mr: 3,
+                                color: '#FF8E53'
                             }}>
-                                <Email color="action" />
+                                <Email fontSize="large" color="inherit" />
                             </Box>
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Email
                                 </Typography>
-                                <Typography variant="body1" fontWeight={500}>
+                                <Typography variant="h6" fontWeight={500}>
                                     {user.email}
                                 </Typography>
                             </Box>
@@ -92,20 +106,21 @@ const UserProfile = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                             <Box sx={{
-                                bgcolor: 'grey.100',
-                                p: 1.5,
-                                borderRadius: 2,
-                                mr: 2
+                                bgcolor: 'rgba(255,255,255,0.05)',
+                                p: 2,
+                                borderRadius: '16px',
+                                mr: 3,
+                                color: '#FE6B8B'
                             }}>
-                                <CalendarToday color="action" />
+                                <CalendarToday fontSize="large" color="inherit" />
                             </Box>
                             <Box>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Ngày tham gia
                                 </Typography>
-                                <Typography variant="body1" fontWeight={500}>
+                                <Typography variant="h6" fontWeight={500}>
                                     {user.createdAt ? format(new Date(user.createdAt), 'dd/MM/yyyy') : 'N/A'}
                                 </Typography>
                             </Box>
@@ -113,20 +128,21 @@ const UserProfile = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', mt: 2 }}>
                             <Box sx={{
-                                bgcolor: 'grey.100',
-                                p: 1.5,
-                                borderRadius: 2,
-                                mr: 2
+                                bgcolor: 'rgba(255,255,255,0.05)',
+                                p: 2,
+                                borderRadius: '16px',
+                                mr: 3,
+                                color: 'white'
                             }}>
-                                <Person color="action" />
+                                <Person fontSize="large" color="inherit" />
                             </Box>
                             <Box sx={{ flexGrow: 1 }}>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Giới thiệu
                                 </Typography>
-                                <Typography variant="body1" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.8)', fontStyle: 'italic', mt: 1, lineHeight: 1.6 }}>
                                     (Chưa có thông tin giới thiệu)
                                 </Typography>
                             </Box>
@@ -134,12 +150,22 @@ const UserProfile = () => {
                     </Grid>
                 </Grid>
 
-                <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
                     <Button
                         variant="outlined"
                         startIcon={<Edit />}
                         disabled
-                        sx={{ borderRadius: 2 }}
+                        sx={{
+                            borderRadius: '30px',
+                            px: 4,
+                            py: 1.5,
+                            borderColor: 'rgba(255,255,255,0.3)',
+                            color: 'rgba(255,255,255,0.5)',
+                            '&:hover': {
+                                borderColor: '#FF8E53',
+                                color: '#FF8E53'
+                            }
+                        }}
                     >
                         Chỉnh sửa thông tin
                     </Button>

@@ -118,55 +118,86 @@ const EventRegistrations = () => {
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 10, minHeight: '80vh' }}>
             <Button
                 startIcon={<ArrowBack />}
                 onClick={() => navigate('/events/manage')}
-                sx={{ mb: 3 }}
+                sx={{
+                    mb: 4,
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+                }}
             >
                 Quay lại danh sách
             </Button>
 
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" gutterBottom>
+            <Box sx={{ mb: 5 }}>
+                <Typography
+                    variant="h3"
+                    gutterBottom
+                    sx={{
+                        fontWeight: 800,
+                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                    }}
+                >
                     Quản lý đăng ký
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                    Sự kiện: <strong>{event?.name}</strong>
-                </Typography>
-                <Typography variant="body2">
-                    Tổng số đăng ký: {registrations.length}
+                <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: 400 }}>
+                    Sự kiện: <strong style={{ color: '#FF8E53' }}>{event?.name}</strong>
                 </Typography>
             </Box>
 
             {/* Statistics Cards */}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ mb: 4 }}>
-                <Card sx={{ flex: 1 }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ mb: 5 }}>
+                <Card sx={{
+                    flex: 1,
+                    bgcolor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '24px',
+                    color: 'white'
+                }}>
                     <CardContent>
-                        <Typography color="textSecondary" gutterBottom>
+                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
                             Tổng số đăng ký
                         </Typography>
-                        <Typography variant="h4">
+                        <Typography variant="h3" fontWeight={700}>
                             {registrations.length}
                         </Typography>
                     </CardContent>
                 </Card>
-                <Card sx={{ flex: 1 }}>
+                <Card sx={{
+                    flex: 1,
+                    bgcolor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '24px',
+                    color: 'white'
+                }}>
                     <CardContent>
-                        <Typography color="textSecondary" gutterBottom>
+                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
                             Đã duyệt
                         </Typography>
-                        <Typography variant="h4" color="success.main">
+                        <Typography variant="h3" sx={{ color: '#66bb6a', fontWeight: 700 }}>
                             {registrations.filter(r => r.status === 'APPROVED' || r.status === 'COMPLETED').length}
                         </Typography>
                     </CardContent>
                 </Card>
-                <Card sx={{ flex: 1 }}>
+                <Card sx={{
+                    flex: 1,
+                    bgcolor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    borderRadius: '24px',
+                    color: 'white'
+                }}>
                     <CardContent>
-                        <Typography color="textSecondary" gutterBottom>
+                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
                             Tỷ lệ hoàn thành
                         </Typography>
-                        <Typography variant="h4" color="info.main">
+                        <Typography variant="h3" sx={{ color: '#29b6f6', fontWeight: 700 }}>
                             {(() => {
                                 const approved = registrations.filter(r => r.status === 'APPROVED' || r.status === 'COMPLETED').length;
                                 const completed = registrations.filter(r => r.status === 'COMPLETED').length;
@@ -178,42 +209,69 @@ const EventRegistrations = () => {
             </Stack>
 
             {/* Toolbar with Export */}
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                     variant="outlined"
                     startIcon={<FileDownload />}
                     onClick={handleExport}
+                    sx={{
+                        color: '#FF8E53',
+                        borderColor: 'rgba(255, 142, 83, 0.5)',
+                        borderRadius: '20px',
+                        px: 3,
+                        '&:hover': {
+                            borderColor: '#FF8E53',
+                            bgcolor: 'rgba(255, 142, 83, 0.1)'
+                        }
+                    }}
                 >
-                    Xuất danh sách (CSV)
+                    Xuất CSV
                 </Button>
             </Box>
 
-            <TableContainer component={Paper}>
+            <TableContainer
+                component={Paper}
+                sx={{
+                    bgcolor: 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '24px',
+                    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                }}
+            >
                 <Table>
                     <TableHead>
-                        <TableRow>
-                            <TableCell>STT</TableCell>
-                            <TableCell>Tên Tình nguyện viên</TableCell>
-                            <TableCell>Ngày đăng ký</TableCell>
-                            <TableCell>Trạng thái</TableCell>
-                            <TableCell align="center">Thao tác</TableCell>
+                        <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
+                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>STT</TableCell>
+                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Tên Tình nguyện viên</TableCell>
+                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Ngày đăng ký</TableCell>
+                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Trạng thái</TableCell>
+                            <TableCell align="center" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {registrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center">Chưa có lượt đăng ký nào</TableCell>
+                                <TableCell colSpan={5} align="center" sx={{ py: 5, color: 'rgba(255,255,255,0.5)' }}>Chưa có lượt đăng ký nào</TableCell>
                             </TableRow>
                         ) : (
                             registrations.map((reg, index) => (
-                                <TableRow key={reg.id} hover>
-                                    <TableCell>{index + 1}</TableCell>
+                                <TableRow
+                                    key={reg.id}
+                                    hover
+                                    sx={{
+                                        '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                                        transition: 'background-color 0.2s',
+                                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                    }}
+                                >
+                                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)' }}>{index + 1}</TableCell>
                                     <TableCell>
-                                        <Typography variant="body1" fontWeight="medium">
+                                        <Typography variant="body1" fontWeight={600} sx={{ color: 'white' }}>
                                             {reg.userName}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)' }}>
                                         {format(new Date(reg.registeredAt), 'dd/MM/yyyy HH:mm')}
                                     </TableCell>
                                     <TableCell>{getStatusChip(reg.status)}</TableCell>
@@ -224,9 +282,13 @@ const EventRegistrations = () => {
                                                     <Tooltip title="Duyệt">
                                                         <span>
                                                             <IconButton
-                                                                color="success"
                                                                 onClick={() => handleAction(reg.id, 'approve')}
                                                                 disabled={processing === reg.id}
+                                                                sx={{
+                                                                    color: '#66bb6a',
+                                                                    bgcolor: 'rgba(102, 187, 106, 0.1)',
+                                                                    '&:hover': { bgcolor: 'rgba(102, 187, 106, 0.2)' }
+                                                                }}
                                                             >
                                                                 <Done />
                                                             </IconButton>
@@ -235,9 +297,13 @@ const EventRegistrations = () => {
                                                     <Tooltip title="Từ chối">
                                                         <span>
                                                             <IconButton
-                                                                color="error"
                                                                 onClick={() => handleAction(reg.id, 'reject')}
                                                                 disabled={processing === reg.id}
+                                                                sx={{
+                                                                    color: '#ef5350',
+                                                                    bgcolor: 'rgba(239, 83, 80, 0.1)',
+                                                                    '&:hover': { bgcolor: 'rgba(239, 83, 80, 0.2)' }
+                                                                }}
                                                             >
                                                                 <Cancel />
                                                             </IconButton>
@@ -249,9 +315,13 @@ const EventRegistrations = () => {
                                                 <Tooltip title="Xác nhận hoàn thành">
                                                     <span>
                                                         <IconButton
-                                                            color="info"
                                                             onClick={() => handleAction(reg.id, 'complete')}
                                                             disabled={processing === reg.id}
+                                                            sx={{
+                                                                color: '#29b6f6',
+                                                                bgcolor: 'rgba(41, 182, 246, 0.1)',
+                                                                '&:hover': { bgcolor: 'rgba(41, 182, 246, 0.2)' }
+                                                            }}
                                                         >
                                                             <TaskAlt />
                                                         </IconButton>
@@ -259,7 +329,7 @@ const EventRegistrations = () => {
                                                 </Tooltip>
                                             )}
                                             {['REJECTED', 'COMPLETED', 'CANCELLED'].includes(reg.status) && (
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" color="rgba(255,255,255,0.3)">
                                                     -
                                                 </Typography>
                                             )}

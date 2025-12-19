@@ -86,20 +86,34 @@ const EditEvent = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 3 }}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 10, minHeight: '80vh' }}>
+      <Box sx={{ mb: 5 }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => navigate("/events/manage")}
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 3,
+            color: 'rgba(255,255,255,0.7)',
+            '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+          }}
         >
           Quay lại danh sách
         </Button>
-        <Typography variant="h4" component="h1">
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{
+            fontWeight: 800,
+            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 1
+          }}
+        >
           Chỉnh sửa sự kiện
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          Cập nhật thông tin sự kiện của bạn
+        <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+          Cập nhật thông tin chi tiết cho sự kiện của bạn
         </Typography>
       </Box>
 
@@ -107,7 +121,7 @@ const EditEvent = () => {
         <EventForm
           initialData={event}
           onSubmit={handleSubmit}
-          submitLabel="Cập nhật"
+          submitLabel="Cập nhật thay đổi"
           loading={submitting}
         />
       )}

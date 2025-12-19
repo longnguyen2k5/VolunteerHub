@@ -133,13 +133,18 @@ const EventApproval = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
-          <Typography variant="h4" component="h1">
+          <Typography variant="h4" component="h1" fontWeight={700} sx={{
+            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 1
+          }}>
             Quản lý sự kiện
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
             Duyệt và kiểm soát trạng thái các sự kiện
           </Typography>
         </Box>
@@ -147,18 +152,33 @@ const EventApproval = () => {
           variant="outlined"
           startIcon={<DownloadIcon />}
           onClick={handleExport}
+          sx={{
+            borderColor: 'rgba(255,255,255,0.3)',
+            color: 'white',
+            '&:hover': { borderColor: '#FF8E53', color: '#FF8E53' }
+          }}
         >
           Export CSV
         </Button>
       </Box>
 
-      <Paper sx={{ mb: 3 }}>
+      <Paper sx={{
+        mb: 4,
+        bgcolor: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '16px',
+        overflow: 'hidden'
+      }}>
         <Tabs
           value={currentTab}
           onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
           centered
+          sx={{
+            '& .MuiTab-root': { color: 'rgba(255,255,255,0.6)', fontWeight: 600 },
+            '& .Mui-selected': { color: '#FF8E53 !important' },
+            '& .MuiTabs-indicator': { bgcolor: '#FF8E53' }
+          }}
         >
           <Tab label="Chờ phê duyệt" value="PENDING_APPROVAL" />
           <Tab label="Đã duyệt" value="APPROVED" />
@@ -168,35 +188,43 @@ const EventApproval = () => {
 
       {loading ? (
         <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress />
+          <CircularProgress sx={{ color: '#FF8E53' }} />
         </Container>
       ) : events.length === 0 ? (
-        <Alert severity="info">
+        <Alert severity="info" sx={{ bgcolor: 'rgba(2, 136, 209, 0.15)', color: '#29b6f6', border: '1px solid rgba(41, 182, 246, 0.3)' }}>
           {currentTab === 'PENDING_APPROVAL'
             ? "Không có sự kiện nào đang chờ duyệt."
             : "Không có sự kiện nào trong danh sách này."}
         </Alert>
       ) : (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{
+          bgcolor: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '16px',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>Tên sự kiện</TableCell>
-                <TableCell>Người tạo</TableCell>
-                <TableCell>Địa điểm</TableCell>
-                <TableCell>Thời gian bắt đầu</TableCell>
-                <TableCell>Trạng thái</TableCell>
-                <TableCell align="center">Thao tác</TableCell>
+              <TableRow sx={{ bgcolor: 'rgba(255,255,255,0.05)' }}>
+                {['Tên sự kiện', 'Người tạo', 'Địa điểm', 'Thời gian bắt đầu', 'Trạng thái', 'Thao tác'].map((head) => (
+                  <TableCell key={head} sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {events.map((event) => (
-                <TableRow key={event.id} hover>
+                <TableRow key={event.id} hover sx={{
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                  '& td': { borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'white' }
+                }}>
                   <TableCell>
-                    <Typography variant="body1" fontWeight="medium">
+                    <Typography variant="body1" fontWeight="bold">
                       {event.name}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
                       {event.description?.substring(0, 60)}
                       {event.description?.length > 60 ? "..." : ""}
                     </Typography>
@@ -230,6 +258,7 @@ const EventApproval = () => {
                           color="success"
                           startIcon={<ApproveIcon />}
                           onClick={() => openDialog(event, "approve")}
+                          sx={{ background: 'linear-gradient(45deg, #43a047 30%, #66bb6a 90%)', color: 'white' }}
                         >
                           Duyệt
                         </Button>
@@ -244,11 +273,6 @@ const EventApproval = () => {
                         </Button>
                       </Stack>
                     ) : (
-                      // If not Approved and not Pending (i.e. REJECTED), check if we want Revert there too?
-                      // User manual said "duyệt một sự kiện thì có thể sang lại tab sự kiện đã được duyệt"
-                      // So minimal scope is Approved tab. For Rejected, logic is same if we want.
-                      // Let's keep it simple for now or add Revert to Rejected too?
-                      // "đưa lại sự kiện đó quay lại hàng đợi duyệt/từ chối"
                       event.status === 'REJECTED' && (
                         <Button
                           size="small"
@@ -274,14 +298,25 @@ const EventApproval = () => {
       )}
 
       {/* Confirmation Dialog */}
-      <Dialog open={dialogOpen} onClose={closeDialog}>
-        <DialogTitle>
+      <Dialog
+        open={dialogOpen}
+        onClose={closeDialog}
+        PaperProps={{
+          sx: {
+            bgcolor: '#1e1e1e',
+            color: 'white',
+            border: '1px solid rgba(255,255,255,0.1)',
+            minWidth: 400
+          }
+        }}
+      >
+        <DialogTitle sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           {actionType === "approve"
             ? "Xác nhận duyệt sự kiện"
             : actionType === "reject" ? "Xác nhận từ chối sự kiện" : "Xác nhận hoàn tác sự kiện"}
         </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
+        <DialogContent sx={{ mt: 2 }}>
+          <DialogContentText sx={{ color: 'rgba(255,255,255,0.8)' }}>
             {actionType === "approve" ? (
               <>
                 Bạn có chắc chắn muốn <strong>duyệt</strong> sự kiện{" "}
@@ -302,8 +337,8 @@ const EventApproval = () => {
             )}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={closeDialog}>Hủy</Button>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={closeDialog} sx={{ color: 'rgba(255,255,255,0.6)' }}>Hủy</Button>
           <Button
             onClick={handleAction}
             color={actionType === "approve" ? "success" : actionType === "reject" ? "error" : "warning"}

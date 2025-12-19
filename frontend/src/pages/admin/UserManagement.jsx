@@ -141,74 +141,118 @@ const UserManagement = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" component="h1">
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" component="h1" fontWeight={700} sx={{
+          background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          mb: 1
+        }}>
           Quản lý người dùng
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
           Quản lý tài khoản và quyền truy cập của người dùng
         </Typography>
       </Box>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-        <TextField
-          select
-          label="Vai trò"
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          sx={{ minWidth: 200 }}
-          size="small"
-        >
-          <MenuItem value="ALL">Tất cả</MenuItem>
-          <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
-          <MenuItem value="EVENT_MANAGER">Quản lý sự kiện</MenuItem>
-          <MenuItem value="ADMIN">Quản trị viên</MenuItem>
-        </TextField>
+      <Paper sx={{
+        p: 3,
+        mb: 4,
+        bgcolor: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '16px'
+      }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+          <TextField
+            select
+            label="Vai trò"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            sx={{
+              minWidth: 200,
+              '& .MuiOutlinedInput-root': {
+                color: 'white',
+                '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+              },
+              '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+              '& .MuiSelect-icon': { color: 'white' }
+            }}
+            size="small"
+          >
+            <MenuItem value="ALL">Tất cả</MenuItem>
+            <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
+            <MenuItem value="EVENT_MANAGER">Quản lý sự kiện</MenuItem>
+            <MenuItem value="ADMIN">Quản trị viên</MenuItem>
+          </TextField>
 
-        <TextField
-          label="Tìm kiếm"
-          placeholder="Tên hoặc email..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          size="small"
-          sx={{ flexGrow: 1 }}
-        />
+          <TextField
+            label="Tìm kiếm"
+            placeholder="Tên hoặc email..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            size="small"
+            sx={{
+              flexGrow: 1,
+              '& .MuiOutlinedInput-root': {
+                color: 'white',
+                '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+              },
+              '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' }
+            }}
+          />
 
-        <Button
-          variant="outlined"
-          startIcon={<Download />}
-          onClick={handleExport}
-        >
-          Export CSV
-        </Button>
-      </Stack>
+          <Button
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={handleExport}
+            sx={{
+              borderColor: 'rgba(255,255,255,0.3)',
+              color: 'white',
+              height: 40,
+              '&:hover': { borderColor: '#FF8E53', color: '#FF8E53' }
+            }}
+          >
+            Export CSV
+          </Button>
+        </Stack>
+      </Paper>
 
       {filteredUsers.length === 0 ? (
-        <Alert severity="info">
+        <Alert severity="info" sx={{ bgcolor: 'rgba(2, 136, 209, 0.15)', color: '#29b6f6', border: '1px solid rgba(41, 182, 246, 0.3)' }}>
           {searchQuery || roleFilter !== "ALL"
             ? "Không tìm thấy người dùng phù hợp."
             : "Chưa có người dùng nào trong hệ thống."}
         </Alert>
       ) : (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{
+          bgcolor: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '16px',
+          boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
+        }}>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Họ và tên</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Vai trò</TableCell>
-                <TableCell>Trạng thái</TableCell>
-                <TableCell>Ngày tạo</TableCell>
-                <TableCell align="center">Thao tác</TableCell>
+              <TableRow sx={{ bgcolor: 'rgba(255,255,255,0.05)' }}>
+                {['ID', 'Họ và tên', 'Email', 'Vai trò', 'Trạng thái', 'Ngày tạo', 'Thao tác'].map((head) => (
+                  <TableCell key={head} sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    {head}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredUsers.map((user) => (
-                <TableRow key={user.id} hover>
+                <TableRow key={user.id} hover sx={{
+                  '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                  '& td': { borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'white' }
+                }}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>
-                    <Typography variant="body1" fontWeight="medium">
+                    <Typography variant="body1" fontWeight={500}>
                       {user.fullName}
                     </Typography>
                   </TableCell>
@@ -240,6 +284,11 @@ const UserManagement = () => {
                             handleToggleLock(user.id, user.isLocked)
                           }
                           disabled={user.id === currentUser?.id}
+                          sx={{
+                            bgcolor: 'rgba(255,255,255,0.05)',
+                            '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                            '&:disabled': { opacity: 0.3 }
+                          }}
                         >
                           {user.isLocked ? <UnlockIcon /> : <LockIcon />}
                         </IconButton>

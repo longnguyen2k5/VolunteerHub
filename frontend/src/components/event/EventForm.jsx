@@ -147,10 +147,38 @@ const EventForm = ({
     }
   };
 
+  const textFieldStyle = {
+    '& .MuiOutlinedInput-root': {
+      color: 'white',
+      bgcolor: 'rgba(0,0,0,0.2)',
+      borderRadius: '12px',
+      '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+      '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+      '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+    },
+    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+    '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+    '& .MuiFormHelperText-root': { color: 'rgba(255,255,255,0.5)' },
+    '& .MuiSvgIcon-root': { color: 'white' },
+    '& input[type="datetime-local"]::-webkit-calendar-picker-indicator': {
+      filter: 'invert(1)',
+      cursor: 'pointer'
+    }
+  };
+
   return (
-    <Paper sx={{ p: 3 }}>
+    <Paper
+      sx={{
+        p: 4,
+        bgcolor: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '24px',
+        boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+      }}
+    >
       <form onSubmit={handleSubmit} noValidate>
-        <Stack spacing={3}>
+        <Stack spacing={4}>
           <TextField
             label="Tên sự kiện"
             name="name"
@@ -161,6 +189,7 @@ const EventForm = ({
             fullWidth
             required
             disabled={loading}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -174,6 +203,19 @@ const EventForm = ({
             fullWidth
             required
             disabled={loading}
+            sx={textFieldStyle}
+            SelectProps={{
+              MenuProps: {
+                PaperProps: {
+                  sx: {
+                    bgcolor: '#1e1e1e',
+                    color: 'white',
+                    '& .MuiMenuItem-root:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'rgba(255, 142, 83, 0.2)' },
+                  }
+                }
+              }
+            }}
           >
             {Object.entries(CATEGORIES).map(([key, label]) => (
               <MenuItem key={key} value={key}>
@@ -194,6 +236,7 @@ const EventForm = ({
             multiline
             rows={4}
             disabled={loading}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -206,6 +249,7 @@ const EventForm = ({
             fullWidth
             required
             disabled={loading}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -217,6 +261,7 @@ const EventForm = ({
             helperText={errors.imageUrl || "Copy link ảnh từ internet vào đây"}
             fullWidth
             disabled={loading}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -231,6 +276,7 @@ const EventForm = ({
             required
             disabled={loading}
             inputProps={{ min: 1 }}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -245,6 +291,7 @@ const EventForm = ({
             required
             InputLabelProps={{ shrink: true }}
             disabled={loading}
+            sx={textFieldStyle}
           />
 
           <TextField
@@ -259,14 +306,27 @@ const EventForm = ({
             required
             InputLabelProps={{ shrink: true }}
             disabled={loading}
+            sx={textFieldStyle}
           />
 
-          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 2 }}>
             <Button
               type="submit"
               variant="contained"
-              color="primary"
               disabled={loading}
+              sx={{
+                borderRadius: '30px',
+                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                px: 5,
+                py: 1,
+                '&:hover': {
+                  boxShadow: '0 6px 15px 4px rgba(255, 105, 135, .4)',
+                  transform: 'translateY(-2px)'
+                }
+              }}
             >
               {loading ? "Đang xử lý..." : submitLabel}
             </Button>

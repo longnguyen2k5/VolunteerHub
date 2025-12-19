@@ -202,25 +202,63 @@ const EventChannel = () => {
     if (!event) return null;
 
     return (
-        <Container maxWidth="md" sx={{ py: 4 }}>
+        <Container maxWidth="md" sx={{ py: 6, position: 'relative', minHeight: '100vh', pb: 10 }}>
+            {/* Back Button */}
             <Button
                 startIcon={<ArrowBack />}
                 onClick={() => navigate(`/events/${id}`)}
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 4,
+                    color: 'white',
+                    bgcolor: 'rgba(255,255,255,0.05)',
+                    backdropFilter: 'blur(10px)',
+                    px: 3,
+                    py: 1,
+                    borderRadius: '30px',
+                    '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                }}
             >
                 Quay lại sự kiện
             </Button>
 
-            <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Typography variant="h4" gutterBottom>{event.name}</Typography>
-                <Typography variant="subtitle1" color="text.secondary">Kênh thảo luận</Typography>
+            <Box sx={{ mb: 6, textAlign: 'center' }}>
+                <Typography variant="h3" fontWeight={800} gutterBottom sx={{
+                    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                }}>
+                    {event.name}
+                </Typography>
+                <Chip
+                    label="Kênh thảo luận"
+                    sx={{
+                        bgcolor: 'rgba(255,255,255,0.1)',
+                        color: '#FF8E53',
+                        fontWeight: 600,
+                        border: '1px solid rgba(255,255,255,0.2)'
+                    }}
+                />
             </Box>
 
             {/* Create Post Widget */}
-            <Card sx={{ mb: 4 }}>
-                <CardContent>
-                    <Stack direction="row" spacing={2} alignItems="flex-start">
-                        <Avatar sx={{ bgcolor: 'primary.main' }}>{user?.fullName?.charAt(0)}</Avatar>
+            <Card sx={{
+                mb: 6,
+                bgcolor: 'rgba(255, 255, 255, 0.05)',
+                backdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '24px',
+                overflow: 'visible'
+            }}>
+                <CardContent sx={{ p: 3 }}>
+                    <Stack direction="row" spacing={3} alignItems="flex-start">
+                        <Avatar sx={{
+                            bgcolor: 'primary.main',
+                            width: 48,
+                            height: 48,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                        }}>
+                            {user?.fullName?.charAt(0)}
+                        </Avatar>
                         <Box sx={{ flexGrow: 1 }}>
                             <TextField
                                 fullWidth
@@ -229,7 +267,18 @@ const EventChannel = () => {
                                 rows={3}
                                 value={newPostContent}
                                 onChange={(e) => setNewPostContent(e.target.value)}
-                                sx={{ mb: 1 }}
+                                sx={{
+                                    mb: 2,
+                                    '& .MuiOutlinedInput-root': {
+                                        color: 'white',
+                                        bgcolor: 'rgba(0,0,0,0.2)',
+                                        borderRadius: '16px',
+                                        '& fieldset': { borderColor: 'transparent' },
+                                        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+                                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                                    },
+                                    '& .MuiInputBase-input::placeholder': { color: 'rgba(255,255,255,0.4)' }
+                                }}
                             />
                             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                 <Button
@@ -237,6 +286,13 @@ const EventChannel = () => {
                                     endIcon={<Send />}
                                     onClick={handleCreatePost}
                                     disabled={!newPostContent.trim()}
+                                    sx={{
+                                        borderRadius: '20px',
+                                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                        boxShadow: '0 4px 15px rgba(254, 107, 139, 0.3)',
+                                        textTransform: 'none',
+                                        fontWeight: 600
+                                    }}
                                 >
                                     Đăng bài
                                 </Button>
@@ -246,56 +302,73 @@ const EventChannel = () => {
                 </CardContent>
             </Card>
 
-            <Divider sx={{ mb: 4 }}>
-                <Chip label="Bảng tin" />
+            <Divider sx={{ mb: 6, '&::before, &::after': { borderColor: 'rgba(255,255,255,0.1)' } }}>
+                <Chip label="Bảng tin" sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: 'white' }} />
             </Divider>
 
             {/* Posts Feed */}
-            <Stack spacing={3}>
+            <Stack spacing={4}>
                 {posts.length === 0 && (
-                    <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
-                        <Typography>Chưa có bài viết nào. Hãy là người đầu tiên đăng bài!</Typography>
+                    <Box sx={{ textAlign: 'center', py: 8, color: 'rgba(255,255,255,0.5)' }}>
+                        <CommentIcon sx={{ fontSize: 60, mb: 2, opacity: 0.5 }} />
+                        <Typography variant="h6">Chưa có bài viết nào.</Typography>
+                        <Typography variant="body2">Hãy là người đầu tiên bắt đầu cuộc trò chuyện!</Typography>
                     </Box>
                 )}
                 {posts.map(post => (
-                    <Card key={post.id} sx={{ bgcolor: '#f9f9f9' }}>
-                        <CardContent>
+                    <Card key={post.id} sx={{
+                        bgcolor: 'rgba(255, 255, 255, 0.03)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                        borderRadius: '20px',
+                        color: 'white'
+                    }}>
+                        <CardContent sx={{ p: 3 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                                 <Stack direction="row" spacing={2} alignItems="center">
-                                    <Avatar>{post.userName?.charAt(0)}</Avatar>
+                                    <Avatar sx={{ bgcolor: 'rgba(255,255,255,0.1)', color: '#FF8E53' }}>
+                                        {post.userName?.charAt(0)}
+                                    </Avatar>
                                     <Box>
-                                        <Typography variant="subtitle2">{post.userName}</Typography>
-                                        <Typography variant="caption" color="text.secondary">
+                                        <Typography variant="subtitle1" fontWeight={600} sx={{ color: '#FF8E53' }}>
+                                            {post.userName}
+                                        </Typography>
+                                        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
                                             {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true, locale: vi })}
                                         </Typography>
                                     </Box>
                                 </Stack>
                                 {(user?.id === post.userId || user?.role === 'ADMIN' || user?.role === 'EVENT_MANAGER') && (
-                                    <IconButton size="small" onClick={() => handleDeletePost(post.id)}>
+                                    <IconButton size="small" onClick={() => handleDeletePost(post.id)} sx={{ color: 'rgba(255,255,255,0.3)', '&:hover': { color: '#ff1744' } }}>
                                         <Delete fontSize="small" />
                                     </IconButton>
                                 )}
                             </Box>
 
-                            <Typography variant="body1" paragraph style={{ whiteSpace: 'pre-line' }}>
+                            <Typography variant="body1" paragraph style={{ whiteSpace: 'pre-line', lineHeight: 1.6 }}>
                                 {post.content}
                             </Typography>
 
-                            <Divider sx={{ my: 1 }} />
+                            <Divider sx={{ my: 2, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-                            <Stack direction="row" spacing={2}>
+                            <Stack direction="row" spacing={1}>
                                 <Button
                                     size="small"
                                     startIcon={post.isLikedByCurrentUser ? <ThumbUp /> : <ThumbUpOutlined />}
                                     color={post.isLikedByCurrentUser ? "primary" : "inherit"}
                                     onClick={() => handleLikePost(post.id, post.isLikedByCurrentUser)}
+                                    sx={{
+                                        color: post.isLikedByCurrentUser ? '#FF8E53' : 'rgba(255,255,255,0.7)',
+                                        borderRadius: '20px',
+                                        textTransform: 'none'
+                                    }}
                                 >
                                     {post.likeCount} Thích
                                 </Button>
                                 <Button
                                     size="small"
                                     startIcon={<CommentIcon />}
-                                    color="inherit"
+                                    sx={{ color: 'rgba(255,255,255,0.7)', borderRadius: '20px', textTransform: 'none' }}
                                     onClick={() => toggleComments(post.id)}
                                 >
                                     {post.commentCount} Bình luận
@@ -304,35 +377,44 @@ const EventChannel = () => {
 
                             {/* Comments Section */}
                             {expandedComments[post.id] && (
-                                <Box sx={{ mt: 2, pl: 2, borderLeft: '2px solid #ddd' }}>
+                                <Box sx={{ mt: 3, pl: 0 }}>
                                     {/* Comments List */}
-                                    <Stack spacing={2} sx={{ mb: 2 }}>
+                                    <Stack spacing={2} sx={{ mb: 3 }}>
                                         {commentsMap[post.id]?.map(comment => (
-                                            <Box key={comment.id} sx={{ bgcolor: 'white', p: 1.5, borderRadius: 1 }}>
-                                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                    <Typography variant="subtitle2" sx={{ fontSize: '0.875rem' }}>
+                                            <Box key={comment.id} sx={{
+                                                bgcolor: 'rgba(0,0,0,0.3)',
+                                                p: 2,
+                                                borderRadius: '16px',
+                                                border: '1px solid rgba(255,255,255,0.05)'
+                                            }}>
+                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+                                                    <Typography variant="subtitle2" sx={{ fontSize: '0.9rem', fontWeight: 600, color: '#e0e0e0' }}>
                                                         {comment.userName}
                                                     </Typography>
-                                                    <Typography variant="caption" color="text.secondary">
+                                                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.4)' }}>
                                                         {formatDistanceToNow(new Date(comment.createdAt), { locale: vi })}
                                                     </Typography>
                                                 </Box>
-                                                <Typography variant="body2">{comment.content}</Typography>
+                                                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                                                    {comment.content}
+                                                </Typography>
                                                 {(user?.id === comment.userId || user?.role === 'ADMIN') && (
-                                                    <Typography
-                                                        variant="caption"
-                                                        sx={{ cursor: 'pointer', color: 'error.main' }}
-                                                        onClick={() => handleDeleteComment(post.id, comment.id)}
-                                                    >
-                                                        Xóa
-                                                    </Typography>
+                                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0.5 }}>
+                                                        <Typography
+                                                            variant="caption"
+                                                            sx={{ cursor: 'pointer', color: 'rgba(255,255,255,0.4)', '&:hover': { color: '#ff1744' } }}
+                                                            onClick={() => handleDeleteComment(post.id, comment.id)}
+                                                        >
+                                                            Xóa
+                                                        </Typography>
+                                                    </Box>
                                                 )}
                                             </Box>
                                         ))}
                                     </Stack>
 
                                     {/* New Comment Input */}
-                                    <Stack direction="row" spacing={1}>
+                                    <Stack direction="row" spacing={1} alignItems="center">
                                         <TextField
                                             size="small"
                                             fullWidth
@@ -348,8 +430,25 @@ const EventChannel = () => {
                                                     e.preventDefault();
                                                 }
                                             }}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    bgcolor: 'rgba(0,0,0,0.2)',
+                                                    borderRadius: '20px',
+                                                    color: 'white',
+                                                    '& fieldset': { border: 'none' },
+                                                },
+                                                '& input::placeholder': { color: 'rgba(255,255,255,0.4)' }
+                                            }}
                                         />
-                                        <IconButton color="primary" onClick={() => handleCreateComment(post.id)}>
+                                        <IconButton
+                                            onClick={() => handleCreateComment(post.id)}
+                                            disabled={!newCommentContent[post.id]?.trim()}
+                                            sx={{
+                                                color: '#FF8E53',
+                                                bgcolor: 'rgba(255,142,83,0.1)',
+                                                '&:hover': { bgcolor: 'rgba(255,142,83,0.2)' }
+                                            }}
+                                        >
                                             <Send />
                                         </IconButton>
                                     </Stack>

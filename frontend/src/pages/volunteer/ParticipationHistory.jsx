@@ -68,44 +68,87 @@ const ParticipationHistory = () => {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ mb: 3 }}>
-                <Typography variant="h4" component="h1">
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 8, minHeight: '80vh' }}>
+            <Box sx={{ mb: 5, textAlign: 'center' }}>
+                <Typography
+                    variant="h3"
+                    component="h1"
+                    sx={{
+                        fontWeight: 800,
+                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        mb: 2
+                    }}
+                >
                     Lịch sử tham gia
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    Danh sách các sự kiện bạn đã đăng ký tham gia
+                <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                    Hành trình đóng góp của bạn cho cộng đồng
                 </Typography>
             </Box>
 
             {registrations.length === 0 ? (
-                <Alert severity="info">Bạn chưa đăng ký tham gia sự kiện nào.</Alert>
+                <Alert
+                    severity="info"
+                    sx={{
+                        bgcolor: 'rgba(255,255,255,0.05)',
+                        color: 'white',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        backdropFilter: 'blur(10px)'
+                    }}
+                >
+                    Bạn chưa đăng ký tham gia sự kiện nào. Hãy khám phá và tham gia ngay!
+                </Alert>
             ) : (
-                <TableContainer component={Paper}>
+                <TableContainer
+                    component={Paper}
+                    sx={{
+                        bgcolor: 'rgba(255, 255, 255, 0.05)',
+                        backdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '24px',
+                        boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        overflow: 'hidden'
+                    }}
+                >
                     <Table>
                         <TableHead>
-                            <TableRow>
-                                <TableCell>Tên sự kiện</TableCell>
-                                <TableCell>Thời gian tổ chức</TableCell>
-                                <TableCell>Địa điểm</TableCell>
-                                <TableCell>Ngày đăng ký</TableCell>
-                                <TableCell>Trạng thái</TableCell>
+                            <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
+                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Tên sự kiện</TableCell>
+                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Thời gian</TableCell>
+                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Địa điểm</TableCell>
+                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Ngày đăng ký</TableCell>
+                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Trạng thái</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {registrations.map((reg) => (
-                                <TableRow key={reg.id} hover>
-                                    <TableCell>
-                                        <Typography variant="body1" fontWeight="medium">
+                                <TableRow
+                                    key={reg.id}
+                                    hover
+                                    sx={{
+                                        '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                                        transition: 'background-color 0.2s'
+                                    }}
+                                >
+                                    <TableCell sx={{ color: 'white', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <Typography variant="body1" fontWeight={600} sx={{ color: '#FF8E53' }}>
                                             {reg.eventName}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                         {formatDateTime(reg.eventStartTime)}
                                     </TableCell>
-                                    <TableCell>{reg.eventLocation}</TableCell>
-                                    <TableCell>{formatDateTime(reg.registeredAt)}</TableCell>
-                                    <TableCell>{getStatusChip(reg.status)}</TableCell>
+                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        {reg.eventLocation}
+                                    </TableCell>
+                                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        {formatDateTime(reg.registeredAt)}
+                                    </TableCell>
+                                    <TableCell sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        {getStatusChip(reg.status)}
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
