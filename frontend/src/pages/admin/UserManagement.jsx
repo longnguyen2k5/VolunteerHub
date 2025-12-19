@@ -25,6 +25,7 @@ import { format } from "date-fns";
 import { getAllUsers, lockUser, unlockUser, exportUsers } from "../../api/adminApi";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
+import { useThemeContext } from "../../context/ThemeContext";
 
 const UserManagement = () => {
   const { user: currentUser } = useAuth();
@@ -32,6 +33,7 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const { glassSx } = useThemeContext();
 
   useEffect(() => {
     loadUsers();
@@ -134,7 +136,7 @@ const UserManagement = () => {
         maxWidth="lg"
         sx={{ mt: 4, display: "flex", justifyContent: "center" }}
       >
-        <CircularProgress />
+        <CircularProgress sx={{ color: 'primary.main' }} />
       </Container>
     );
   }
@@ -150,7 +152,7 @@ const UserManagement = () => {
         }}>
           Quản lý người dùng
         </Typography>
-        <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
           Quản lý tài khoản và quyền truy cập của người dùng
         </Typography>
       </Box>
@@ -158,9 +160,7 @@ const UserManagement = () => {
       <Paper sx={{
         p: 3,
         mb: 4,
-        bgcolor: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        ...glassSx,
         borderRadius: '16px'
       }}>
         <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
@@ -172,12 +172,12 @@ const UserManagement = () => {
             sx={{
               minWidth: 200,
               '& .MuiOutlinedInput-root': {
-                color: 'white',
-                '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                color: 'text.primary',
+                '& fieldset': { borderColor: 'divider' },
+                '&:hover fieldset': { borderColor: 'text.primary' },
               },
-              '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-              '& .MuiSelect-icon': { color: 'white' }
+              '& .MuiInputLabel-root': { color: 'text.secondary' },
+              '& .MuiSelect-icon': { color: 'text.primary' }
             }}
             size="small"
           >
@@ -196,11 +196,11 @@ const UserManagement = () => {
             sx={{
               flexGrow: 1,
               '& .MuiOutlinedInput-root': {
-                color: 'white',
-                '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
+                color: 'text.primary',
+                '& fieldset': { borderColor: 'divider' },
+                '&:hover fieldset': { borderColor: 'text.primary' },
               },
-              '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' }
+              '& .MuiInputLabel-root': { color: 'text.secondary' }
             }}
           />
 
@@ -209,10 +209,10 @@ const UserManagement = () => {
             startIcon={<Download />}
             onClick={handleExport}
             sx={{
-              borderColor: 'rgba(255,255,255,0.3)',
-              color: 'white',
+              borderColor: 'divider',
+              color: 'text.primary',
               height: 40,
-              '&:hover': { borderColor: '#FF8E53', color: '#FF8E53' }
+              '&:hover': { borderColor: 'primary.main', color: 'primary.main', bgcolor: 'action.hover' }
             }}
           >
             Export CSV
@@ -221,24 +221,22 @@ const UserManagement = () => {
       </Paper>
 
       {filteredUsers.length === 0 ? (
-        <Alert severity="info" sx={{ bgcolor: 'rgba(2, 136, 209, 0.15)', color: '#29b6f6', border: '1px solid rgba(41, 182, 246, 0.3)' }}>
+        <Alert severity="info">
           {searchQuery || roleFilter !== "ALL"
             ? "Không tìm thấy người dùng phù hợp."
             : "Chưa có người dùng nào trong hệ thống."}
         </Alert>
       ) : (
         <TableContainer component={Paper} sx={{
-          bgcolor: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          ...glassSx,
           borderRadius: '16px',
           boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
         }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'rgba(255,255,255,0.05)' }}>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
                 {['ID', 'Họ và tên', 'Email', 'Vai trò', 'Trạng thái', 'Ngày tạo', 'Thao tác'].map((head) => (
-                  <TableCell key={head} sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                  <TableCell key={head} sx={{ color: 'text.secondary', fontWeight: 700, borderBottom: '1px solid', borderColor: 'divider' }}>
                     {head}
                   </TableCell>
                 ))}
@@ -247,8 +245,8 @@ const UserManagement = () => {
             <TableBody>
               {filteredUsers.map((user) => (
                 <TableRow key={user.id} hover sx={{
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
-                  '& td': { borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'white' }
+                  '&:hover': { bgcolor: 'action.hover' },
+                  '& td': { borderBottom: '1px solid', borderColor: 'divider', color: 'text.primary' }
                 }}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>
@@ -285,8 +283,9 @@ const UserManagement = () => {
                           }
                           disabled={user.id === currentUser?.id}
                           sx={{
-                            bgcolor: 'rgba(255,255,255,0.05)',
-                            '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
+                            color: 'text.primary',
+                            bgcolor: 'action.hover',
+                            '&:hover': { bgcolor: 'action.selected' },
                             '&:disabled': { opacity: 0.3 }
                           }}
                         >

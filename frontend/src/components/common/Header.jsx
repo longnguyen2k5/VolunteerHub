@@ -11,7 +11,8 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
+import { AccountCircle, Brightness4, Brightness7 } from "@mui/icons-material";
+import { useThemeContext } from "../../context/ThemeContext";
 
 // Helper component for consistent nav button styling
 const NavButton = ({ to, children }) => (
@@ -19,15 +20,15 @@ const NavButton = ({ to, children }) => (
     component={Link}
     to={to}
     sx={{
-      color: "rgba(255, 255, 255, 0.8)",
+      color: "text.primary",
       textTransform: "none",
       fontSize: "0.95rem",
       fontWeight: 500,
       px: 1.5,
       transition: "color 0.2s",
       "&:hover": {
-        color: "#fff",
-        background: "rgba(255,255,255,0.05)",
+        color: "primary.main",
+        bgcolor: "action.hover",
       },
     }}
   >
@@ -37,6 +38,7 @@ const NavButton = ({ to, children }) => (
 
 const Header = () => {
   const { user, logout, login } = useAuth();
+  const { mode, toggleTheme } = useThemeContext();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -62,10 +64,12 @@ const Header = () => {
       position="fixed"
       elevation={0}
       sx={{
-        bgcolor: "rgba(13, 13, 13, 0.4)", // Dark, sophisticated background
-        backdropFilter: "blur(12px)", // Glassmorphism effect
-        borderBottom: "1px solid rgba(255, 255, 255, 0.08)", // Subtle border
+        bgcolor: "background.glass", // Semantic, managed by theme
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid",
+        borderColor: "background.glassBorder",
         transition: "all 0.3s ease-in-out",
+        color: "text.primary"
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between", py: 0.5 }}>
@@ -76,7 +80,6 @@ const Header = () => {
           to="/"
           sx={{
             textDecoration: "none",
-            color: "#fff",
             fontWeight: 700,
             letterSpacing: "0.5px",
             background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
@@ -122,11 +125,12 @@ const Header = () => {
                 sx={{
                   ml: 1,
                   p: 0.5,
-                  border: "1px solid rgba(255, 255, 255, 0.2)",
-                  "&:hover": { bgcolor: "rgba(255, 255, 255, 0.1)" },
+                  border: "1px solid",
+                  borderColor: "divider",
+                  "&:hover": { bgcolor: "action.hover" },
                 }}
               >
-                <AccountCircle sx={{ fontSize: 32, color: "white" }} />
+                <AccountCircle sx={{ fontSize: 32, color: "text.primary" }} />
               </IconButton>
 
               <Menu
@@ -139,12 +143,12 @@ const Header = () => {
                     overflow: "visible",
                     filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                     mt: 1.5,
-                    bgcolor: "#1e1e1e",
-                    color: "white",
+                    bgcolor: "background.paper",
+                    color: "text.primary",
                     "& .MuiMenuItem-root": {
                       fontSize: "0.9rem",
                       "&:hover": {
-                        bgcolor: "rgba(255, 255, 255, 0.08)",
+                        bgcolor: "action.hover", // Semantic hover
                       },
                     },
                     "&:before": {
@@ -155,7 +159,7 @@ const Header = () => {
                       right: 14,
                       width: 10,
                       height: 10,
-                      bgcolor: "#1e1e1e",
+                      bgcolor: "background.paper", // Semantic bg
                       transform: "translateY(-50%) rotate(45deg)",
                       zIndex: 0,
                     },
@@ -164,11 +168,11 @@ const Header = () => {
                 transformOrigin={{ horizontal: "right", vertical: "top" }}
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
-                <Box sx={{ px: 2, py: 1, borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                <Box sx={{ px: 2, py: 1, borderBottom: "1px solid", borderColor: "divider" }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                     {user.fullName}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: "gray" }}>
+                  <Typography variant="caption" sx={{ color: "text.secondary" }}>
                     {user.role}
                   </Typography>
                 </Box>
@@ -190,10 +194,10 @@ const Header = () => {
                 color="inherit"
                 onClick={() => login && login()}
                 sx={{
-                  color: "white",
+                  color: "text.primary",
                   textTransform: "none",
                   fontWeight: 500,
-                  "&:hover": { color: "#90caf9" },
+                  "&:hover": { color: "primary.main" },
                 }}
               >
                 Đăng nhập
@@ -218,6 +222,11 @@ const Header = () => {
               </Button>
             </Box>
           )}
+
+          {/* Theme Toggle Button */}
+          <IconButton onClick={toggleTheme} sx={{ color: 'text.primary', ml: 1 }}>
+            {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>

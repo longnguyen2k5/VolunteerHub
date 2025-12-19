@@ -35,6 +35,7 @@ import {
 import { format } from "date-fns";
 import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
+import { useThemeContext } from "../../context/ThemeContext";
 
 const EventList = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const EventList = () => {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
+  const { glassSx } = useThemeContext();
 
   useEffect(() => {
     loadEvents();
@@ -113,7 +115,7 @@ const EventList = () => {
         maxWidth="lg"
         sx={{ mt: 4, display: "flex", justifyContent: "center" }}
       >
-        <CircularProgress />
+        <CircularProgress sx={{ color: 'primary.main' }} />
       </Container>
     );
   }
@@ -142,7 +144,7 @@ const EventList = () => {
           >
             Quản lý sự kiện
           </Typography>
-          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
             Tổ chức và theo dõi các hoạt động của bạn
           </Typography>
         </Box>
@@ -173,16 +175,16 @@ const EventList = () => {
           sx={{
             minWidth: 200,
             '& .MuiOutlinedInput-root': {
-              color: 'white',
-              bgcolor: 'rgba(255,255,255,0.05)',
+              color: 'text.primary',
+              bgcolor: 'background.paper',
               borderRadius: '12px',
-              '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-              '&:hover fieldset': { borderColor: 'white' },
-              '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+              '& fieldset': { borderColor: 'divider' },
+              '&:hover fieldset': { borderColor: 'text.primary' },
+              '&.Mui-focused fieldset': { borderColor: 'primary.main' },
             },
-            '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-            '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
-            '& .MuiSvgIcon-root': { color: 'white' },
+            '& .MuiInputLabel-root': { color: 'text.secondary' },
+            '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' },
+            '& .MuiSvgIcon-root': { color: 'text.primary' },
           }}
           size="small"
         >
@@ -196,12 +198,6 @@ const EventList = () => {
       {filteredEvents.length === 0 ? (
         <Alert
           severity="info"
-          sx={{
-            bgcolor: 'rgba(255,255,255,0.05)',
-            color: 'white',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(10px)'
-          }}
         >
           {statusFilter === "ALL"
             ? 'Bạn chưa tạo sự kiện nào. Nhấn "Tạo sự kiện mới" để bắt đầu.'
@@ -211,9 +207,7 @@ const EventList = () => {
         <TableContainer
           component={Paper}
           sx={{
-            bgcolor: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            ...glassSx,
             borderRadius: '24px',
             boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
             overflow: 'hidden'
@@ -221,14 +215,14 @@ const EventList = () => {
         >
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Tên sự kiện</TableCell>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Địa điểm</TableCell>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Bắt đầu</TableCell>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Kết thúc</TableCell>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Người tham gia</TableCell>
-                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Trạng thái</TableCell>
-                <TableCell align="center" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Thao tác</TableCell>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Tên sự kiện</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Địa điểm</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Bắt đầu</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Kết thúc</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Người tham gia</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Trạng thái</TableCell>
+                <TableCell align="center" sx={{ color: 'text.secondary', fontWeight: 600 }}>Thao tác</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -237,26 +231,27 @@ const EventList = () => {
                   key={event.id}
                   hover
                   sx={{
-                    '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                    '&:hover': { bgcolor: 'action.hover' },
                     transition: 'background-color 0.2s',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)'
+                    borderBottom: '1px solid',
+                    borderColor: 'divider'
                   }}
                 >
                   <TableCell>
-                    <Typography variant="body1" fontWeight={600} sx={{ color: '#FF8E53' }}>
+                    <Typography variant="body1" fontWeight={600} sx={{ color: 'primary.main' }}>
                       {event.name}
                     </Typography>
                   </TableCell>
-                  <TableCell sx={{ color: 'rgba(255,255,255,0.9)' }}>{event.location}</TableCell>
-                  <TableCell sx={{ color: 'rgba(255,255,255,0.7)' }}>{formatDateTime(event.startTime)}</TableCell>
-                  <TableCell sx={{ color: 'rgba(255,255,255,0.7)' }}>{formatDateTime(event.endTime)}</TableCell>
-                  <TableCell sx={{ color: 'rgba(255,255,255,0.9)', fontWeight: 600 }}>{event.currentParticipants || 0}</TableCell>
+                  <TableCell sx={{ color: 'text.primary' }}>{event.location}</TableCell>
+                  <TableCell sx={{ color: 'text.secondary' }}>{formatDateTime(event.startTime)}</TableCell>
+                  <TableCell sx={{ color: 'text.secondary' }}>{formatDateTime(event.endTime)}</TableCell>
+                  <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>{event.currentParticipants || 0}</TableCell>
                   <TableCell>{getStatusChip(event.status)}</TableCell>
                   <TableCell align="center">
                     <Stack direction="row" spacing={1} justifyContent="center">
                       <IconButton
                         size="small"
-                        sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#29b6f6', bgcolor: 'rgba(41, 182, 246, 0.1)' } }}
+                        sx={{ color: 'text.secondary', '&:hover': { color: '#29b6f6', bgcolor: 'rgba(41, 182, 246, 0.1)' } }}
                         onClick={() => navigate(`/events/${event.id}`)}
                         title="Xem chi tiết"
                       >
@@ -264,7 +259,7 @@ const EventList = () => {
                       </IconButton>
                       <IconButton
                         size="small"
-                        sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ffa726', bgcolor: 'rgba(255, 167, 38, 0.1)' } }}
+                        sx={{ color: 'text.secondary', '&:hover': { color: '#ffa726', bgcolor: 'rgba(255, 167, 38, 0.1)' } }}
                         onClick={() => navigate(`/events/edit/${event.id}`)}
                         title="Chỉnh sửa"
                       >
@@ -272,7 +267,7 @@ const EventList = () => {
                       </IconButton>
                       <IconButton
                         size="small"
-                        sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ab47bc', bgcolor: 'rgba(171, 71, 188, 0.1)' } }}
+                        sx={{ color: 'text.secondary', '&:hover': { color: '#ab47bc', bgcolor: 'rgba(171, 71, 188, 0.1)' } }}
                         onClick={() => navigate(`/events/manage/${event.id}/registrations`)}
                         title="Quản lý đăng ký"
                       >
@@ -280,7 +275,7 @@ const EventList = () => {
                       </IconButton>
                       <IconButton
                         size="small"
-                        sx={{ color: 'rgba(255,255,255,0.7)', '&:hover': { color: '#ef5350', bgcolor: 'rgba(239, 83, 80, 0.1)' } }}
+                        sx={{ color: 'text.secondary', '&:hover': { color: '#ef5350', bgcolor: 'rgba(239, 83, 80, 0.1)' } }}
                         onClick={() => openDeleteDialog(event)}
                         title="Xóa"
                       >
@@ -301,23 +296,24 @@ const EventList = () => {
         onClose={closeDeleteDialog}
         PaperProps={{
           sx: {
-            bgcolor: '#1e1e1e',
-            color: 'white',
-            border: '1px solid rgba(255,255,255,0.1)',
+            bgcolor: 'background.paper',
+            color: 'text.primary',
+            border: '1px solid',
+            borderColor: 'divider',
             minWidth: '400px'
           }
         }}
       >
-        <DialogTitle sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Xác nhận xóa</DialogTitle>
+        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>Xác nhận xóa</DialogTitle>
         <DialogContent sx={{ pt: 3 }}>
-          <DialogContentText sx={{ color: 'rgba(255,255,255,0.7)' }}>
+          <DialogContentText sx={{ color: 'text.secondary' }}>
             Bạn có chắc chắn muốn xóa sự kiện{" "}
             <strong>{eventToDelete?.name}</strong>? Hành động này không thể hoàn
             tác.
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <Button onClick={closeDeleteDialog} sx={{ color: 'rgba(255,255,255,0.7)' }}>Hủy</Button>
+        <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
+          <Button onClick={closeDeleteDialog} sx={{ color: 'text.secondary' }}>Hủy</Button>
           <Button onClick={handleDelete} color="error" variant="contained">
             Xóa
           </Button>

@@ -19,9 +19,11 @@ import {
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { format } from 'date-fns';
+import { useThemeContext } from '../context/ThemeContext';
 
 const UserProfile = () => {
     const { user } = useAuth();
+    const { glassSx } = useThemeContext();
 
     if (!user) return null;
 
@@ -41,11 +43,9 @@ const UserProfile = () => {
         <Container maxWidth="md" sx={{ py: 8 }}>
             <Paper elevation={0} sx={{
                 p: 6,
+                ...glassSx,
                 borderRadius: '24px',
-                bgcolor: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: 'white'
+                color: 'text.primary'
             }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 6 }}>
                     <Avatar
@@ -56,7 +56,8 @@ const UserProfile = () => {
                             fontSize: '3.5rem',
                             mb: 3,
                             boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-                            border: '4px solid rgba(255,255,255,0.1)'
+                            border: '4px solid',
+                            borderColor: 'background.paper'
                         }}
                     >
                         {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
@@ -72,30 +73,31 @@ const UserProfile = () => {
                     <Chip
                         label={roleLabels[user.role] || user.role}
                         sx={{
-                            bgcolor: 'rgba(255,255,255,0.1)',
-                            color: 'white',
+                            bgcolor: 'action.hover',
+                            color: 'text.primary',
                             fontWeight: 600,
-                            border: '1px solid rgba(255,255,255,0.2)'
+                            border: '1px solid',
+                            borderColor: 'divider'
                         }}
                     />
                 </Box>
 
-                <Divider sx={{ mb: 6, borderColor: 'rgba(255,255,255,0.1)' }} />
+                <Divider sx={{ mb: 6, borderColor: 'divider' }} />
 
                 <Grid container spacing={4}>
                     <Grid item xs={12} md={6}>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                             <Box sx={{
-                                bgcolor: 'rgba(255,255,255,0.05)',
+                                bgcolor: 'action.hover',
                                 p: 2,
                                 borderRadius: '16px',
                                 mr: 3,
-                                color: '#FF8E53'
+                                color: 'primary.main'
                             }}>
                                 <Email fontSize="large" color="inherit" />
                             </Box>
                             <Box>
-                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                                <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Email
                                 </Typography>
                                 <Typography variant="h6" fontWeight={500}>
@@ -108,16 +110,16 @@ const UserProfile = () => {
                     <Grid item xs={12} md={6}>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                             <Box sx={{
-                                bgcolor: 'rgba(255,255,255,0.05)',
+                                bgcolor: 'action.hover',
                                 p: 2,
                                 borderRadius: '16px',
                                 mr: 3,
-                                color: '#FE6B8B'
+                                color: 'secondary.main'
                             }}>
                                 <CalendarToday fontSize="large" color="inherit" />
                             </Box>
                             <Box>
-                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                                <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Ngày tham gia
                                 </Typography>
                                 <Typography variant="h6" fontWeight={500}>
@@ -130,19 +132,19 @@ const UserProfile = () => {
                     <Grid item xs={12}>
                         <Box sx={{ display: 'flex', alignItems: 'flex-start', mt: 2 }}>
                             <Box sx={{
-                                bgcolor: 'rgba(255,255,255,0.05)',
+                                bgcolor: 'action.hover',
                                 p: 2,
                                 borderRadius: '16px',
                                 mr: 3,
-                                color: 'white'
+                                color: 'text.primary'
                             }}>
                                 <Person fontSize="large" color="inherit" />
                             </Box>
                             <Box sx={{ flexGrow: 1 }}>
-                                <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                                <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Giới thiệu
                                 </Typography>
-                                <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.8)', fontStyle: 'italic', mt: 1, lineHeight: 1.6 }}>
+                                <Typography variant="body1" sx={{ color: 'text.secondary', fontStyle: 'italic', mt: 1, lineHeight: 1.6 }}>
                                     (Chưa có thông tin giới thiệu)
                                 </Typography>
                             </Box>
@@ -159,11 +161,11 @@ const UserProfile = () => {
                             borderRadius: '30px',
                             px: 4,
                             py: 1.5,
-                            borderColor: 'rgba(255,255,255,0.3)',
-                            color: 'rgba(255,255,255,0.5)',
+                            borderColor: 'divider',
+                            color: 'text.disabled',
                             '&:hover': {
-                                borderColor: '#FF8E53',
-                                color: '#FF8E53'
+                                borderColor: 'primary.main',
+                                color: 'primary.main'
                             }
                         }}
                     >

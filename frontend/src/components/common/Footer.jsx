@@ -7,12 +7,14 @@ const Footer = () => {
         <Box
             component="footer"
             sx={{
-                bgcolor: '#050505',
-                color: 'rgba(255,255,255,0.7)',
+                bgcolor: 'background.paper',
+                color: 'text.secondary',
                 pt: 8,
                 pb: 4,
                 mt: 'auto',
-                borderTop: '1px solid rgba(255, 255, 255, 0.05)'
+                borderTop: '1px solid',
+                borderColor: 'divider',
+                transition: 'background-color 0.3s'
             }}
         >
             <Container maxWidth="xl">
@@ -28,15 +30,15 @@ const Footer = () => {
                         }}>
                             VolunteerHub
                         </Typography>
-                        <Typography variant="body1" sx={{ maxWidth: 300, mb: 3, lineHeight: 1.8 }}>
+                        <Typography variant="body1" sx={{ maxWidth: 300, mb: 3, lineHeight: 1.8, color: 'text.secondary' }}>
                             Nền tảng kết nối tình nguyện viên hàng đầu, nơi lan tỏa yêu thương và tạo nên những thay đổi tích cực cho cộng đồng.
                         </Typography>
                         <Stack direction="row" spacing={1}>
                             {[Facebook, Instagram, LinkedIn, Twitter].map((Icon, index) => (
                                 <IconButton key={index} sx={{
-                                    color: 'white',
-                                    bgcolor: 'rgba(255,255,255,0.05)',
-                                    '&:hover': { bgcolor: '#FF8E53', transform: 'translateY(-3px)' },
+                                    color: 'text.primary',
+                                    bgcolor: 'action.hover',
+                                    '&:hover': { bgcolor: 'primary.main', color: 'white', transform: 'translateY(-3px)' },
                                     transition: 'all 0.3s'
                                 }}>
                                     <Icon />
@@ -47,7 +49,7 @@ const Footer = () => {
 
                     {/* Quick Links */}
                     <Grid item xs={12} sm={6} md={2}>
-                        <Typography variant="h6" fontWeight={700} color="white" gutterBottom>
+                        <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Khám phá
                         </Typography>
                         <Stack spacing={1.5}>
@@ -59,7 +61,7 @@ const Footer = () => {
                                     color="inherit"
                                     sx={{
                                         transition: '0.2s',
-                                        '&:hover': { color: '#FF8E53', pl: 1 }
+                                        '&:hover': { color: 'primary.main', pl: 1 }
                                     }}
                                 >
                                     {item}
@@ -70,7 +72,7 @@ const Footer = () => {
 
                     {/* Help/Support */}
                     <Grid item xs={12} sm={6} md={2}>
-                        <Typography variant="h6" fontWeight={700} color="white" gutterBottom>
+                        <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Hỗ trợ
                         </Typography>
                         <Stack spacing={1.5}>
@@ -82,7 +84,7 @@ const Footer = () => {
                                     color="inherit"
                                     sx={{
                                         transition: '0.2s',
-                                        '&:hover': { color: '#FF8E53', pl: 1 }
+                                        '&:hover': { color: 'primary.main', pl: 1 }
                                     }}
                                 >
                                     {item}
@@ -93,28 +95,28 @@ const Footer = () => {
 
                     {/* Contact Info */}
                     <Grid item xs={12} md={4}>
-                        <Typography variant="h6" fontWeight={700} color="white" gutterBottom>
+                        <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Liên hệ
                         </Typography>
                         <Stack spacing={2.5}>
                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                <LocationOn sx={{ color: '#FF8E53', mt: 0.5 }} />
+                                <LocationOn sx={{ color: 'primary.main', mt: 0.5 }} />
                                 <Box>
-                                    <Typography variant="subtitle2" color="white" fontWeight={600}>Địa chỉ</Typography>
+                                    <Typography variant="subtitle2" color="text.primary" fontWeight={600}>Địa chỉ</Typography>
                                     <Typography variant="body2">144 Xuân Thủy, Cầu Giấy, Hà Nội</Typography>
                                 </Box>
                             </Box>
                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                <Email sx={{ color: '#FE6B8B', mt: 0.5 }} />
+                                <Email sx={{ color: 'secondary.main', mt: 0.5 }} />
                                 <Box>
-                                    <Typography variant="subtitle2" color="white" fontWeight={600}>Email</Typography>
+                                    <Typography variant="subtitle2" color="text.primary" fontWeight={600}>Email</Typography>
                                     <Typography variant="body2">contact@volunteerhub.com</Typography>
                                 </Box>
                             </Box>
                             <Box sx={{ display: 'flex', gap: 2 }}>
-                                <Phone sx={{ color: '#FF8E53', mt: 0.5 }} />
+                                <Phone sx={{ color: 'primary.main', mt: 0.5 }} />
                                 <Box>
-                                    <Typography variant="subtitle2" color="white" fontWeight={600}>Hotline</Typography>
+                                    <Typography variant="subtitle2" color="text.primary" fontWeight={600}>Hotline</Typography>
                                     <Typography variant="body2">+84 123 456 789</Typography>
                                 </Box>
                             </Box>
@@ -125,10 +127,11 @@ const Footer = () => {
                 <Box sx={{
                     mt: 8,
                     pt: 4,
-                    borderTop: '1px solid rgba(255,255,255,0.1)',
+                    borderTop: '1px solid',
+                    borderColor: 'divider',
                     textAlign: 'center'
                 }}>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.4)' }}>
+                    <Typography variant="body2" sx={{ color: 'text.disabled' }}>
                         © 2025 VolunteerHub. All rights reserved. Designed with ❤️ for community.
                     </Typography>
                 </Box>

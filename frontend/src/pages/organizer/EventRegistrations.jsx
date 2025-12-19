@@ -34,9 +34,12 @@ import { toast } from 'react-toastify';
 import { registrationAPI } from '../../api/registrationApi';
 import { eventAPI } from '../../api/eventApi';
 
+import { useThemeContext } from '../../context/ThemeContext';
+
 const EventRegistrations = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { glassSx } = useThemeContext(); // Get glass styles
     const [registrations, setRegistrations] = useState([]);
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -124,8 +127,8 @@ const EventRegistrations = () => {
                 onClick={() => navigate('/events/manage')}
                 sx={{
                     mb: 4,
-                    color: 'rgba(255,255,255,0.7)',
-                    '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+                    color: 'text.secondary',
+                    '&:hover': { color: 'text.primary', bgcolor: 'action.hover' }
                 }}
             >
                 Quay lại danh sách
@@ -144,23 +147,16 @@ const EventRegistrations = () => {
                 >
                     Quản lý đăng ký
                 </Typography>
-                <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: 400 }}>
+                <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 400 }}>
                     Sự kiện: <strong style={{ color: '#FF8E53' }}>{event?.name}</strong>
                 </Typography>
             </Box>
 
             {/* Statistics Cards */}
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={3} sx={{ mb: 5 }}>
-                <Card sx={{
-                    flex: 1,
-                    bgcolor: 'rgba(255,255,255,0.05)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '24px',
-                    color: 'white'
-                }}>
+                <Card sx={{ flex: 1, ...glassSx, color: 'text.primary' }}>
                     <CardContent>
-                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
+                        <Typography color="text.secondary" gutterBottom fontWeight={500}>
                             Tổng số đăng ký
                         </Typography>
                         <Typography variant="h3" fontWeight={700}>
@@ -168,16 +164,9 @@ const EventRegistrations = () => {
                         </Typography>
                     </CardContent>
                 </Card>
-                <Card sx={{
-                    flex: 1,
-                    bgcolor: 'rgba(255,255,255,0.05)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '24px',
-                    color: 'white'
-                }}>
+                <Card sx={{ flex: 1, ...glassSx, color: 'text.primary' }}>
                     <CardContent>
-                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
+                        <Typography color="text.secondary" gutterBottom fontWeight={500}>
                             Đã duyệt
                         </Typography>
                         <Typography variant="h3" sx={{ color: '#66bb6a', fontWeight: 700 }}>
@@ -185,16 +174,9 @@ const EventRegistrations = () => {
                         </Typography>
                     </CardContent>
                 </Card>
-                <Card sx={{
-                    flex: 1,
-                    bgcolor: 'rgba(255,255,255,0.05)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    borderRadius: '24px',
-                    color: 'white'
-                }}>
+                <Card sx={{ flex: 1, ...glassSx, color: 'text.primary' }}>
                     <CardContent>
-                        <Typography color="rgba(255,255,255,0.6)" gutterBottom fontWeight={500}>
+                        <Typography color="text.secondary" gutterBottom fontWeight={500}>
                             Tỷ lệ hoàn thành
                         </Typography>
                         <Typography variant="h3" sx={{ color: '#29b6f6', fontWeight: 700 }}>
@@ -232,27 +214,24 @@ const EventRegistrations = () => {
             <TableContainer
                 component={Paper}
                 sx={{
-                    bgcolor: 'rgba(255, 255, 255, 0.05)',
-                    backdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '24px',
+                    ...glassSx,
                     boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
                 }}
             >
                 <Table>
                     <TableHead>
-                        <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
-                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>STT</TableCell>
-                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Tên Tình nguyện viên</TableCell>
-                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Ngày đăng ký</TableCell>
-                            <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Trạng thái</TableCell>
-                            <TableCell align="center" sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600 }}>Thao tác</TableCell>
+                        <TableRow sx={{ bgcolor: 'action.hover' }}>
+                            <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>STT</TableCell>
+                            <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Tên Tình nguyện viên</TableCell>
+                            <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Ngày đăng ký</TableCell>
+                            <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Trạng thái</TableCell>
+                            <TableCell align="center" sx={{ color: 'text.secondary', fontWeight: 600 }}>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {registrations.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center" sx={{ py: 5, color: 'rgba(255,255,255,0.5)' }}>Chưa có lượt đăng ký nào</TableCell>
+                                <TableCell colSpan={5} align="center" sx={{ py: 5, color: 'text.secondary' }}>Chưa có lượt đăng ký nào</TableCell>
                             </TableRow>
                         ) : (
                             registrations.map((reg, index) => (
@@ -260,18 +239,19 @@ const EventRegistrations = () => {
                                     key={reg.id}
                                     hover
                                     sx={{
-                                        '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
+                                        '&:hover': { bgcolor: 'action.hover' },
                                         transition: 'background-color 0.2s',
-                                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                                        borderBottom: '1px solid',
+                                        borderColor: 'divider',
                                     }}
                                 >
-                                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)' }}>{index + 1}</TableCell>
+                                    <TableCell sx={{ color: 'text.secondary' }}>{index + 1}</TableCell>
                                     <TableCell>
-                                        <Typography variant="body1" fontWeight={600} sx={{ color: 'white' }}>
+                                        <Typography variant="body1" fontWeight={600} sx={{ color: 'text.primary' }}>
                                             {reg.userName}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                                    <TableCell sx={{ color: 'text.secondary' }}>
                                         {format(new Date(reg.registeredAt), 'dd/MM/yyyy HH:mm')}
                                     </TableCell>
                                     <TableCell>{getStatusChip(reg.status)}</TableCell>
@@ -329,7 +309,7 @@ const EventRegistrations = () => {
                                                 </Tooltip>
                                             )}
                                             {['REJECTED', 'COMPLETED', 'CANCELLED'].includes(reg.status) && (
-                                                <Typography variant="caption" color="rgba(255,255,255,0.3)">
+                                                <Typography variant="caption" color="text.secondary">
                                                     -
                                                 </Typography>
                                             )}

@@ -17,9 +17,11 @@ import {
     Person,
 } from '@mui/icons-material';
 import { format } from 'date-fns';
+import { useThemeContext } from '../../context/ThemeContext';
 
 const EventCard = ({ event, registration }) => {
     const navigate = useNavigate();
+    const { glassSx } = useThemeContext();
 
     const getStatusColor = (status) => {
         const colors = {
@@ -60,18 +62,15 @@ const EventCard = ({ event, registration }) => {
             maxWidth: '100%',
             display: 'flex',
             flexDirection: 'column',
-            bgcolor: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            ...glassSx,
             borderRadius: '16px',
-            color: 'white',
+            color: 'text.primary',
             transition: 'all 0.3s ease',
             overflow: 'hidden',
             '&:hover': {
                 transform: 'translateY(-8px)',
                 boxShadow: '0 12px 24px rgba(0,0,0,0.4)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                bgcolor: 'rgba(255, 255, 255, 0.08)',
+                bgcolor: 'action.hover',
             }
         }}>
             <Box sx={{ position: 'relative' }}>
@@ -82,7 +81,8 @@ const EventCard = ({ event, registration }) => {
                     sx={{
                         height: 180,
                         objectFit: 'cover',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)'
+                        borderBottom: '1px solid',
+                        borderColor: 'divider'
                     }}
                     onError={(e) => {
                         e.target.onerror = null;
@@ -100,7 +100,7 @@ const EventCard = ({ event, registration }) => {
                         label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
                         size="small"
                         sx={{
-                            bgcolor: 'rgba(0,0,0,0.6)',
+                            bgcolor: 'rgba(0,0,0,0.6)', // Keep dark overlay for contrast on image
                             backdropFilter: 'blur(4px)',
                             color: 'white',
                             border: '1px solid rgba(255,255,255,0.2)',
@@ -145,7 +145,8 @@ const EventCard = ({ event, registration }) => {
                         WebkitBoxOrient: 'vertical',
                         lineHeight: '1.2em',
                         fontWeight: 700,
-                        mb: 1
+                        mb: 1,
+                        color: 'text.primary'
                     }}
                 >
                     {event.name}
@@ -154,7 +155,7 @@ const EventCard = ({ event, registration }) => {
                 <Typography
                     variant="body2"
                     sx={{
-                        color: 'rgba(255,255,255,0.6)',
+                        color: 'text.secondary',
                         mb: 2,
                         height: '4.5em',
                         overflow: 'hidden',
@@ -170,29 +171,29 @@ const EventCard = ({ event, registration }) => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
-                    <Person fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', wordBreak: 'break-word', minWidth: 0 }}>
+                    <Person fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
+                    <Typography variant="body2" sx={{ color: 'text.secondary', wordBreak: 'break-word', minWidth: 0 }}>
                         {event.managerName || "Ẩn danh"}
                     </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
-                    <LocationOn fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', wordBreak: 'break-word', minWidth: 0 }}>
+                    <LocationOn fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
+                    <Typography variant="body2" sx={{ color: 'text.secondary', wordBreak: 'break-word', minWidth: 0 }}>
                         {event.location}
                     </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <CalendarToday fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                    <CalendarToday fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem' }} />
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {format(new Date(event.startTime), 'dd/MM/yyyy HH:mm')}
                     </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <People fontSize="small" sx={{ mr: 1.5, color: '#FF8E53', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)' }}>
+                    <People fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem' }} />
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {event.currentParticipants || 0}/{event.maxParticipants} người
                     </Typography>
                 </Box>
@@ -206,12 +207,12 @@ const EventCard = ({ event, registration }) => {
                     variant="outlined"
                     sx={{
                         borderRadius: '20px',
-                        borderColor: 'rgba(255,255,255,0.3)',
-                        color: 'white',
+                        borderColor: 'divider',
+                        color: 'text.primary',
                         '&:hover': {
-                            borderColor: '#FF8E53',
-                            bgcolor: 'rgba(255, 142, 83, 0.1)',
-                            color: '#FF8E53'
+                            borderColor: 'primary.main',
+                            bgcolor: 'action.hover',
+                            color: 'primary.main'
                         }
                     }}
                 >

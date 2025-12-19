@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useThemeContext } from '../context/ThemeContext';
 import {
     Container,
     Typography,
@@ -16,43 +17,45 @@ import { registrationAPI } from '../api/registrationApi';
 import EventCard from '../components/event/EventCard';
 import { Assessment, Event, People } from '@mui/icons-material';
 
-const StatCard = ({ title, value, icon, color }) => (
-    <Card sx={{
-        height: '100%',
-        bgcolor: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        color: 'white',
-        transition: 'all 0.3s ease',
-        '&:hover': {
-            transform: 'translateY(-5px)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            border: `1px solid ${color}.main` // Highlight border on hover
-        }
-    }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
-            <Box sx={{
-                p: 2,
-                borderRadius: '12px',
-                bgcolor: 'rgba(255,255,255,0.1)',
-                color: `${color}.light`,
-                mr: 3,
-                display: 'flex',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
-            }}>
-                {icon}
-            </Box>
-            <Box>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', mb: 0.5 }}>
-                    {title}
-                </Typography>
-                <Typography variant="h4" fontWeight="bold" sx={{ color: 'white' }}>
-                    {value}
-                </Typography>
-            </Box>
-        </CardContent>
-    </Card>
-);
+const StatCard = ({ title, value, icon, color }) => {
+    const { glassSx } = useThemeContext();
+    return (
+        <Card sx={{
+            height: '100%',
+            ...glassSx,
+            color: 'text.primary',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+                transform: 'translateY(-5px)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                border: `1px solid`,
+                borderColor: `${color}.main`
+            }
+        }}>
+            <CardContent sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
+                <Box sx={{
+                    p: 2,
+                    borderRadius: '12px',
+                    bgcolor: 'action.hover',
+                    color: `${color}.main`,
+                    mr: 3,
+                    display: 'flex',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                }}>
+                    {icon}
+                </Box>
+                <Box>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+                        {title}
+                    </Typography>
+                    <Typography variant="h4" fontWeight="bold" sx={{ color: 'text.primary' }}>
+                        {value}
+                    </Typography>
+                </Box>
+            </CardContent>
+        </Card>
+    );
+};
 
 const SectionHeader = ({ title }) => (
     <Box sx={{ mb: 4, mt: 6, display: 'flex', alignItems: 'center' }}>
@@ -68,7 +71,7 @@ const SectionHeader = ({ title }) => (
         >
             {title}
         </Typography>
-        <Divider sx={{ ml: 3, flexGrow: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
+        <Divider sx={{ ml: 3, flexGrow: 1, borderColor: 'divider' }} />
     </Box>
 );
 
@@ -127,8 +130,8 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8, minHeight: '100vh', bgcolor: '#121212' }}>
-                <CircularProgress sx={{ color: '#FF8E53' }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8, minHeight: '100vh' }}>
+                <CircularProgress sx={{ color: 'primary.main' }} />
             </Box>
         );
     }
@@ -136,18 +139,17 @@ const Dashboard = () => {
     return (
         <Box sx={{
             minHeight: '100vh',
-            bgcolor: '#121212', // Base dark color
-            color: 'white',
+            color: 'text.primary',
             pb: 8
         }}>
-            {/* Background Accent */}
+            {/* Background Accent - Adjusted for both modes */}
             <Box sx={{
                 position: 'fixed',
                 top: 0,
                 left: 0,
                 right: 0,
                 height: '300px',
-                background: 'radial-gradient(circle at 50% 0%, rgba(254, 107, 139, 0.15) 0%, rgba(18, 18, 18, 0) 70%)',
+                background: 'radial-gradient(circle at 50% 0%, rgba(254, 107, 139, 0.15) 0%, rgba(0, 0, 0, 0) 70%)',
                 zIndex: 0,
                 pointerEvents: 'none'
             }} />
@@ -157,7 +159,7 @@ const Dashboard = () => {
                     <Typography variant="h3" gutterBottom fontWeight="800">
                         Xin chào, <span style={{ color: '#FF8E53' }}>{user.fullName}</span>! 👋
                     </Typography>
-                    <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                    <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 300 }}>
                         Chào mừng bạn quay trở lại VolunteerHub
                     </Typography>
                 </Box>

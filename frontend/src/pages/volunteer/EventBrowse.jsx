@@ -17,6 +17,7 @@ import { eventAPI } from '../../api/eventApi';
 import { registrationAPI } from '../../api/registrationApi';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import { useThemeContext } from '../../context/ThemeContext';
 
 const EventBrowse = () => {
     const CATEGORY_LABELS = {
@@ -34,6 +35,7 @@ const EventBrowse = () => {
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [startDate, setStartDate] = useState(''); // Filter: From Date
     const [endDate, setEndDate] = useState('');     // Filter: To Date
+    const { glassSx } = useThemeContext();
 
     const [myRegistrations, setMyRegistrations] = useState([]);
     const { user } = useAuth();
@@ -103,25 +105,25 @@ const EventBrowse = () => {
 
     const inputSx = {
         '& .MuiOutlinedInput-root': {
-            color: 'white',
-            bgcolor: 'rgba(255,255,255,0.05)',
+            color: 'text.primary',
+            bgcolor: 'background.glass',
             backdropFilter: 'blur(10px)',
-            '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
-            '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.3)' },
-            '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+            '& fieldset': { borderColor: 'divider' },
+            '&:hover fieldset': { borderColor: 'text.primary' },
+            '&.Mui-focused fieldset': { borderColor: 'primary.main' },
         },
-        '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.6)' },
-        '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
-        '& .MuiInputBase-input': { color: 'white' },
-        '& .MuiSvgIcon-root': { color: 'rgba(255,255,255,0.6)' },
-        '& .MuiSelect-icon': { color: 'white' }
+        '& .MuiInputLabel-root': { color: 'text.secondary' },
+        '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' },
+        '& .MuiInputBase-input': { color: 'text.primary' },
+        '& .MuiSvgIcon-root': { color: 'text.secondary' },
+        '& .MuiSelect-icon': { color: 'text.primary' }
     };
 
     return (
         <Box sx={{
             minHeight: '100vh',
-            bgcolor: '#121212',
-            color: 'white',
+            bgcolor: 'background.default',
+            color: 'text.primary',
             pb: 8
         }}>
             {/* Background Accent */}
@@ -150,7 +152,7 @@ const EventBrowse = () => {
                     >
                         Khám phá Sự kiện
                     </Typography>
-                    <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                    <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 300 }}>
                         Tìm kiếm và tham gia các hoạt động tình nguyện ý nghĩa
                     </Typography>
                 </Box>
@@ -162,10 +164,12 @@ const EventBrowse = () => {
                     gap: 2,
                     flexWrap: 'wrap',
                     alignItems: 'center',
-                    bgcolor: 'rgba(255,255,255,0.02)',
+                    bgcolor: 'background.paper',
                     p: 3,
                     borderRadius: '24px',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    ...glassSx,
                 }}>
                     <TextField
                         placeholder="Tìm kiếm sự kiện..."
@@ -173,7 +177,7 @@ const EventBrowse = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         sx={{ flexGrow: 1, minWidth: 200, ...inputSx }}
                         InputProps={{
-                            startAdornment: <Search sx={{ mr: 1, color: 'rgba(255,255,255,0.5)' }} />,
+                            startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
                         }}
                     />
 
@@ -186,11 +190,12 @@ const EventBrowse = () => {
                             MenuProps={{
                                 PaperProps: {
                                     sx: {
-                                        bgcolor: '#1e1e1e',
-                                        color: 'white',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        '& .MuiMenuItem-root:hover': { bgcolor: 'rgba(255,255,255,0.05)' },
-                                        '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'rgba(254, 107, 139, 0.2)' }
+                                        bgcolor: 'background.paper',
+                                        color: 'text.primary',
+                                        border: '1px solid',
+                                        borderColor: 'divider',
+                                        '& .MuiMenuItem-root:hover': { bgcolor: 'action.hover' },
+                                        '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'primary.light', color: 'primary.contrastText' }
                                     }
                                 }
                             }}
@@ -211,7 +216,7 @@ const EventBrowse = () => {
                         sx={{ minWidth: 150, ...inputSx }}
                     />
 
-                    <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.5)' }}>-</Typography>
+                    <Typography variant="body1" sx={{ color: 'text.secondary' }}>-</Typography>
 
                     <TextField
                         label="Đến ngày"
@@ -226,7 +231,7 @@ const EventBrowse = () => {
                 {/* Events Grid */}
                 {filteredEvents.length === 0 ? (
                     <Box sx={{ textAlign: 'center', py: 8 }}>
-                        <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                        <Typography variant="h6" sx={{ color: 'text.disabled' }}>
                             Không tìm thấy sự kiện nào trong khoảng thời gian này
                         </Typography>
                     </Box>

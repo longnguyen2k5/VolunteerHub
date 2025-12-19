@@ -7,7 +7,7 @@ import Footer from './Footer';
 const Layout = () => {
     const location = useLocation();
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#121212' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default', transition: 'background-color 0.3s' }}>
             <Header />
 
             {/* Padding top 9 (approx 72px) for normal pages to clear the fixed Header. 

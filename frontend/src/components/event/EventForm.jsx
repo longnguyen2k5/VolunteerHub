@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { format } from "date-fns";
 import * as yup from "yup";
+import { useThemeContext } from "../../context/ThemeContext";
 
 const EventForm = ({
   initialData,
@@ -18,6 +19,7 @@ const EventForm = ({
   submitLabel = "Lưu",
   loading = false,
 }) => {
+  const { glassSx } = useThemeContext();
   const CATEGORIES = {
     EDUCATION: "Giáo dục",
     ENVIRONMENT: "Môi trường",
@@ -149,19 +151,19 @@ const EventForm = ({
 
   const textFieldStyle = {
     '& .MuiOutlinedInput-root': {
-      color: 'white',
-      bgcolor: 'rgba(0,0,0,0.2)',
+      color: 'text.primary',
+      bgcolor: 'action.hover',
       borderRadius: '12px',
-      '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-      '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-      '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+      '& fieldset': { borderColor: 'divider' },
+      '&:hover fieldset': { borderColor: 'text.secondary' },
+      '&.Mui-focused fieldset': { borderColor: 'primary.main' },
     },
-    '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-    '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
-    '& .MuiFormHelperText-root': { color: 'rgba(255,255,255,0.5)' },
-    '& .MuiSvgIcon-root': { color: 'white' },
+    '& .MuiInputLabel-root': { color: 'text.secondary' },
+    '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' },
+    '& .MuiFormHelperText-root': { color: 'text.secondary' },
+    '& .MuiSvgIcon-root': { color: 'text.secondary' },
     '& input[type="datetime-local"]::-webkit-calendar-picker-indicator': {
-      filter: 'invert(1)',
+      filter: 'invert(0.5)', // Adjust for light/dark
       cursor: 'pointer'
     }
   };
@@ -170,9 +172,7 @@ const EventForm = ({
     <Paper
       sx={{
         p: 4,
-        bgcolor: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        ...glassSx,
         borderRadius: '24px',
         boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
       }}
@@ -208,10 +208,10 @@ const EventForm = ({
               MenuProps: {
                 PaperProps: {
                   sx: {
-                    bgcolor: '#1e1e1e',
-                    color: 'white',
-                    '& .MuiMenuItem-root:hover': { bgcolor: 'rgba(255,255,255,0.1)' },
-                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'rgba(255, 142, 83, 0.2)' },
+                    bgcolor: 'background.paper',
+                    color: 'text.primary',
+                    '& .MuiMenuItem-root:hover': { bgcolor: 'action.hover' },
+                    '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'action.selected' },
                   }
                 }
               }

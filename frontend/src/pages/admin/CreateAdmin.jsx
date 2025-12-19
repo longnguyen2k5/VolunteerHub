@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import adminApi from '../../api/adminApi';
 import { toast } from 'react-toastify';
+import { useThemeContext } from '../../context/ThemeContext';
 
 const CreateAdmin = () => {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ const CreateAdmin = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const { glassSx } = useThemeContext();
 
     const handleChange = (e) => {
         setFormData({
@@ -67,12 +69,9 @@ const CreateAdmin = () => {
         <Container maxWidth="sm" sx={{ py: 8 }}>
             <Paper elevation={0} sx={{
                 p: 5,
+                ...glassSx,
                 borderRadius: '24px',
-                bgcolor: 'rgba(255, 255, 255, 0.05)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: 'white',
-                boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+                color: 'text.primary',
             }}>
                 <Typography variant="h4" component="h1" gutterBottom fontWeight={800} textAlign="center" sx={{
                     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -83,7 +82,7 @@ const CreateAdmin = () => {
                     Tạo Tài Khoản Admin
                 </Typography>
 
-                {error && <Alert severity="error" sx={{ mb: 3, bgcolor: 'rgba(211, 47, 47, 0.2)', color: '#ffcdd2', border: '1px solid rgba(211, 47, 47, 0.3)' }}>{error}</Alert>}
+                {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={3}>
@@ -96,13 +95,13 @@ const CreateAdmin = () => {
                             onChange={handleChange}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    color: 'white',
-                                    '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-                                    '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                                    color: 'text.primary',
+                                    '& fieldset': { borderColor: 'divider' },
+                                    '&:hover fieldset': { borderColor: 'text.primary' },
+                                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                                 },
-                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                                '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' }
+                                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                                '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' }
                             }}
                         />
 
@@ -116,13 +115,13 @@ const CreateAdmin = () => {
                             onChange={handleChange}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    color: 'white',
-                                    '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-                                    '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                                    color: 'text.primary',
+                                    '& fieldset': { borderColor: 'divider' },
+                                    '&:hover fieldset': { borderColor: 'text.primary' },
+                                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                                 },
-                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                                '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' }
+                                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                                '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' }
                             }}
                         />
 
@@ -136,13 +135,13 @@ const CreateAdmin = () => {
                             onChange={handleChange}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    color: 'white',
-                                    '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-                                    '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                                    color: 'text.primary',
+                                    '& fieldset': { borderColor: 'divider' },
+                                    '&:hover fieldset': { borderColor: 'text.primary' },
+                                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                                 },
-                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                                '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' }
+                                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                                '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' }
                             }}
                         />
 
@@ -156,13 +155,13 @@ const CreateAdmin = () => {
                             onChange={handleChange}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
-                                    color: 'white',
-                                    '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                                    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.4)' },
-                                    '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                                    color: 'text.primary',
+                                    '& fieldset': { borderColor: 'divider' },
+                                    '&:hover fieldset': { borderColor: 'text.primary' },
+                                    '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                                 },
-                                '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                                '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' }
+                                '& .MuiInputLabel-root': { color: 'text.secondary' },
+                                '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' }
                             }}
                         />
 
@@ -174,14 +173,14 @@ const CreateAdmin = () => {
                                 onClick={() => navigate('/admin/users')}
                                 disabled={loading}
                                 sx={{
-                                    borderColor: 'rgba(255,255,255,0.3)',
-                                    color: 'rgba(255,255,255,0.7)',
+                                    borderColor: 'divider',
+                                    color: 'text.secondary',
                                     py: 1.5,
                                     borderRadius: '12px',
                                     '&:hover': {
-                                        borderColor: '#fff',
-                                        color: '#fff',
-                                        bgcolor: 'rgba(255,255,255,0.05)'
+                                        borderColor: 'text.primary',
+                                        color: 'text.primary',
+                                        bgcolor: 'action.hover'
                                     }
                                 }}
                             >

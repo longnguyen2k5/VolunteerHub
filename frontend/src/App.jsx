@@ -34,6 +34,7 @@ import UserManagement from "./pages/admin/UserManagement";
 import CreateAdmin from "./pages/admin/CreateAdmin";
 
 import { usePushNotifications } from "./hooks/usePushNotifications";
+import { ThemeContextProvider } from "./context/ThemeContext";
 
 function App() {
   const { user, loading } = useAuth();
@@ -61,123 +62,125 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route
-          path="register"
-          element={!user ? <Register /> : <Navigate to="/dashboard" />}
-        />
+    <ThemeContextProvider>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="register"
+            element={!user ? <Register /> : <Navigate to="/dashboard" />}
+          />
 
-        {/* OAuth Callback */}
-        <Route path="callback" element={<OAuthCallback />} />
+          {/* OAuth Callback */}
+          <Route path="callback" element={<OAuthCallback />} />
 
-        {/* Forbidden */}
-        <Route path="forbidden" element={<Forbidden />} />
+          {/* Forbidden */}
+          <Route path="forbidden" element={<Forbidden />} />
 
-        {/* Event Routes (Public) */}
-        <Route path="events" element={<EventBrowse />} />
-        <Route path="events/:id" element={<EventDetailPage />} />
-        <Route path="events/:id/channel" element={<EventChannel />} />
+          {/* Event Routes (Public) */}
+          <Route path="events" element={<EventBrowse />} />
+          <Route path="events/:id" element={<EventDetailPage />} />
+          <Route path="events/:id/channel" element={<EventChannel />} />
 
-        {/* Protected Routes - All authenticated users */}
-        <Route
-          path="dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+          {/* Protected Routes - All authenticated users */}
+          <Route
+            path="dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
 
-        <Route
-          path="profile"
-          element={
-            <PrivateRoute>
-              <UserProfile />
-            </PrivateRoute>
-          }
-        />
+          <Route
+            path="profile"
+            element={
+              <PrivateRoute>
+                <UserProfile />
+              </PrivateRoute>
+            }
+          />
 
-        {/* EVENT_MANAGER Routes */}
-        <Route
-          path="events/manage"
-          element={
-            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
-              <EventList />
-            </RoleGuard>
-          }
-        />
+          {/* EVENT_MANAGER Routes */}
+          <Route
+            path="events/manage"
+            element={
+              <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
+                <EventList />
+              </RoleGuard>
+            }
+          />
 
-        <Route
-          path="events/manage/:id/registrations"
-          element={
-            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
-              <EventRegistrations />
-            </RoleGuard>
-          }
-        />
+          <Route
+            path="events/manage/:id/registrations"
+            element={
+              <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
+                <EventRegistrations />
+              </RoleGuard>
+            }
+          />
 
-        <Route
-          path="events/create"
-          element={
-            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
-              <CreateEvent />
-            </RoleGuard>
-          }
-        />
+          <Route
+            path="events/create"
+            element={
+              <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
+                <CreateEvent />
+              </RoleGuard>
+            }
+          />
 
-        <Route
-          path="events/edit/:id"
-          element={
-            <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
-              <EditEvent />
-            </RoleGuard>
-          }
-        />
+          <Route
+            path="events/edit/:id"
+            element={
+              <RoleGuard allowedRoles={["EVENT_MANAGER", "ADMIN"]}>
+                <EditEvent />
+              </RoleGuard>
+            }
+          />
 
-        {/* ADMIN Routes */}
-        <Route
-          path="admin/events"
-          element={
-            <RoleGuard allowedRoles={["ADMIN"]}>
-              <EventApproval />
-            </RoleGuard>
-          }
-        />
+          {/* ADMIN Routes */}
+          <Route
+            path="admin/events"
+            element={
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <EventApproval />
+              </RoleGuard>
+            }
+          />
 
-        <Route
-          path="admin/users"
-          element={
-            <RoleGuard allowedRoles={["ADMIN"]}>
-              <UserManagement />
-            </RoleGuard>
-          }
-        />
+          <Route
+            path="admin/users"
+            element={
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <UserManagement />
+              </RoleGuard>
+            }
+          />
 
-        <Route
-          path="admin/users/create"
-          element={
-            <RoleGuard allowedRoles={["ADMIN"]}>
-              <CreateAdmin />
-            </RoleGuard>
-          }
-        />
+          <Route
+            path="admin/users/create"
+            element={
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <CreateAdmin />
+              </RoleGuard>
+            }
+          />
 
-        {/* VOLUNTEER Routes */}
-        <Route
-          path="my-registrations"
-          element={
-            <RoleGuard allowedRoles={["VOLUNTEER"]}>
-              <ParticipationHistory />
-            </RoleGuard>
-          }
-        />
+          {/* VOLUNTEER Routes */}
+          <Route
+            path="my-registrations"
+            element={
+              <RoleGuard allowedRoles={["VOLUNTEER"]}>
+                <ParticipationHistory />
+              </RoleGuard>
+            }
+          />
 
-        {/* 404 */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+          {/* 404 */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </ThemeContextProvider>
   );
 }
 

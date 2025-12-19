@@ -32,11 +32,13 @@ import {
 import { format } from "date-fns";
 import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
+import { useThemeContext } from "../../context/ThemeContext";
 
 const EventApproval = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentTab, setCurrentTab] = useState("PENDING_APPROVAL");
+  const { glassSx } = useThemeContext();
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -133,7 +135,7 @@ const EventApproval = () => {
   };
 
   return (
-    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4, minHeight: '80vh' }}>
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
           <Typography variant="h4" component="h1" fontWeight={700} sx={{
@@ -144,7 +146,7 @@ const EventApproval = () => {
           }}>
             Quản lý sự kiện
           </Typography>
-          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
             Duyệt và kiểm soát trạng thái các sự kiện
           </Typography>
         </Box>
@@ -154,8 +156,8 @@ const EventApproval = () => {
           onClick={handleExport}
           sx={{
             borderColor: 'rgba(255,255,255,0.3)',
-            color: 'white',
-            '&:hover': { borderColor: '#FF8E53', color: '#FF8E53' }
+            color: 'text.primary',
+            '&:hover': { borderColor: '#FF8E53', color: '#FF8E53', bgcolor: 'action.hover' }
           }}
         >
           Export CSV
@@ -164,9 +166,7 @@ const EventApproval = () => {
 
       <Paper sx={{
         mb: 4,
-        bgcolor: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        ...glassSx,
         borderRadius: '16px',
         overflow: 'hidden'
       }}>
@@ -175,9 +175,9 @@ const EventApproval = () => {
           onChange={handleTabChange}
           centered
           sx={{
-            '& .MuiTab-root': { color: 'rgba(255,255,255,0.6)', fontWeight: 600 },
-            '& .Mui-selected': { color: '#FF8E53 !important' },
-            '& .MuiTabs-indicator': { bgcolor: '#FF8E53' }
+            '& .MuiTab-root': { color: 'text.secondary', fontWeight: 600 },
+            '& .Mui-selected': { color: 'primary.main', fontWeight: 700 }, // No important needed usually if specificity is right
+            '& .MuiTabs-indicator': { bgcolor: 'primary.main' }
           }}
         >
           <Tab label="Chờ phê duyệt" value="PENDING_APPROVAL" />
@@ -188,27 +188,25 @@ const EventApproval = () => {
 
       {loading ? (
         <Container sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-          <CircularProgress sx={{ color: '#FF8E53' }} />
+          <CircularProgress sx={{ color: 'primary.main' }} />
         </Container>
       ) : events.length === 0 ? (
-        <Alert severity="info" sx={{ bgcolor: 'rgba(2, 136, 209, 0.15)', color: '#29b6f6', border: '1px solid rgba(41, 182, 246, 0.3)' }}>
+        <Alert severity="info">
           {currentTab === 'PENDING_APPROVAL'
             ? "Không có sự kiện nào đang chờ duyệt."
             : "Không có sự kiện nào trong danh sách này."}
         </Alert>
       ) : (
         <TableContainer component={Paper} sx={{
-          bgcolor: 'rgba(255, 255, 255, 0.05)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          ...glassSx,
           borderRadius: '16px',
           boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
         }}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'rgba(255,255,255,0.05)' }}>
+              <TableRow sx={{ bgcolor: 'action.hover' }}>
                 {['Tên sự kiện', 'Người tạo', 'Địa điểm', 'Thời gian bắt đầu', 'Trạng thái', 'Thao tác'].map((head) => (
-                  <TableCell key={head} sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                  <TableCell key={head} sx={{ color: 'text.secondary', fontWeight: 700, borderBottom: '1px solid', borderColor: 'divider' }}>
                     {head}
                   </TableCell>
                 ))}
@@ -217,14 +215,14 @@ const EventApproval = () => {
             <TableBody>
               {events.map((event) => (
                 <TableRow key={event.id} hover sx={{
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
-                  '& td': { borderBottom: '1px solid rgba(255,255,255,0.1)', color: 'white' }
+                  '&:hover': { bgcolor: 'action.hover' },
+                  '& td': { borderBottom: '1px solid', borderColor: 'divider', color: 'text.primary' }
                 }}>
                   <TableCell>
                     <Typography variant="body1" fontWeight="bold">
                       {event.name}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                       {event.description?.substring(0, 60)}
                       {event.description?.length > 60 ? "..." : ""}
                     </Typography>
@@ -303,20 +301,21 @@ const EventApproval = () => {
         onClose={closeDialog}
         PaperProps={{
           sx: {
-            bgcolor: '#1e1e1e',
-            color: 'white',
-            border: '1px solid rgba(255,255,255,0.1)',
+            bgcolor: 'background.paper',
+            color: 'text.primary',
+            border: '1px solid',
+            borderColor: 'divider',
             minWidth: 400
           }
         }}
       >
-        <DialogTitle sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
           {actionType === "approve"
             ? "Xác nhận duyệt sự kiện"
             : actionType === "reject" ? "Xác nhận từ chối sự kiện" : "Xác nhận hoàn tác sự kiện"}
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
-          <DialogContentText sx={{ color: 'rgba(255,255,255,0.8)' }}>
+          <DialogContentText sx={{ color: 'text.secondary' }}>
             {actionType === "approve" ? (
               <>
                 Bạn có chắc chắn muốn <strong>duyệt</strong> sự kiện{" "}
@@ -338,7 +337,7 @@ const EventApproval = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={closeDialog} sx={{ color: 'rgba(255,255,255,0.6)' }}>Hủy</Button>
+          <Button onClick={closeDialog} sx={{ color: 'text.secondary' }}>Hủy</Button>
           <Button
             onClick={handleAction}
             color={actionType === "approve" ? "success" : actionType === "reject" ? "error" : "warning"}

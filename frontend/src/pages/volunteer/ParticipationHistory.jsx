@@ -17,10 +17,12 @@ import {
 import { format } from "date-fns";
 import { registrationAPI } from "../../api/registrationApi";
 import { toast } from "react-toastify";
+import { useThemeContext } from "../../context/ThemeContext";
 
 const ParticipationHistory = () => {
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { glassSx } = useThemeContext();
 
     useEffect(() => {
         loadRegistrations();
@@ -62,7 +64,7 @@ const ParticipationHistory = () => {
                 maxWidth="lg"
                 sx={{ mt: 4, display: "flex", justifyContent: "center" }}
             >
-                <CircularProgress />
+                <CircularProgress sx={{ color: 'primary.main' }} />
             </Container>
         );
     }
@@ -83,7 +85,7 @@ const ParticipationHistory = () => {
                 >
                     Lịch sử tham gia
                 </Typography>
-                <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+                <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 300 }}>
                     Hành trình đóng góp của bạn cho cộng đồng
                 </Typography>
             </Box>
@@ -91,12 +93,6 @@ const ParticipationHistory = () => {
             {registrations.length === 0 ? (
                 <Alert
                     severity="info"
-                    sx={{
-                        bgcolor: 'rgba(255,255,255,0.05)',
-                        color: 'white',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        backdropFilter: 'blur(10px)'
-                    }}
                 >
                     Bạn chưa đăng ký tham gia sự kiện nào. Hãy khám phá và tham gia ngay!
                 </Alert>
@@ -104,9 +100,7 @@ const ParticipationHistory = () => {
                 <TableContainer
                     component={Paper}
                     sx={{
-                        bgcolor: 'rgba(255, 255, 255, 0.05)',
-                        backdropFilter: 'blur(20px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        ...glassSx,
                         borderRadius: '24px',
                         boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
                         overflow: 'hidden'
@@ -114,12 +108,26 @@ const ParticipationHistory = () => {
                 >
                     <Table>
                         <TableHead>
-                            <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
-                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Tên sự kiện</TableCell>
-                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Thời gian</TableCell>
-                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Địa điểm</TableCell>
-                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Ngày đăng ký</TableCell>
-                                <TableCell sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 600, borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Trạng thái</TableCell>
+                            <TableRow sx={{ bgcolor: 'action.hover' }}>
+                                {[
+                                    'Tên sự kiện',
+                                    'Thời gian',
+                                    'Địa điểm',
+                                    'Ngày đăng ký',
+                                    'Trạng thái'
+                                ].map((head) => (
+                                    <TableCell
+                                        key={head}
+                                        sx={{
+                                            color: 'text.secondary',
+                                            fontWeight: 600,
+                                            borderBottom: '1px solid',
+                                            borderColor: 'divider'
+                                        }}
+                                    >
+                                        {head}
+                                    </TableCell>
+                                ))}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -128,25 +136,26 @@ const ParticipationHistory = () => {
                                     key={reg.id}
                                     hover
                                     sx={{
-                                        '&:hover': { bgcolor: 'rgba(255,255,255,0.05) !important' },
-                                        transition: 'background-color 0.2s'
+                                        '&:hover': { bgcolor: 'action.hover' },
+                                        transition: 'background-color 0.2s',
+                                        '& td': { borderColor: 'divider' }
                                     }}
                                 >
-                                    <TableCell sx={{ color: 'white', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <Typography variant="body1" fontWeight={600} sx={{ color: '#FF8E53' }}>
+                                    <TableCell sx={{ color: 'text.primary' }}>
+                                        <Typography variant="body1" fontWeight={600} sx={{ color: 'primary.main' }}>
                                             {reg.eventName}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <TableCell sx={{ color: 'text.secondary' }}>
                                         {formatDateTime(reg.eventStartTime)}
                                     </TableCell>
-                                    <TableCell sx={{ color: 'rgba(255,255,255,0.7)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <TableCell sx={{ color: 'text.secondary' }}>
                                         {reg.eventLocation}
                                     </TableCell>
-                                    <TableCell sx={{ color: 'rgba(255,255,255,0.5)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <TableCell sx={{ color: 'text.disabled' }}>
                                         {formatDateTime(reg.registeredAt)}
                                     </TableCell>
-                                    <TableCell sx={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <TableCell>
                                         {getStatusChip(reg.status)}
                                     </TableCell>
                                 </TableRow>

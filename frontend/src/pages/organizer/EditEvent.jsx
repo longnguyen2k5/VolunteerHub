@@ -93,8 +93,8 @@ const EditEvent = () => {
           onClick={() => navigate("/events/manage")}
           sx={{
             mb: 3,
-            color: 'rgba(255,255,255,0.7)',
-            '&:hover': { color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+            color: 'text.secondary',
+            '&:hover': { color: 'primary.main', bgcolor: 'action.hover' }
           }}
         >
           Quay lại danh sách
@@ -112,7 +112,7 @@ const EditEvent = () => {
         >
           Chỉnh sửa sự kiện
         </Typography>
-        <Typography variant="h6" sx={{ color: 'rgba(255,255,255,0.6)', fontWeight: 300 }}>
+        <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 300 }}>
           Cập nhật thông tin chi tiết cho sự kiện của bạn
         </Typography>
       </Box>

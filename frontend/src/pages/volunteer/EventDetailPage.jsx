@@ -31,6 +31,7 @@ import { toast } from 'react-toastify';
 import { eventAPI } from '../../api/eventApi';
 import { registrationAPI } from '../../api/registrationApi';
 import { useAuth } from '../../hooks/useAuth';
+import { useThemeContext } from '../../context/ThemeContext';
 
 const EventDetailPage = () => {
     const { id } = useParams();
@@ -41,6 +42,7 @@ const EventDetailPage = () => {
     const [registering, setRegistering] = useState(false);
     const [myRegistration, setMyRegistration] = useState(null);
     const [confirmDialog, setConfirmDialog] = useState({ open: false, action: null });
+    const { glassSx } = useThemeContext();
 
     useEffect(() => {
         fetchEventDetails();
@@ -154,8 +156,8 @@ const EventDetailPage = () => {
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#121212' }}>
-                <CircularProgress sx={{ color: '#FF8E53' }} />
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+                <CircularProgress sx={{ color: 'primary.main' }} />
             </Box>
         );
     }
@@ -165,8 +167,8 @@ const EventDetailPage = () => {
     return (
         <Box sx={{
             minHeight: '100vh',
-            bgcolor: '#121212',
-            color: 'white',
+            bgcolor: 'background.default',
+            color: 'text.primary',
             pb: 8
         }}>
             {/* HERRO BANNER SECTION */}
@@ -187,7 +189,9 @@ const EventDetailPage = () => {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(18,18,18,0.9) 90%, #121212 100%)',
+                    // Use a gradient that fades to the current theme background
+                    // Hard to match exact hex variable in pure CSS calc, so we stick to dark overlay for text readability on hero
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 90%, rgba(0,0,0,0.95) 100%)',
                     zIndex: 1
                 }
             }}>
@@ -197,7 +201,7 @@ const EventDetailPage = () => {
                         startIcon={<ArrowBack />}
                         onClick={() => navigate('/events')}
                         sx={{
-                            color: 'white',
+                            color: 'white', // Keep white on hero image
                             bgcolor: 'rgba(0,0,0,0.4)',
                             backdropFilter: 'blur(4px)',
                             px: 3,
@@ -210,15 +214,15 @@ const EventDetailPage = () => {
                     </Button>
                 </Container>
 
-                {/* Hero Content */}
+                {/* Hero Content - Always dark theme text here because of background image */}
                 <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 2, pb: 8, px: { xs: 2, md: 6 } }}>
                     <Box sx={{ maxWidth: '900px' }}>
                         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
                             <Chip
                                 label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
                                 sx={{
-                                    bgcolor: '#FF8E53',
-                                    color: 'black',
+                                    bgcolor: 'primary.main',
+                                    color: 'white',
                                     fontWeight: 700,
                                     fontSize: '0.9rem'
                                 }}
@@ -249,7 +253,7 @@ const EventDetailPage = () => {
 
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 6, color: 'rgba(255,255,255,0.9)' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <CalendarToday sx={{ fontSize: 32, mr: 2, color: '#FF8E53' }} />
+                                <CalendarToday sx={{ fontSize: 32, mr: 2, color: 'primary.main' }} />
                                 <Box>
                                     <Typography variant="body2" sx={{ opacity: 0.7 }}>Khởi hành</Typography>
                                     <Typography variant="h6" fontWeight={600}>
@@ -259,7 +263,7 @@ const EventDetailPage = () => {
                             </Box>
 
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <LocationOn sx={{ fontSize: 32, mr: 2, color: '#FF8E53' }} />
+                                <LocationOn sx={{ fontSize: 32, mr: 2, color: 'primary.main' }} />
                                 <Box>
                                     <Typography variant="body2" sx={{ opacity: 0.7 }}>Địa điểm</Typography>
                                     <Typography variant="h6" fontWeight={600}>
@@ -278,11 +282,11 @@ const EventDetailPage = () => {
                     {/* LEFT COLUMN: Description & Details */}
                     <Grid item xs={12} md={8}>
                         <Box sx={{ mb: 6 }}>
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3 }}>
+                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', mb: 3 }}>
                                 Giới thiệu sự kiện
                             </Typography>
                             <Typography variant="body1" sx={{
-                                color: 'rgba(255,255,255,0.8)',
+                                color: 'text.secondary',
                                 fontSize: '1.1rem',
                                 lineHeight: 1.8,
                                 whiteSpace: 'pre-line'
@@ -291,10 +295,10 @@ const EventDetailPage = () => {
                             </Typography>
                         </Box>
 
-                        <Divider sx={{ bgcolor: 'rgba(255,255,255,0.1)', mb: 6 }} />
+                        <Divider sx={{ bgcolor: 'divider', mb: 6 }} />
 
                         <Box sx={{ mb: 6 }}>
-                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3 }}>
+                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', mb: 3 }}>
                                 Thông tin tổ chức
                             </Typography>
 
@@ -302,15 +306,14 @@ const EventDetailPage = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: 3,
-                                bgcolor: 'rgba(255,255,255,0.03)',
+                                ...glassSx,
                                 p: 3,
                                 borderRadius: '16px',
-                                border: '1px solid rgba(255,255,255,0.1)'
                             }}>
                                 <Box sx={{
                                     width: 60,
                                     height: 60,
-                                    bgcolor: '#FF8E53',
+                                    bgcolor: 'primary.main',
                                     borderRadius: '50%',
                                     display: 'flex',
                                     alignItems: 'center',
@@ -322,8 +325,8 @@ const EventDetailPage = () => {
                                     {event.managerName?.charAt(0)}
                                 </Box>
                                 <Box>
-                                    <Typography variant="h6" sx={{ fontWeight: 600 }}>{event.managerName}</Typography>
-                                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Người quản lý sự kiện</Typography>
+                                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>{event.managerName}</Typography>
+                                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>Người quản lý sự kiện</Typography>
                                 </Box>
 
                                 {/* Channel Button in Organizr section if valid */}
@@ -334,12 +337,12 @@ const EventDetailPage = () => {
                                         onClick={() => navigate(`/events/${id}/channel`)}
                                         sx={{
                                             ml: 'auto',
-                                            borderColor: 'rgba(255,255,255,0.3)',
-                                            color: 'white',
+                                            borderColor: 'divider',
+                                            color: 'text.primary',
                                             '&:hover': {
-                                                borderColor: '#FF8E53',
-                                                color: '#FF8E53',
-                                                bgcolor: 'rgba(255, 142, 83, 0.1)'
+                                                borderColor: 'primary.main',
+                                                color: 'primary.main',
+                                                bgcolor: 'action.hover'
                                             }
                                         }}
                                     >
@@ -355,33 +358,30 @@ const EventDetailPage = () => {
                         <Card sx={{
                             position: 'sticky',
                             top: 40,
-                            bgcolor: '#1e1e1e',
-                            backgroundImage: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            ...glassSx,
                             borderRadius: '24px',
-                            color: 'white',
-                            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                            color: 'text.primary',
                             p: 1
                         }}>
                             <CardContent sx={{ p: 4 }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.secondary' }}>
                                         Số chỗ còn lại
                                     </Typography>
-                                    <Typography variant="h3" sx={{ fontWeight: 800, color: '#FF8E53' }}>
+                                    <Typography variant="h3" sx={{ fontWeight: 800, color: 'primary.main' }}>
                                         {event.maxParticipants - event.currentParticipants}
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ p: 2, bgcolor: 'rgba(0,0,0,0.2)', borderRadius: '12px', mb: 4 }}>
+                                <Box sx={{ p: 2, bgcolor: 'action.hover', borderRadius: '12px', mb: 4 }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Tổng số lượng</Typography>
-                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{event.maxParticipants} người</Typography>
+                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>Tổng số lượng</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>{event.maxParticipants} người</Typography>
                                     </Box>
-                                    <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.1)' }} />
+                                    <Divider sx={{ my: 1, borderColor: 'divider' }} />
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)' }}>Đã đăng ký</Typography>
-                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{event.currentParticipants} người</Typography>
+                                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>Đã đăng ký</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>{event.currentParticipants} người</Typography>
                                     </Box>
                                 </Box>
 
@@ -393,7 +393,7 @@ const EventDetailPage = () => {
                                             sx={{ mb: 3, width: '100%', borderRadius: '12px', fontWeight: 700, p: 2, height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal' } }}
                                         />
 
-                                        <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', color: 'rgba(255,255,255,0.5)', mb: 2 }}>
+                                        <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', color: 'text.secondary', mb: 2 }}>
                                             Đăng ký lúc: {format(new Date(myRegistration.registeredAt), 'dd/MM/yyyy HH:mm')}
                                         </Typography>
 
@@ -459,7 +459,7 @@ const EventDetailPage = () => {
                                                 {registering ? <CircularProgress size={24} color="inherit" /> : 'ĐĂNG KÝ THAM GIA'}
                                             </Button>
                                         ) : (
-                                            <Box sx={{ p: 2, textAlign: 'center', color: 'rgba(255,255,255,0.6)', bgcolor: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                                            <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary', bgcolor: 'action.hover', borderRadius: '12px' }}>
                                                 <Typography variant="body2">
                                                     {[
                                                         !user && 'Vui lòng đăng nhập để đăng ký',
@@ -484,18 +484,19 @@ const EventDetailPage = () => {
                     onClose={() => setConfirmDialog({ open: false, action: null })}
                     PaperProps={{
                         sx: {
-                            bgcolor: '#1e1e1e',
-                            color: 'white',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            bgcolor: 'background.paper',
+                            color: 'text.primary',
+                            border: '1px solid',
+                            borderColor: 'divider',
                             minWidth: 400
                         }
                     }}
                 >
-                    <DialogTitle sx={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                    <DialogTitle sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
                         {confirmDialog.action === 'register' ? 'Xác nhận đăng ký' : 'Xác nhận hủy'}
                     </DialogTitle>
                     <DialogContent sx={{ mt: 3 }}>
-                        <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>
+                        <Typography sx={{ color: 'text.secondary', fontSize: '1.1rem' }}>
                             {confirmDialog.action === 'register'
                                 ? 'Bạn có chắc chắn muốn đăng ký tham gia sự kiện này?'
                                 : 'Bạn có chắc chắn muốn hủy đăng ký sự kiện này?'}
@@ -504,7 +505,7 @@ const EventDetailPage = () => {
                     <DialogActions sx={{ p: 3 }}>
                         <Button
                             onClick={() => setConfirmDialog({ open: false, action: null })}
-                            sx={{ color: 'rgba(255,255,255,0.6)', mr: 2 }}
+                            sx={{ color: 'text.secondary', mr: 2 }}
                         >
                             Hủy
                         </Button>
