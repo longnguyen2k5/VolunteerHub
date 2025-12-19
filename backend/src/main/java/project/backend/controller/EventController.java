@@ -91,6 +91,12 @@ public class EventController {
         return ResponseEntity.ok(eventService.rejectEvent(id));
     }
 
+    @PutMapping("/{id}/revert")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<EventResponse> revertEvent(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.revertEvent(id));
+    }
+
     @GetMapping("/pending")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<EventResponse>> getAdminEvents(@RequestParam(required = false) project.backend.model.enums.EventStatus status) {

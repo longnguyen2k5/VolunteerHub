@@ -29,8 +29,11 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
+    // ... existing methods ...
+
     @Transactional
     public RegistrationResponse registerForEvent(Long eventId, Long userId) {
+        // ... implementation ...
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         Users user = userRepository.findById(userId)
@@ -133,11 +136,17 @@ public class RegistrationService {
              if (registration.getEvents().getMaxParticipants() != null && current >= registration.getEvents().getMaxParticipants()) {
                  throw new IllegalArgumentException("Event is full");
              }
-             
-             // Update current participants count in Events entity if you are caching it there
-             // Events event = registration.getEvents();
-             // event.setCurrentParticipants(current.intValue() + 1);
-             // eventRepository.save(event);
+        }
+
+        // Validate COMPLETION: Cannot mark as completed if event hasn't ended
+        if (status == RegistrationStatus.COMPLETED) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime endTime = registration.getEvents().getEndTime();
+            log.info("Checking completion for event {}. EndTime: {}, Now: {}", registration.getEvents().getId(), endTime, now);
+            
+            if (endTime.isAfter(now)) {
+                throw new project.backend.exception.BadRequestException("Sự kiện chưa kết thúc, không thể đánh dấu hoàn thành!");
+            }
         }
 
         registration.setStatus(status);

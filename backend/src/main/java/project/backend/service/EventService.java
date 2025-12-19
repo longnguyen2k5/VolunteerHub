@@ -143,6 +143,14 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
+    @Transactional
+    public EventResponse revertEvent(Long eventId) {
+        Events event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        event.setStatus(EventStatus.PENDING_APPROVAL);
+        return mapToResponse(eventRepository.save(event));
+    }
+
     public List<EventResponse> getPendingEvents() {
         return eventRepository.findByStatus(EventStatus.PENDING_APPROVAL)
                 .stream()
