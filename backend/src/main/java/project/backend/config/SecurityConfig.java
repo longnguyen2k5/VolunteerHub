@@ -77,7 +77,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/events/public/**").permitAll()
                         .requestMatchers("/api/events/upcoming").permitAll()
-                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/webjars/**", "/uploads/**").permitAll()
 
                         // Admin endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
