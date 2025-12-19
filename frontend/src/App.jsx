@@ -14,6 +14,7 @@ import Forbidden from "./pages/Forbidden";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import RoleGuard from "./components/auth/RoleGuard";
 import Layout from "./components/common/Layout";
+import UserProfile from "./pages/UserProfile";
 
 // Event Pages
 import EventBrowse from "./pages/volunteer/EventBrowse";
@@ -85,6 +86,15 @@ function App() {
           element={
             <PrivateRoute>
               <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="profile"
+          element={
+            <PrivateRoute>
+              <UserProfile />
             </PrivateRoute>
           }
         />
