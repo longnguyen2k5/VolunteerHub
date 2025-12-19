@@ -56,9 +56,9 @@ const EventCard = ({ event, registration }) => {
         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <CardMedia
                 component="img"
-                height="140"
                 image={event.imageUrl || DEFAULT_IMAGE}
                 alt={event.name}
+                sx={{ height: 140, objectFit: 'cover' }}
                 onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = DEFAULT_IMAGE;
@@ -91,14 +91,38 @@ const EventCard = ({ event, registration }) => {
                     />
                 </Box>
 
-                <Typography gutterBottom variant="h6" component="div">
+                <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{
+                        height: '3.2em', // Fixed height for 2 lines approximately
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        lineHeight: '1.2em'
+                    }}
+                >
                     {event.name}
                 </Typography>
 
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {event.description.length > 100
-                        ? `${event.description.substring(0, 100)}...`
-                        : event.description}
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                        mb: 2,
+                        height: '4.5em', // Fixed height for 3 lines (1.5 line height * 3)
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        lineHeight: '1.5em'
+                    }}
+                >
+                    {event.description}
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>

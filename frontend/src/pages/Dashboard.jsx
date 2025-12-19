@@ -56,7 +56,7 @@ const EventListSection = ({ title, events, registrations }) => {
             <SectionHeader title={title} />
             <Grid container spacing={3}>
                 {events.map(event => (
-                    <Grid item xs={12} sm={6} md={4} key={event.id}>
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={event.id}>
                         <EventCard
                             event={event}
                             registration={registrations.find(r => r.eventId === event.id)}
