@@ -79,12 +79,12 @@ INSERT IGNORE INTO event_registrations (user_id, event_id, status, registered_at
 -- Event 8: Gia sư tình nguyện
 (7, 8, 'APPROVED', NOW()), (8, 8, 'PENDING', NOW()), (9, 8, 'APPROVED', NOW()),
 
--- Event 12: Bếp ăn 0 đồng (Past event, should be COMPLETED)
-(10, 12, 'COMPLETED', DATE_ADD(NOW(), INTERVAL -1 DAY)), 
-(11, 12, 'COMPLETED', DATE_ADD(NOW(), INTERVAL -1 DAY)),
-(12, 12, 'COMPLETED', DATE_ADD(NOW(), INTERVAL -1 DAY)),
-(13, 12, 'COMPLETED', DATE_ADD(NOW(), INTERVAL -1 DAY)),
-(14, 12, 'COMPLETED', DATE_ADD(NOW(), INTERVAL -1 DAY)),
+-- Event 12: Bếp ăn 0 đồng (Past event, should be PENDING)
+(10, 12, 'PENDING', DATE_ADD(NOW(), INTERVAL -1 DAY)), 
+(11, 12, 'PENDING', DATE_ADD(NOW(), INTERVAL -1 DAY)),
+(12, 12, 'PENDING', DATE_ADD(NOW(), INTERVAL -1 DAY)),
+(13, 12, 'PENDING', DATE_ADD(NOW(), INTERVAL -1 DAY)),
+(14, 12, 'PENDING', DATE_ADD(NOW(), INTERVAL -1 DAY)),
 
 -- Event 15: Cứu trợ (Urgent)
 (13, 15, 'APPROVED', NOW()), (14, 15, 'APPROVED', NOW()), (15, 15, 'APPROVED', NOW()), (16, 15, 'APPROVED', NOW()), (17, 15, 'APPROVED', NOW()),
