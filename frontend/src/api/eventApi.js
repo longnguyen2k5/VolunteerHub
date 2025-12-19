@@ -107,4 +107,11 @@ export const eventAPI = {
     });
     return response.data;
   },
+
+  /**
+   * ADMIN: Revert an event to PENDING_APPROVAL
+   */
+  revertEvent: (id) => {
+    return axiosInstance.put(`/events/${id}/revert`);
+  },
 };

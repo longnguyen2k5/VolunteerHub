@@ -27,6 +27,7 @@ import {
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
   Download as DownloadIcon,
+  Restore as RestoreIcon,
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { eventAPI } from "../../api/eventApi";
@@ -39,7 +40,7 @@ const EventApproval = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [actionType, setActionType] = useState(null); // 'approve' or 'reject'
+  const [actionType, setActionType] = useState(null); // 'approve', 'reject', or 'revert'
 
   useEffect(() => {
     loadEvents();
@@ -48,8 +49,7 @@ const EventApproval = () => {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      // Backend endpoint /events/pending now accepts ?status=... thanks to our update
-      // It acts as a generic getAdminEvents endpoint now
+      // Backend endpoint /events/pending now accepts ?status=... 
       const response = await eventAPI.getPendingEvents({ status: currentTab });
       setEvents(response.data || []);
     } catch (error) {
@@ -86,9 +86,12 @@ const EventApproval = () => {
       } else if (actionType === "reject") {
         await eventAPI.rejectEvent(selectedEvent.id);
         toast.success(`Đã từ chối sự kiện "${selectedEvent.name}"`);
+      } else if (actionType === "revert") {
+        await eventAPI.revertEvent(selectedEvent.id);
+        toast.success(`Đã hoàn tác sự kiện "${selectedEvent.name}" về Chờ duyệt`);
       }
       closeDialog();
-      loadEvents(); // Reload current tab to reflect changes (item might move out)
+      loadEvents(); // Reload current tab to reflect changes
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Không thể thực hiện hành động"
@@ -205,7 +208,20 @@ const EventApproval = () => {
                     {getStatusChip(event.status)}
                   </TableCell>
                   <TableCell align="center">
-                    {/* Only show Approve/Reject buttons if Pending */}
+                    {/* Approved Tab: Show Revert Button */}
+                    {event.status === 'APPROVED' && (
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        color="warning"
+                        startIcon={<RestoreIcon />}
+                        onClick={() => openDialog(event, "revert")}
+                      >
+                        Hoàn tác
+                      </Button>
+                    )}
+
+                    {/* Pending Tab: Show Approve/Reject Buttons */}
                     {event.status === 'PENDING_APPROVAL' ? (
                       <Stack direction="row" spacing={1} justifyContent="center">
                         <Button
@@ -228,9 +244,26 @@ const EventApproval = () => {
                         </Button>
                       </Stack>
                     ) : (
-                      <Typography variant="caption" color="text.secondary">
-                        -
-                      </Typography>
+                      // If not Approved and not Pending (i.e. REJECTED), check if we want Revert there too?
+                      // User manual said "duyệt một sự kiện thì có thể sang lại tab sự kiện đã được duyệt"
+                      // So minimal scope is Approved tab. For Rejected, logic is same if we want.
+                      // Let's keep it simple for now or add Revert to Rejected too?
+                      // "đưa lại sự kiện đó quay lại hàng đợi duyệt/từ chối"
+                      event.status === 'REJECTED' && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="warning"
+                          startIcon={<RestoreIcon />}
+                          onClick={() => openDialog(event, "revert")}
+                        >
+                          Hoàn tác
+                        </Button>
+                      )
+                    )}
+                    {/* Fallback for formatting consistency if needed, but the conditions cover all states */}
+                    {!['APPROVED', 'PENDING_APPROVAL', 'REJECTED'].includes(event.status) && (
+                      <Typography variant="caption" color="text.secondary">-</Typography>
                     )}
                   </TableCell>
                 </TableRow>
@@ -245,7 +278,7 @@ const EventApproval = () => {
         <DialogTitle>
           {actionType === "approve"
             ? "Xác nhận duyệt sự kiện"
-            : "Xác nhận từ chối sự kiện"}
+            : actionType === "reject" ? "Xác nhận từ chối sự kiện" : "Xác nhận hoàn tác sự kiện"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -255,11 +288,16 @@ const EventApproval = () => {
                 <strong>"{selectedEvent?.name}"</strong>? Sự kiện sẽ được công
                 khai cho tình nguyện viên đăng ký.
               </>
-            ) : (
+            ) : actionType === "reject" ? (
               <>
                 Bạn có chắc chắn muốn <strong>từ chối</strong> sự kiện{" "}
                 <strong>"{selectedEvent?.name}"</strong>? Sự kiện sẽ không được
                 công khai.
+              </>
+            ) : (
+              <>
+                Bạn có chắc chắn muốn <strong>hoàn tác</strong> trạng thái của sự kiện{" "}
+                <strong>"{selectedEvent?.name}"</strong>? Sự kiện sẽ quay lại trạng thái <strong>Chờ phê duyệt</strong>.
               </>
             )}
           </DialogContentText>
@@ -268,10 +306,10 @@ const EventApproval = () => {
           <Button onClick={closeDialog}>Hủy</Button>
           <Button
             onClick={handleAction}
-            color={actionType === "approve" ? "success" : "error"}
+            color={actionType === "approve" ? "success" : actionType === "reject" ? "error" : "warning"}
             variant="contained"
           >
-            {actionType === "approve" ? "Duyệt" : "Từ chối"}
+            {actionType === "approve" ? "Duyệt" : actionType === "reject" ? "Từ chối" : "Hoàn tác"}
           </Button>
         </DialogActions>
       </Dialog>
