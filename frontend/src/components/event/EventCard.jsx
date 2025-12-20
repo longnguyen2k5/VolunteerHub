@@ -57,69 +57,82 @@ const EventCard = ({ event, registration }) => {
 
     const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1174";
 
-    return (
-        <Card sx={{
-            height: '100%',
-            width: '100%',
-            minWidth: 0,
-            maxWidth: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            ...glassSx,
-            borderRadius: '16px',
-            color: 'text.primary',
-            transition: 'all 0.3s ease',
-            overflow: 'hidden',
-            '&:hover': {
-                transform: 'translateY(-8px)',
-                boxShadow: '0 12px 24px rgba(0,0,0,0.4)',
-                bgcolor: 'action.hover',
-            }
-        }}>
-            <Box sx={{ position: 'relative' }}>
-                <CardMedia
-                    component="img"
-                    image={event.imageUrl || DEFAULT_IMAGE}
-                    alt={event.name}
-                    sx={{
-                        height: 180,
-                        objectFit: 'cover',
-                        borderBottom: '1px solid',
-                        borderColor: 'divider'
-                    }}
-                    onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = DEFAULT_IMAGE;
-                    }}
-                />
-                <Box sx={{
-                    position: 'absolute',
-                    top: 12,
-                    right: 12,
-                    display: 'flex',
-                    gap: 1
-                }}>
-                    <Chip
-                        label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
-                        size="small"
-                        sx={{
-                            bgcolor: 'rgba(0,0,0,0.6)', // Keep dark overlay for contrast on image
-                            backdropFilter: 'blur(4px)',
-                            color: 'white',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            fontWeight: 600
-                        }}
-                    />
-                </Box>
-            </Box>
+    const handleCardClick = () => {
+        if (!user) {
+            toast.info("Vui lòng đăng nhập để xem chi tiết sự kiện!");
+            return;
+        }
+        navigate(`/events/${event.id}`);
+    };
 
-            <CardContent sx={{ flexGrow: 1, p: 2.5, minWidth: 0, overflow: 'hidden' }}>
-                <Box sx={{ mb: 2 }}>
+    return (
+        <Card
+            onClick={handleCardClick}
+            sx={{
+                height: 320,
+                width: '100%',
+                position: 'relative',
+                borderRadius: '20px',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                cursor: 'pointer',
+                overflow: 'hidden',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                '&:hover': {
+                    transform: 'translateY(-8px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                    '& .hover-panel-left': { transform: 'translateX(0)', opacity: 1 },
+                    '& .hover-panel-right': { transform: 'translateX(0)', opacity: 1 },
+                    '& .card-content-overlay': { transform: 'translateY(100%)', opacity: 0 }, // Optional: Hide title on hover to show details clearly? Or keep it? Let's keep it visible but maybe move it. Actually, if panels cover everything, let's fade out the original bottom title.
+                    '& .bg-image': { transform: 'scale(1.1)' }
+                }
+            }}
+        >
+            {/* Background Image */}
+            <CardMedia
+                className="bg-image"
+                component="img"
+                image={event.imageUrl || DEFAULT_IMAGE}
+                alt={event.name}
+                sx={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'cover',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    zIndex: 0,
+                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_IMAGE;
+                }}
+            />
+
+            {/* Gradient Overlay for Title (Always visible initially) */}
+            <Box
+                className="card-content-overlay"
+                sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '50%',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%)',
+                    zIndex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    p: 2,
+                    transition: 'all 0.3s ease',
+                }}
+            >
+                <Box sx={{ mb: 1, display: 'flex', gap: 1 }}>
                     <Chip
                         label={
                             (registration && registration.status !== 'CANCELLED') ? getStatusText(registration.status) :
                                 (new Date(event.endTime) < new Date()) ? 'Đã kết thúc' :
-                                    (event.currentParticipants >= event.maxParticipants) ? 'Đã đủ người' :
+                                    (event.currentParticipants >= event.maxParticipants) ? 'Đủ người' :
                                         (new Date(event.startTime) <= new Date()) ? 'Đang diễn ra' :
                                             'Sắp diễn ra'
                         }
@@ -131,103 +144,122 @@ const EventCard = ({ event, registration }) => {
                                         (new Date(event.startTime) <= new Date()) ? 'secondary' :
                                             'info'
                         }
-                        sx={{ fontWeight: 600 }}
+                        sx={{ fontWeight: 600, height: 24 }}
                     />
                 </Box>
-
                 <Typography
-                    gutterBottom
                     variant="h6"
-                    component="div"
                     sx={{
-                        height: '3.2em',
+                        color: 'white',
+                        fontWeight: 700,
+                        textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: 'vertical',
-                        lineHeight: '1.2em',
-                        fontWeight: 700,
-                        mb: 1,
-                        color: 'text.primary'
+                        lineHeight: 1.3
                     }}
                 >
                     {event.name}
                 </Typography>
+            </Box>
 
-                <Typography
-                    variant="body2"
+            {/* Left Hover Panel */}
+            <Box className="hover-panel-left" sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '55%', // Slightly more than half to blend well
+                height: '100%',
+                background: 'linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%)', // Fades to transparent
+                transform: 'translateX(-100%)',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                p: 3,
+                zIndex: 2,
+                opacity: 0,
+            }}>
+                <Box sx={{ color: 'white', transform: 'translateX(0)', transition: 'transform 0.4s 0.1s' }}>
+                    <Typography variant="overline" sx={{ color: 'primary.light', fontWeight: 700, letterSpacing: 1.5 }}>
+                        Thời gian & Địa điểm
+                    </Typography>
+                    <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', mb: 1 }}>
+                        <CalendarToday fontSize="small" sx={{ mr: 1.5, color: 'white', opacity: 0.8 }} />
+                        <Typography variant="body2" fontWeight="500">
+                            {format(new Date(event.startTime), 'HH:mm dd/MM/yyyy')}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                        <LocationOn fontSize="small" sx={{ mr: 1.5, color: 'white', opacity: 0.8, mt: 0.3 }} />
+                        <Typography variant="body2" fontWeight="500" sx={{ lineHeight: 1.4 }}>
+                            {event.location}
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
+
+            {/* Right Hover Panel */}
+            <Box className="hover-panel-right" sx={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '55%',
+                height: '100%',
+                background: 'linear-gradient(270deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%)',
+                transform: 'translateX(100%)',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'flex-end', // Align text to right for this panel
+                p: 3,
+                zIndex: 2,
+                opacity: 0,
+                textAlign: 'right'
+            }}>
+                <Box sx={{ color: 'white' }}>
+                    <Typography variant="overline" sx={{ color: 'secondary.light', fontWeight: 700, letterSpacing: 1.5 }}>
+                        Thông tin
+                    </Typography>
+                    <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 1 }}>
+                        <Typography variant="body2" fontWeight="500" sx={{ mr: 1.5 }}>
+                            {event.currentParticipants || 0}/{event.maxParticipants} người
+                        </Typography>
+                        <People fontSize="small" sx={{ color: 'white', opacity: 0.8 }} />
+                    </Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                        <Typography variant="body2" fontWeight="500" sx={{ mr: 1.5 }}>
+                            {event.managerName || "Ẩn danh"}
+                        </Typography>
+                        <Person fontSize="small" sx={{ color: 'white', opacity: 0.8 }} />
+                    </Box>
+                </Box>
+            </Box>
+
+            {/* Category Chip (Top Right, Always Visible) */}
+            <Box sx={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                zIndex: 3
+            }}>
+                <Chip
+                    label={CATEGORY_LABELS[event.category] || event.category || 'Chung'}
+                    size="small"
                     sx={{
-                        color: 'text.secondary',
-                        mb: 2,
-                        height: '4.5em',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        lineHeight: '1.5em',
-                        wordBreak: 'break-word'
+                        bgcolor: 'rgba(0,0,0,0.7)',
+                        backdropFilter: 'blur(4px)',
+                        color: 'white',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                        fontWeight: 600,
+                        height: 24,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
                     }}
-                >
-                    {event.description}
-                </Typography>
-
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
-                    <Person fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary', wordBreak: 'break-word', minWidth: 0 }}>
-                        {event.managerName || "Ẩn danh"}
-                    </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1.5, minWidth: 0 }}>
-                    <LocationOn fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem', flexShrink: 0, mt: 0.25 }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary', wordBreak: 'break-word', minWidth: 0 }}>
-                        {event.location}
-                    </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                    <CalendarToday fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {format(new Date(event.startTime), 'dd/MM/yyyy HH:mm')}
-                    </Typography>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <People fontSize="small" sx={{ mr: 1.5, color: 'primary.main', fontSize: '1.2rem' }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                        {event.currentParticipants || 0}/{event.maxParticipants} người
-                    </Typography>
-                </Box>
-            </CardContent>
-
-            <CardActions sx={{ p: 2, pt: 0 }}>
-                <Button
-                    size="medium"
-                    onClick={() => {
-                        if (!user) {
-                            toast.info("Vui lòng đăng nhập để xem chi tiết sự kiện!");
-                            return;
-                        }
-                        navigate(`/events/${event.id}`);
-                    }}
-                    fullWidth
-                    variant="outlined"
-                    sx={{
-                        borderRadius: '20px',
-                        borderColor: 'divider',
-                        color: 'text.primary',
-                        '&:hover': {
-                            borderColor: 'primary.main',
-                            bgcolor: 'action.hover',
-                            color: 'primary.main'
-                        }
-                    }}
-                >
-                    Xem chi tiết
-                </Button>
-            </CardActions>
+                />
+            </Box>
         </Card>
     );
 };
