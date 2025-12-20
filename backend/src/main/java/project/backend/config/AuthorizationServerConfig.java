@@ -7,7 +7,6 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -32,41 +31,49 @@ import java.security.interfaces.RSAPublicKey;
 import java.time.Duration;
 import java.util.UUID;
 
+/**
+ * Cấu hình Authorization Server sử dụng Spring Security OAuth2.
+ * Định nghĩa các bean cần thiết như RegisteredClientRepository, AuthorizationService, JWKSource, etc.
+ */
 @Configuration
 public class AuthorizationServerConfig {
 
     /**
-     * Registered Client Repository - Lưu thông tin OAuth2 clients
+     * Bean RegisteredClientRepository để quản lý thông tin các OAuth2 clients.
+     * Sử dụng JdbcTemplate để lưu trữ thông tin client trong cơ sở dữ liệu.
+     *
+     * @param jdbcTemplate JdbcTemplate để tương tác với DB
+     * @return RegisteredClientRepository
      */
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
         JdbcRegisteredClientRepository repository = new JdbcRegisteredClientRepository(jdbcTemplate);
 
-        // Kiểm tra nếu client đã tồn tại
+        // Kiểm tra xem client mặc định đã tồn tại chưa, nếu chưa thì tạo mới
         RegisteredClient existingClient = repository.findByClientId("volunteerhub-client");
         if (existingClient == null) {
             RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                     .clientId("volunteerhub-client")
-                    // Public client - không cần client secret với PKCE
+                    // Cấu hình Client Authentication Method là NONE cho Public Client (SPA, Mobile)
                     .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                    // Authorization Code với PKCE
+                    // Hỗ trợ Authorization Code Grant và Refresh Token Grant
                     .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                     .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                    // Redirect URI sau khi authorization
+                    // Cấu hình các Redirect URI cho phép
                     .redirectUri("http://localhost:3000/callback")
                     .redirectUri("http://localhost:3000/authorized")
-                    // Scopes
+                    // Cấu hình các Scope được phép
                     .scope(OidcScopes.OPENID)
                     .scope(OidcScopes.PROFILE)
                     .scope(OidcScopes.EMAIL)
                     .scope("read")
                     .scope("write")
-                    // Client settings - BẮT BUỘC PKCE
+                    // Cấu hình Client Settings, bắt buộc sử dụng PKCE cho bảo mật
                     .clientSettings(ClientSettings.builder()
                             .requireAuthorizationConsent(false)
-                            .requireProofKey(true) // ⚠️ BẮT BUỘC PKCE
+                            .requireProofKey(true) // Yêu cầu Proof Key for Code Exchange (PKCE)
                             .build())
-                    // Token settings
+                    // Cấu hình thời gian sống của Token
                     .tokenSettings(TokenSettings.builder()
                             .accessTokenTimeToLive(Duration.ofHours(2))
                             .refreshTokenTimeToLive(Duration.ofDays(30))
@@ -81,7 +88,12 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * OAuth2 Authorization Service - Lưu authorization codes, tokens
+     * Bean OAuth2AuthorizationService để quản lý trạng thái authorization (codes, tokens, v.v.).
+     * Sử dụng JDBC để lưu trữ bền vững.
+     *
+     * @param jdbcTemplate               JdbcTemplate
+     * @param registeredClientRepository Repository chứa thông tin client
+     * @return OAuth2AuthorizationService
      */
     @Bean
     public OAuth2AuthorizationService authorizationService(
@@ -91,7 +103,11 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * OAuth2 Authorization Consent Service
+     * Bean OAuth2AuthorizationConsentService để quản lý sự đồng ý (consent) của người dùng.
+     *
+     * @param jdbcTemplate               JdbcTemplate
+     * @param registeredClientRepository Repository chứa thông tin client
+     * @return OAuth2AuthorizationConsentService
      */
     @Bean
     public OAuth2AuthorizationConsentService authorizationConsentService(
@@ -101,7 +117,9 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * JWK Source - Tạo RSA key pair để sign JWT tokens
+     * Bean JWKSource cung cấp khóa RSA để ký các JWT token.
+     *
+     * @return JWKSource chứa RSA key pair
      */
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
@@ -119,7 +137,9 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * Generate RSA Key Pair
+     * Helper method để tạo RSA Key Pair độ dài 2048 bit.
+     *
+     * @return KeyPair
      */
     private static KeyPair generateRsaKey() {
         KeyPair keyPair;
@@ -134,7 +154,10 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * JWT Decoder
+     * Bean JwtDecoder để giải mã JWT token (dùng cho Authorization Server để validate token).
+     *
+     * @param jwkSource Nguồn chứa public key để verify signature
+     * @return JwtDecoder
      */
     @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
@@ -142,7 +165,9 @@ public class AuthorizationServerConfig {
     }
 
     /**
-     * Authorization Server Settings
+     * Bean AuthorizationServerSettings để cấu hình các endpoint của Authorization Server.
+     *
+     * @return AuthorizationServerSettings
      */
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {

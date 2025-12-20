@@ -9,6 +9,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import project.backend.service.NotificationService;
 
+/**
+ * Controller xử lý Web Push Notifications.
+ */
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
@@ -19,11 +22,17 @@ public class NotificationController {
     @Value("${vapid.public.key}")
     private String publicKey;
 
+    /**
+     * Lấy VAPID public key cho frontend.
+     */
     @GetMapping("/vapid-key")
     public ResponseEntity<String> getPublicKey() {
         return ResponseEntity.ok(publicKey);
     }
 
+    /**
+     * Đăng ký nhận thông báo (Subscribe).
+     */
     @PostMapping("/subscribe")
     public ResponseEntity<Void> subscribe(@RequestBody SubscriptionRequest request, Authentication authentication) {
         Long userId = getUserIdFromAuth(authentication);
@@ -31,6 +40,9 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Hủy đăng ký nhận thông báo (Unsubscribe).
+     */
     @PostMapping("/unsubscribe")
     public ResponseEntity<Void> unsubscribe(@RequestBody SubscriptionRequest request) {
         notificationService.unsubscribe(request.getEndpoint());
@@ -51,41 +63,10 @@ public class NotificationController {
         private String endpoint;
         private Keys keys;
 
-        public String getEndpoint() {
-            return endpoint;
-        }
-
-        public void setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
-        }
-
-        public Keys getKeys() {
-            return keys;
-        }
-
-        public void setKeys(Keys keys) {
-            this.keys = keys;
-        }
-
+        @Data
         public static class Keys {
             private String p256dh;
             private String auth;
-
-            public String getP256dh() {
-                return p256dh;
-            }
-
-            public void setP256dh(String p256dh) {
-                this.p256dh = p256dh;
-            }
-
-            public String getAuth() {
-                return auth;
-            }
-
-            public void setAuth(String auth) {
-                this.auth = auth;
-            }
         }
     }
 }

@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller xử lý đăng ký tài khoản.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -17,8 +20,8 @@ public class AuthController {
     private final AuthService authService;
 
     /**
-     * Register new user
-     * Login được xử lý bởi OAuth2 Authorization Server
+     * API đăng ký người dùng mới.
+     * Login được xử lý bởi OAuth2 Authorization Server.
      */
     @PostMapping("/register")
     public ResponseEntity<MessageResponse> register(@Valid @RequestBody RegisterRequest request) {

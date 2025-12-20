@@ -13,6 +13,9 @@ import project.backend.service.FileStorageService;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Controller xử lý upload file.
+ */
 @RestController
 @RequestMapping("/api/upload")
 @RequiredArgsConstructor
@@ -20,11 +23,15 @@ public class FileUploadController {
 
     private final FileStorageService fileStorageService;
 
+    /**
+     * API upload một file duy nhất.
+     * Trả về tên file và URL để truy cập file đó.
+     */
     @PostMapping
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
 
-        // Build the URL dynamically: http://localhost:8386/uploads/filename.jpg
+        // Tạo URL download file: http://localhost:8386/uploads/filename.jpg
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/uploads/")
                 .path(fileName)

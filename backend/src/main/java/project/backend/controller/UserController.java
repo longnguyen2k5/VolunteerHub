@@ -11,13 +11,18 @@ import project.backend.service.UserService;
 
 import java.util.List;
 
-
+/**
+ * Controller xử lý thông tin người dùng và quản trị người dùng.
+ */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
+    /**
+     * Lấy thông tin người dùng hiện tại (dựa trên token).
+     */
     @GetMapping("/users/info")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> getUserInfo(JwtAuthenticationToken jwtAuthenticationToken) {
@@ -29,14 +34,17 @@ public class UserController {
         }
     }
 
+    /**
+     * Cập nhật thông tin cá nhân.
+     */
     @PutMapping("/users/profile")
-    public ResponseEntity<UserResponse> updateProfile(JwtAuthenticationToken jwtAuthenticationToken, @RequestBody project.backend.dto.request.RegisterRequest request) { // Reuse RegisterRequest for fullName for simplicity, or create specific DTO. Using RegisterRequest for now as it has fullName
+    public ResponseEntity<UserResponse> updateProfile(JwtAuthenticationToken jwtAuthenticationToken, @RequestBody project.backend.dto.request.RegisterRequest request) {
         String email = jwtAuthenticationToken.getToken().getSubject();
         return ResponseEntity.ok(userService.updateProfile(email, request.getFullName()));
     }
 
     /**
-     * ADMIN: Get all users
+     * Admin: Lấy danh sách tất cả người dùng.
      */
     @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ADMIN')")
@@ -45,7 +53,7 @@ public class UserController {
     }
 
     /**
-     * ADMIN: Lock a user account
+     * Admin: Khóa tài khoản người dùng.
      */
     @PutMapping("/admin/users/{id}/lock")
     @PreAuthorize("hasRole('ADMIN')")
@@ -54,7 +62,7 @@ public class UserController {
     }
 
     /**
-     * ADMIN: Unlock a user account
+     * Admin: Mở khóa tài khoản người dùng.
      */
     @PutMapping("/admin/users/{id}/unlock")
     @PreAuthorize("hasRole('ADMIN')")
@@ -63,7 +71,7 @@ public class UserController {
     }
 
     /**
-     * ADMIN: Export users to CSV
+     * Admin: Xuất danh sách người dùng ra CSV.
      */
     @GetMapping("/admin/users/export")
     @PreAuthorize("hasRole('ADMIN')")
@@ -76,7 +84,7 @@ public class UserController {
     }
 
     /**
-     * ADMIN: Create new Admin
+     * Admin: Tạo tài khoản Admin mới.
      */
     @PostMapping("/admin/users/create-admin")
     @PreAuthorize("hasRole('ADMIN')")

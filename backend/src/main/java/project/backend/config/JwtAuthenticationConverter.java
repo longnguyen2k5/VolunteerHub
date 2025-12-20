@@ -15,15 +15,24 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Custom JWT Authentication Converter to extract authorities from custom claims
+ * Converter tùy chỉnh để chuyển đổi JWT thành Authentication Token.
+ * Class này có nhiệm vụ trích xuất các quyền (authorities) từ JWT, bao gồm cả các quyền mặc định và quyền tùy chỉnh (custom claims).
  */
 @Component
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
+    // Converter mặc định của Spring Security để lấy authorities từ scope/scp claim
     private final JwtGrantedAuthoritiesConverter defaultGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
+    /**
+     * Chuyển đổi đối tượng JWT thành AbstractAuthenticationToken (JwtAuthenticationToken).
+     *
+     * @param jwt JWT token
+     * @return Đối tượng Authentication chứa thông tin user và các quyền hạn
+     */
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
+        // Kết hợp authorities từ converter mặc định và từ custom claim "authorities"
         Collection<GrantedAuthority> authorities = Stream.concat(
                 defaultGrantedAuthoritiesConverter.convert(jwt).stream(),
                 extractAuthorities(jwt).stream()
@@ -33,7 +42,10 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
     }
 
     /**
-     * Extract authorities from "authorities" claim in JWT
+     * Trích xuất danh sách authorities từ claim tùy chỉnh có tên "authorities" trong JWT.
+     *
+     * @param jwt JWT token
+     * @return Danh sách GrantedAuthority
      */
     private Collection<GrantedAuthority> extractAuthorities(Jwt jwt) {
         List<String> authorities = jwt.getClaimAsStringList("authorities");

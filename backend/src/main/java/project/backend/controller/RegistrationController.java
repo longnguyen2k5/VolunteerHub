@@ -13,6 +13,9 @@ import project.backend.service.RegistrationService;
 
 import java.util.List;
 
+/**
+ * Controller quản lý đăng ký tham gia sự kiện.
+ */
 @RestController
 @RequestMapping("/api/registrations")
 @RequiredArgsConstructor
@@ -20,6 +23,9 @@ public class RegistrationController {
 
     private final RegistrationService registrationService;
 
+    /**
+     * Đăng ký tham gia một sự kiện (Volunteer).
+     */
     @PostMapping("/events/{eventId}")
     @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<RegistrationResponse> registerForEvent(
@@ -30,6 +36,9 @@ public class RegistrationController {
                 .body(registrationService.registerForEvent(eventId, userId));
     }
 
+    /**
+     * Hủy đăng ký tham gia sự kiện (Volunteer).
+     */
     @DeleteMapping("/{id}/cancel")
     @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<Void> cancelRegistration(
@@ -40,6 +49,9 @@ public class RegistrationController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Lấy danh sách các đăng ký của tôi (Volunteer).
+     */
     @GetMapping("/my-registrations")
     @PreAuthorize("hasRole('VOLUNTEER')")
     public ResponseEntity<List<RegistrationResponse>> getMyRegistrations(Authentication authentication) {
@@ -47,7 +59,11 @@ public class RegistrationController {
         return ResponseEntity.ok(registrationService.getMyRegistrations(userId));
     }
 
-    // Manager endpoints
+    // --- Endpoints cho Manager/Admin ---
+
+    /**
+     * Lấy danh sách đăng ký của một sự kiện.
+     */
     @GetMapping("/events/{eventId}")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<List<RegistrationResponse>> getEventRegistrations(
@@ -57,6 +73,9 @@ public class RegistrationController {
         return ResponseEntity.ok(registrationService.getEventRegistrations(eventId, userId));
     }
 
+    /**
+     * Xuất danh sách đăng ký ra file CSV.
+     */
     @GetMapping("/events/{eventId}/export")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<byte[]> exportRegistrationsToCsv(@PathVariable Long eventId) {
@@ -67,24 +86,36 @@ public class RegistrationController {
                 .body(csvData);
     }
 
+    /**
+     * Duyệt đơn đăng ký.
+     */
     @PutMapping("/{id}/approve")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<RegistrationResponse> approveRegistration(@PathVariable Long id) {
         return ResponseEntity.ok(registrationService.updateStatus(id, RegistrationStatus.APPROVED));
     }
 
+    /**
+     * Từ chối đơn đăng ký.
+     */
     @PutMapping("/{id}/reject")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<RegistrationResponse> rejectRegistration(@PathVariable Long id) {
         return ResponseEntity.ok(registrationService.updateStatus(id, RegistrationStatus.REJECTED));
     }
 
+    /**
+     * Đánh dấu đơn đăng ký đã hoàn thành.
+     */
     @PutMapping("/{id}/complete")
     @PreAuthorize("hasAnyRole('EVENT_MANAGER', 'ADMIN')")
     public ResponseEntity<RegistrationResponse> completeRegistration(@PathVariable Long id) {
         return ResponseEntity.ok(registrationService.updateStatus(id, RegistrationStatus.COMPLETED));
     }
 
+    /**
+     * Utility method: Lấy User ID từ JWT token.
+     */
     private Long getUserIdFromAuth(Authentication authentication) {
         if (authentication.getPrincipal() instanceof Jwt jwt) {
             Long userId = jwt.getClaim("user_id");

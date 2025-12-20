@@ -4,25 +4,25 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.MediaType;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import org.springframework.security.authentication.LockedException;
 import java.util.Arrays;
 
+/**
+ * Cấu hình bảo mật chính của ứng dụng.
+ * Định nghĩa các chuỗi lọc bảo mật (SecurityFilterChain) cho cả Authorization Server và các API thông thường.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -32,8 +32,12 @@ public class SecurityConfig {
     private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
     /**
-     * Security Filter Chain cho OAuth2 Authorization Server
-     * Order = 1 (highest priority)
+     * Cấu hình Security Filter Chain dành riêng cho các endpoint của OAuth2 Authorization Server.
+     * Bean này có độ ưu tiên cao nhất (Order 1) để đảm bảo các yêu cầu OAuth2 được xử lý bởi cấu hình này.
+     *
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception nếu có lỗi cấu hình
      */
     @Bean
     @Order(1)
@@ -46,7 +50,7 @@ public class SecurityConfig {
         http
                 .securityMatcher(authServerConfigurer.getEndpointsMatcher())
                 .with(authServerConfigurer, configurer -> configurer.oidc(Customizer.withDefaults()))
-                // ⚠️ CRITICAL: Enable CORS for OAuth2 endpoints including /oauth2/token
+                // Cấu hình CORS cho các endpoint OAuth2 (ví dụ: /oauth2/token)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth ->
                         auth.anyRequest().authenticated()
@@ -54,7 +58,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.ignoringRequestMatchers(
                         authServerConfigurer.getEndpointsMatcher()
                 ))
-                // QUAN TRỌNG: Dùng HTTP Basic để test với Postman
+                // Form Login để xác thực người dùng (hữu ích khi test trên trình duyệt hoặc Postman)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .failureHandler((request, response, exception) -> {
@@ -71,29 +75,34 @@ public class SecurityConfig {
     }
 
     /**
-     * Security Filter Chain cho các endpoint thông thường (API)
+     * Cấu hình Security Filter Chain mặc định cho toàn bộ ứng dụng (Resource Server).
+     * Xử lý xác thực cho các API endpoints và trang quản trị.
      * Order = 2
+     *
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception nếu có lỗi cấu hình
      */
     @Bean
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Tắt CSRF cho API (thường dùng JWT)
                 .authorizeHttpRequests(authorize -> authorize
-                        // Public endpoints
+                        // Các endpoint công khai không cần xác thực
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/events/public/**").permitAll()
                         .requestMatchers("/api/events/upcoming").permitAll()
                         .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/webjars/**", "/uploads/**").permitAll()
 
-                        // Admin endpoints
+                        // Endpoint dành riêng cho Admin
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                        // Event endpoints - rely on @PreAuthorize in controller
+                        // Các endpoint Events (phân quyền cụ thể sẽ dùng @PreAuthorize ở Controller)
                         .requestMatchers("/api/events/**").authenticated()
 
-                        // All other endpoints need authentication
+                        // Tất cả các request còn lại yêu cầu phải đăng nhập
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -107,6 +116,7 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
+                // Cấu hình Resource Server sử dụng JWT
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter))
                 )
@@ -121,6 +131,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Cấu hình CORS (Cross-Origin Resource Sharing).
+     * Cho phép frontend (http://localhost:3000) gọi API backend.
+     *
+     * @return CorsConfigurationSource
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -135,6 +151,11 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+     * Bean PasswordEncoder sử dụng BCrypt để mã hóa mật khẩu.
+     *
+     * @return PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
