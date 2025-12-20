@@ -314,7 +314,6 @@ const Header = () => {
                     color: "black",
                     textTransform: "none",
                     fontWeight: 600,
-                    borderRadius: "20px",
                     px: 3,
                     "&:hover": {
                       bgcolor: "rgba(255, 255, 255, 0.9)",

@@ -10,6 +10,7 @@ import {
     Select,
     MenuItem,
     CircularProgress,
+    Paper,
 } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import EventCard from '../../components/event/EventCard';
@@ -157,76 +158,103 @@ const EventBrowse = () => {
                     </Typography>
                 </Box>
 
-                {/* Filters */}
-                <Box sx={{
-                    mb: 5,
-                    display: 'flex',
-                    gap: 2,
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    bgcolor: 'background.paper',
-                    p: 3,
-                    borderRadius: '24px',
-                    border: '1px solid',
-                    borderColor: 'divider',
-                    ...glassSx,
-                }}>
-                    <TextField
-                        placeholder="Tìm kiếm sự kiện..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        sx={{ flexGrow: 1, minWidth: 200, ...inputSx }}
-                        InputProps={{
-                            startAdornment: <Search sx={{ mr: 1, color: 'text.secondary' }} />,
-                        }}
-                    />
+                {/* Filters - Luxurious Redesign */}
+                <Paper
+                    elevation={0}
+                    sx={{
+                        mb: 6,
+                        p: 1.5,
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        alignItems: { xs: 'stretch', md: 'center' },
+                        gap: 2,
+                        borderRadius: 4, // 32px roughly
+                        ...glassSx,
+                        border: '1px solid',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        width: '100%',
+                        maxWidth: '1000px', // Limit width for elegance
+                        mx: 'auto' // Center it
+                    }}
+                >
+                    {/* Search Section */}
+                    <Box sx={{ flex: 2, display: 'flex', alignItems: 'center', px: 2 }}>
+                        <Search sx={{ color: 'primary.main', mr: 2, fontSize: 28 }} />
+                        <Box sx={{ width: '100%' }}>
+                            <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
+                                Tìm kiếm
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                placeholder="Tên sự kiện, địa điểm..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                variant="standard"
+                                InputProps={{ disableUnderline: true }}
+                                sx={{
+                                    '& input': { fontSize: '1.1rem', fontWeight: 500 } // Bigger text
+                                }}
+                            />
+                        </Box>
+                    </Box>
 
-                    <FormControl sx={{ minWidth: 150, ...inputSx }}>
-                        <InputLabel>Danh mục</InputLabel>
-                        <Select
-                            value={categoryFilter}
-                            onChange={(e) => setCategoryFilter(e.target.value)}
-                            label="Danh mục"
-                            MenuProps={{
-                                PaperProps: {
-                                    sx: {
-                                        bgcolor: 'background.paper',
-                                        color: 'text.primary',
-                                        border: '1px solid',
-                                        borderColor: 'divider',
-                                        '& .MuiMenuItem-root:hover': { bgcolor: 'action.hover' },
-                                        '& .MuiMenuItem-root.Mui-selected': { bgcolor: 'primary.light', color: 'primary.contrastText' }
-                                    }
-                                }
-                            }}
-                        >
-                            <MenuItem value="all">Tất cả</MenuItem>
-                            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                                <MenuItem key={key} value={key}>{label}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    {/* Divider for Desktop */}
+                    <Box sx={{ width: '1px', height: 40, bgcolor: 'divider', display: { xs: 'none', md: 'block' } }} />
 
-                    <TextField
-                        label="Từ ngày"
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ minWidth: 150, ...inputSx }}
-                    />
+                    {/* Category Section */}
+                    <Box sx={{ flex: 1, px: 2 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
+                            Danh mục
+                        </Typography>
+                        <FormControl fullWidth variant="standard">
+                            <Select
+                                value={categoryFilter}
+                                onChange={(e) => setCategoryFilter(e.target.value)}
+                                disableUnderline
+                                displayEmpty
+                                sx={{ fontSize: '1rem', fontWeight: 500 }}
+                            >
+                                <MenuItem value="all">Tất cả danh mục</MenuItem>
+                                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                                    <MenuItem key={key} value={key}>{label}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Box>
 
-                    <Typography variant="body1" sx={{ color: 'text.secondary' }}>-</Typography>
+                    <Box sx={{ width: '1px', height: 40, bgcolor: 'divider', display: { xs: 'none', md: 'block' } }} />
 
-                    <TextField
-                        label="Đến ngày"
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ minWidth: 150, ...inputSx }}
-                    />
-                </Box>
+                    {/* Date Section */}
+                    <Box sx={{ flex: 1.5, px: 2, display: 'flex', gap: 2 }}>
+                        <Box sx={{ flex: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                                Từ ngày
+                            </Typography>
+                            <TextField
+                                type="date"
+                                fullWidth
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                variant="standard"
+                                InputProps={{ disableUnderline: true }}
+                            />
+                        </Box>
+                        <Box sx={{ flex: 1 }}>
+                            <Typography variant="caption" color="text.secondary">
+                                Đến ngày
+                            </Typography>
+                            <TextField
+                                type="date"
+                                fullWidth
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                variant="standard"
+                                InputProps={{ disableUnderline: true }}
+                            />
+                        </Box>
+                    </Box>
+                </Paper>
 
                 {/* Events Grid */}
                 {filteredEvents.length === 0 ? (
