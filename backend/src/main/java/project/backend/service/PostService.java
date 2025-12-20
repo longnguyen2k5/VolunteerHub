@@ -27,10 +27,13 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final RegistrationRepository registrationRepository;
+    private final NotificationService notificationService;
 
     // --- Posts ---
 
     public List<PostResponse> getEventPosts(Long eventId, Long currentUserId) {
+// ... existing getEventPosts code ...
         // Verify event exists and is approved (optional: check if user is participant? requirement says "cac thanh vien")
         // For now, allow viewing if event is approved.
         Events event = eventRepository.findById(eventId)
@@ -63,7 +66,41 @@ public class PostService {
         post.setCreatedAt(LocalDateTime.now());
         post.setUpdatedAt(LocalDateTime.now());
 
-        return mapToPostResponse(postRepository.save(post), userId);
+        Posts savedPost = postRepository.save(post);
+
+        // --- Send Notifications ---
+        try {
+            String title = "Có bài viết mới!";
+            String message = String.format("Thành viên %s vừa đăng bài trong sự kiện '%s'.", user.getFullName(), event.getName());
+
+            // Use Set to deduplicate recipients (Manager could also be a Participant)
+            java.util.Set<Long> recipientIds = new java.util.HashSet<>();
+
+            // 1. Add Manager
+            recipientIds.add(event.getManager().getId());
+
+            // 2. Add Participants (Approved/Completed)
+            List<EventRegistrations> registrations = registrationRepository.findByEventId(eventId);
+            for (EventRegistrations reg : registrations) {
+                if (reg.getStatus() == project.backend.model.enums.RegistrationStatus.APPROVED || 
+                    reg.getStatus() == project.backend.model.enums.RegistrationStatus.COMPLETED) {
+                    recipientIds.add(reg.getUser().getId());
+                }
+            }
+
+            // 3. Remove the Author (if present)
+            recipientIds.remove(userId);
+
+            // 4. Send to all unique recipients
+            for (Long recipientId : recipientIds) {
+                notificationService.sendPushNotification(recipientId, title, message);
+            }
+        } catch (Exception e) {
+            // Log error but do not fail the transaction
+            System.err.println("Failed to send post notifications: " + e.getMessage());
+        }
+
+        return mapToPostResponse(savedPost, userId);
     }
     
     @Transactional

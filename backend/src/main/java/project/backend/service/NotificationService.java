@@ -52,7 +52,10 @@ public class NotificationService {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        PushSubscription subscription = new PushSubscription();
+        // Check if subscription exists for this endpoint
+        PushSubscription subscription = pushSubscriptionRepository.findByEndpoint(endpoint)
+                .orElse(new PushSubscription());
+        
         subscription.setUser(user);
         subscription.setEndpoint(endpoint);
         subscription.setP256dh(p256dh);
@@ -75,13 +78,19 @@ public class NotificationService {
             return;
         }
 
+        // Deduplicate by endpoint to prevent spam from existing duplicate records
+        java.util.Map<String, PushSubscription> uniqueSubscriptions = new java.util.HashMap<>();
+        for (PushSubscription sub : subscriptions) {
+            uniqueSubscriptions.putIfAbsent(sub.getEndpoint(), sub);
+        }
+
         try {
             java.util.Map<String, String> payloadMap = new java.util.HashMap<>();
             payloadMap.put("title", title);
             payloadMap.put("body", message);
             String payload = objectMapper.writeValueAsString(payloadMap);
 
-            for (PushSubscription sub : subscriptions) {
+            for (PushSubscription sub : uniqueSubscriptions.values()) {
                 try {
                     Subscription webPushSub = new Subscription(sub.getEndpoint(), new Subscription.Keys(sub.getP256dh(), sub.getAuth()));
                     Notification notification = new Notification(webPushSub, payload);

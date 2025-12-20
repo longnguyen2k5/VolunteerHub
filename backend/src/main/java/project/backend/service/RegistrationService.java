@@ -80,6 +80,20 @@ public class RegistrationService {
         registration.setRegisteredAt(LocalDateTime.now());
 
         EventRegistrations saved = registrationRepository.save(registration);
+        
+        // --- Notify Manager ---
+        try {
+            Long managerId = event.getManager().getId();
+            // Don't notify if manager registers for their own event (unlikely but possible)
+            if (!managerId.equals(userId)) {
+                String title = "Đăng ký mới";
+                String message = String.format("Thành viên %s đã đăng ký tham gia sự kiện '%s'.", user.getFullName(), event.getName());
+                notificationService.sendPushNotification(managerId, title, message);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to notify manager: " + e.getMessage());
+        }
+
         return RegistrationResponse.fromEntity(saved);
     }
     

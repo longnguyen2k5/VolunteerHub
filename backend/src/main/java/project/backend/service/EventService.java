@@ -25,6 +25,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final RegistrationRepository registrationRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public EventResponse createEvent(EventRequest request, Long managerId) {
@@ -60,6 +61,20 @@ public class EventService {
         event.setManager(manager);
 
         Events savedEvent = eventRepository.save(event);
+        
+        // --- Notify Admins ---
+        try {
+            List<Users> admins = userRepository.findByRole(project.backend.model.enums.UserRole.ADMIN);
+            String title = "Sự kiện mới chờ duyệt";
+            String message = String.format("Quản lý %s vừa tạo sự kiện mới: '%s'.", manager.getFullName(), savedEvent.getName());
+            
+            for (Users admin : admins) {
+                notificationService.sendPushNotification(admin.getId(), title, message);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to notify admins: " + e.getMessage());
+        }
+
         return mapToResponse(savedEvent);
     }
 
