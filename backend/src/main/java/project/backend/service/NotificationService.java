@@ -53,8 +53,19 @@ public class NotificationService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // Check if subscription exists for this endpoint
-        PushSubscription subscription = pushSubscriptionRepository.findByEndpoint(endpoint)
-                .orElse(new PushSubscription());
+        // Handle potential duplicates (cleaning up dirty data)
+        List<PushSubscription> existingSubs = pushSubscriptionRepository.findByEndpoint(endpoint);
+        
+        PushSubscription subscription;
+        if (existingSubs.isEmpty()) {
+            subscription = new PushSubscription();
+        } else {
+            subscription = existingSubs.get(0);
+            // Delete duplicates if any
+            if (existingSubs.size() > 1) {
+                pushSubscriptionRepository.deleteAll(existingSubs.subList(1, existingSubs.size()));
+            }
+        }
         
         subscription.setUser(user);
         subscription.setEndpoint(endpoint);
