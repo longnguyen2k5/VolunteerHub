@@ -162,8 +162,8 @@ const EventForm = ({
         description: formData.description.trim(),
         location: formData.location.trim(),
         imageUrl: formData.imageUrl ? formData.imageUrl.trim() : "",
-        startTime: new Date(formData.startTime).toISOString(),
-        endTime: new Date(formData.endTime).toISOString(),
+        startTime: formData.startTime, // Send local string "YYYY-MM-DDTHH:mm"
+        endTime: formData.endTime,
         maxParticipants: parseInt(formData.maxParticipants),
         category: formData.category,
       };

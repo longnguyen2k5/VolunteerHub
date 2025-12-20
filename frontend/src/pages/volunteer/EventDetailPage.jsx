@@ -42,7 +42,7 @@ const EventDetailPage = () => {
     const [registering, setRegistering] = useState(false);
     const [myRegistration, setMyRegistration] = useState(null);
     const [confirmDialog, setConfirmDialog] = useState({ open: false, action: null });
-    const { glassSx } = useThemeContext();
+    const { glassSx, mode } = useThemeContext();
 
     useEffect(() => {
         fetchEventDetails();
@@ -282,11 +282,11 @@ const EventDetailPage = () => {
                     {/* LEFT COLUMN: Description & Details */}
                     <Grid item xs={12} md={8}>
                         <Box sx={{ mb: 6 }}>
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', mb: 3 }}>
+                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                                 Giới thiệu sự kiện
                             </Typography>
                             <Typography variant="body1" sx={{
-                                color: 'text.secondary',
+                                color: mode === 'light' ? '#4a4a4a' : 'text.secondary',
                                 fontSize: '1.1rem',
                                 lineHeight: 1.8,
                                 whiteSpace: 'pre-line'
@@ -298,7 +298,7 @@ const EventDetailPage = () => {
                         <Divider sx={{ bgcolor: 'divider', mb: 6 }} />
 
                         <Box sx={{ mb: 6 }}>
-                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', mb: 3 }}>
+                            <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: mode === 'light' ? '#1a1a1a' : 'text.primary', mb: 3 }}>
                                 Thông tin tổ chức
                             </Typography>
 
