@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Container,
     Paper,
@@ -8,22 +8,43 @@ import {
     Grid,
     Divider,
     Button,
-    Chip
+    Chip,
+    TextField,
+    CircularProgress
 } from '@mui/material';
 import {
     Email,
     Person,
     Badge,
     CalendarToday,
-    Edit
+    Edit,
+    Save,
+    Cancel
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { format } from 'date-fns';
 import { useThemeContext } from '../context/ThemeContext';
+import { authAPI } from '../api/authApi';
+import { toast } from 'react-toastify';
 
 const UserProfile = () => {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const { glassSx } = useThemeContext();
+    const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: ''
+    });
+
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                fullName: user.fullName || '',
+                email: user.email || ''
+            });
+        }
+    }, [user]);
 
     if (!user) return null;
 
@@ -37,6 +58,44 @@ const UserProfile = () => {
         ADMIN: "error.main",
         EVENT_MANAGER: "primary.main",
         VOLUNTEER: "success.main"
+    };
+
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleCancelClick = () => {
+        setIsEditing(false);
+        setFormData({
+            fullName: user.fullName || '',
+            email: user.email || ''
+        });
+    };
+
+    const handleSaveClick = async () => {
+        if (!formData.fullName.trim()) {
+            toast.error("Tên không được để trống");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await authAPI.updateProfile({ fullName: formData.fullName });
+            await refreshUser();
+            toast.success("Cập nhật thông tin thành công");
+            setIsEditing(false);
+        } catch (error) {
+            toast.error("Cập nhật thất bại: " + (error.response?.data?.message || error.message));
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
     return (
@@ -62,14 +121,29 @@ const UserProfile = () => {
                     >
                         {user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
                     </Avatar>
-                    <Typography variant="h3" fontWeight={800} sx={{
-                        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        mb: 1
-                    }}>
-                        {user.fullName}
-                    </Typography>
+
+                    {isEditing ? (
+                        <TextField
+                            fullWidth
+                            name="fullName"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            variant="outlined"
+                            sx={{ maxWidth: 400, mb: 2 }}
+                            inputProps={{ style: { textAlign: 'center', fontSize: '1.5rem', fontWeight: 700 } }}
+                        />
+                    ) : (
+                        <Typography variant="h3" fontWeight={800} sx={{
+                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            mb: 1,
+                            textAlign: 'center'
+                        }}>
+                            {user.fullName}
+                        </Typography>
+                    )}
+
                     <Chip
                         label={roleLabels[user.role] || user.role}
                         sx={{
@@ -96,13 +170,31 @@ const UserProfile = () => {
                             }}>
                                 <Email fontSize="large" color="inherit" />
                             </Box>
-                            <Box>
+                            <Box sx={{ width: '100%' }}>
                                 <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>
                                     Email
                                 </Typography>
-                                <Typography variant="h6" fontWeight={500}>
-                                    {user.email}
-                                </Typography>
+                                {isEditing ? (
+                                    <TextField
+                                        fullWidth
+                                        value={formData.email}
+                                        disabled
+                                        variant="standard"
+                                        InputProps={{ disableUnderline: true }}
+                                        sx={{
+                                            '& .MuiInputBase-input': {
+                                                fontSize: '1.25rem',
+                                                fontWeight: 500,
+                                                color: 'text.disabled',
+                                                cursor: 'not-allowed'
+                                            }
+                                        }}
+                                    />
+                                ) : (
+                                    <Typography variant="h6" fontWeight={500}>
+                                        {user.email}
+                                    </Typography>
+                                )}
                             </Box>
                         </Box>
                     </Grid>
@@ -152,25 +244,70 @@ const UserProfile = () => {
                     </Grid>
                 </Grid>
 
-                <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center' }}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<Edit />}
-                        disabled
-                        sx={{
-                            borderRadius: '30px',
-                            px: 4,
-                            py: 1.5,
-                            borderColor: 'divider',
-                            color: 'text.disabled',
-                            '&:hover': {
-                                borderColor: 'primary.main',
-                                color: 'primary.main'
-                            }
-                        }}
-                    >
-                        Chỉnh sửa thông tin
-                    </Button>
+                <Box sx={{ mt: 6, display: 'flex', justifyContent: 'center', gap: 2 }}>
+                    {isEditing ? (
+                        <>
+                            <Button
+                                variant="outlined"
+                                startIcon={<Cancel />}
+                                onClick={handleCancelClick}
+                                disabled={loading}
+                                sx={{
+                                    borderRadius: '30px',
+                                    px: 4,
+                                    py: 1.5,
+                                    borderColor: 'divider',
+                                    color: 'text.secondary',
+                                    '&:hover': {
+                                        borderColor: 'text.primary',
+                                        color: 'text.primary'
+                                    }
+                                }}
+                            >
+                                Hủy bỏ
+                            </Button>
+                            <Button
+                                variant="contained"
+                                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Save />}
+                                onClick={handleSaveClick}
+                                disabled={loading}
+                                sx={{
+                                    borderRadius: '30px',
+                                    px: 4,
+                                    py: 1.5,
+                                    bgcolor: 'primary.main',
+                                    color: 'white',
+                                    '&:hover': {
+                                        bgcolor: 'primary.dark',
+                                    }
+                                }}
+                            >
+                                Lưu thay đổi
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            startIcon={<Edit />}
+                            onClick={handleEditClick}
+                            sx={{
+                                borderRadius: '30px',
+                                px: 4,
+                                py: 1.5,
+                                bgcolor: 'primary.main',
+                                color: 'white',
+                                boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)',
+                                '&:hover': {
+                                    bgcolor: 'primary.dark',
+                                    transform: 'translateY(-2px)',
+                                    boxShadow: '0 6px 20px rgba(0,118,255,0.23)'
+                                },
+                                transition: 'all 0.2s ease-in-out'
+                            }}
+                        >
+                            Chỉnh sửa thông tin
+                        </Button>
+                    )}
                 </Box>
             </Paper>
         </Container>

@@ -283,12 +283,12 @@ const EventDetailPage = () => {
             </Box>
 
             {/* MAIN CONTENT */}
-            <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6 }, mt: -4, position: 'relative', zIndex: 3 }}>
+            <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6 }, mt: -6, position: 'relative', zIndex: 3 }}>
                 <Grid container spacing={6}>
                     {/* LEFT COLUMN: Description & Details */}
                     <Grid item xs={12} md={8}>
                         <Box sx={{ mb: 6 }}>
-                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 3, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, color: 'white', mb: 4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
                                 Giới thiệu sự kiện
                             </Typography>
                             <Typography variant="body1" sx={{

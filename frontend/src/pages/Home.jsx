@@ -169,28 +169,7 @@ const Home = () => {
                 </Container>
             </Box>
 
-            {/* Impact Stats Section */}
-            <Box sx={{ bgcolor: 'background.paper', py: 6, borderBottom: '1px solid', borderColor: 'divider' }}>
-                <Container>
-                    <Grid container spacing={4} justifyContent="center" sx={{ textAlign: 'center' }}>
-                        {[
-                            { number: '1.000+', label: 'Tình nguyện viên' },
-                            { number: '500+', label: 'Sự kiện đã tổ chức' },
-                            { number: '20.000+', label: 'Giờ đóng góp' },
-                            { number: '50+', label: 'Đối tác' }
-                        ].map((stat, index) => (
-                            <Grid item xs={6} md={3} key={index}>
-                                <Typography variant="h3" sx={{ fontWeight: 700, color: '#FE6B8B' }}>
-                                    {stat.number}
-                                </Typography>
-                                <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                                    {stat.label}
-                                </Typography>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Container>
-            </Box>
+
 
             {/* Fields of Action Section */}
             <Box sx={{ py: 10, bgcolor: 'background.default', position: 'relative' }}>
@@ -219,32 +198,58 @@ const Home = () => {
                             { title: 'Cứu trợ Xã hội', icon: '🤝', desc: 'Giúp đỡ người già neo đơn, người vô gia cư và cứu trợ thiên tai.' },
                             { title: 'Chăm sóc Sức khỏe', icon: '⚕️', desc: 'Hiến máu nhân đạo, tư vấn sức khỏe cộng đồng.' },
                         ].map((item, index) => (
-                            <Grid item xs={12} sm={6} md={3} key={index}>
+                            <Grid item xs={12} sm={6} md={3} key={index} sx={{ display: 'flex' }}>
                                 <Card
                                     sx={{
-                                        height: '100%',
+                                        width: '100%',
+                                        minHeight: '320px', // Fixed minimum height for all cards
+                                        display: 'flex',
+                                        flexDirection: 'column',
                                         textAlign: 'center',
-                                        p: 3,
+                                        p: 2,
                                         ...glassSx,
                                         borderRadius: '24px',
                                         color: 'text.primary',
                                         transition: 'all 0.3s ease',
                                         cursor: 'pointer',
+                                        position: 'relative',
+                                        overflow: 'visible',
                                         '&:hover': {
                                             transform: 'translateY(-8px)',
                                             bgcolor: 'action.hover',
+                                            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.1)',
                                             border: '1px solid #FE6B8B',
                                         }
                                     }}
                                 >
-                                    <CardContent>
-                                        <Typography variant="h1" sx={{ mb: 2, fontSize: '4rem' }}>
+                                    <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <Box sx={{
+                                            width: 80,
+                                            height: 80,
+                                            borderRadius: '50%',
+                                            bgcolor: 'rgba(254, 107, 139, 0.1)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            mb: 2,
+                                            fontSize: '3rem'
+                                        }}>
                                             {item.icon}
-                                        </Typography>
-                                        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+                                        </Box>
+                                        <Typography variant="h6" gutterBottom sx={{
+                                            fontWeight: 700,
+                                            minHeight: '3.5rem', // Fixed height for Title (2 lines)
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            mb: 1
+                                        }}>
                                             {item.title}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                                        <Typography variant="body2" sx={{
+                                            color: 'text.secondary',
+                                            lineHeight: 1.6,
+                                            minHeight: '3rem' // Fixed height for Description (approx 2 lines)
+                                        }}>
                                             {item.desc}
                                         </Typography>
                                     </CardContent>

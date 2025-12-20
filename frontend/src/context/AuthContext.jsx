@@ -278,8 +278,13 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        logout,
         handleCallback,
         refreshToken,
+        refreshUser: async () => {
+          const token = localStorage.getItem(oauth2Config.accessTokenKey);
+          if (token) await fetchUserInfo(token);
+        }
       }}
     >
       {children}

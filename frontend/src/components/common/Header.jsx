@@ -127,7 +127,7 @@ const Header = () => {
         ) : (
           <>
             <ListItem disablePadding>
-              <ListItemButton component={Link} to="/login">
+              <ListItemButton onClick={() => { login(); handleDrawerToggle(); }}>
                 <ListItemText primary="Đăng nhập" />
               </ListItemButton>
             </ListItem>

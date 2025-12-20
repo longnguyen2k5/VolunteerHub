@@ -34,12 +34,12 @@ export const authAPI = {
   // login: async (credentials) => {
   //   try {
   //     const response = await axiosInstance.post("/auth/login", credentials);
-      
+
   //     // Store tokens if returned
   //     if (response.data.token) {
   //       localStorage.setItem(oauth2Config.accessTokenKey, response.data.token);
   //     }
-      
+
   //     return response;
   //   } catch (error) {
   //     console.error("Login error details:", {
@@ -116,4 +116,11 @@ export const authAPI = {
         throw error;
       });
   },
+
+  /**
+   * Update user profile
+   */
+  updateProfile: (data) => {
+    return axiosInstance.put("/users/profile", data);
+  }
 };
