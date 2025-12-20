@@ -103,7 +103,7 @@ const ParticipationHistory = () => {
                         ...glassSx,
                         borderRadius: '24px',
                         boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                        overflow: 'hidden'
+                        overflowX: 'auto' // Enable horizontal scroll
                     }}
                 >
                     <Table>

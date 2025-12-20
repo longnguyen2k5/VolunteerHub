@@ -27,6 +27,7 @@ import {
   DialogActions,
   CircularProgress,
   Alert,
+  Tooltip,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -47,10 +48,6 @@ const EventList = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Menu State
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Dialog State
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -75,39 +72,22 @@ const EventList = () => {
     }
   };
 
-  // Menu Handlers
-  const handleMenuOpen = (event, eventItem) => {
-    setMenuAnchor(event.currentTarget);
-    setSelectedEvent(eventItem);
-  };
-
-  const handleMenuClose = () => {
-    setMenuAnchor(null);
-    setSelectedEvent(null);
-  };
-
   // Action Handlers
-  const handleViewDetail = () => {
-    if (selectedEvent) navigate(`/events/${selectedEvent.id}`);
-    handleMenuClose();
+  const handleViewDetail = (event) => {
+    navigate(`/events/${event.id}`);
   };
 
-  const handleEdit = () => {
-    if (selectedEvent) navigate(`/events/edit/${selectedEvent.id}`);
-    handleMenuClose();
+  const handleEdit = (event) => {
+    navigate(`/events/edit/${event.id}`);
   };
 
-  const handleManageRegistrations = () => {
-    if (selectedEvent) navigate(`/events/manage/${selectedEvent.id}/registrations`);
-    handleMenuClose();
+  const handleManageRegistrations = (event) => {
+    navigate(`/events/manage/${event.id}/registrations`);
   };
 
-  const handleDeleteClick = () => {
-    if (selectedEvent) {
-      setEventToDelete(selectedEvent);
-      setDeleteDialogOpen(true);
-    }
-    handleMenuClose();
+  const handleDeleteClick = (event) => {
+    setEventToDelete(event);
+    setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
@@ -274,7 +254,7 @@ const EventList = () => {
             ...glassSx,
             borderRadius: '24px',
             boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-            overflow: 'hidden',
+            overflowX: 'auto', // Enable horizontal scroll
             border: '1px solid',
             borderColor: 'divider',
           }}
@@ -321,10 +301,48 @@ const EventList = () => {
                   </TableCell>
                   <TableCell sx={{ color: 'text.primary', fontWeight: 600, pl: 4 }}>{event.currentParticipants || 0}</TableCell>
                   <TableCell>{getStatusChip(event.status)}</TableCell>
-                  <TableCell align="right">
-                    <IconButton onClick={(e) => handleMenuOpen(e, event)} sx={{ color: 'text.secondary' }}>
-                      <MoreVertIcon />
-                    </IconButton>
+                  <TableCell align="center">
+                    <Stack direction="row" spacing={1} justifyContent="flex-end">
+                      <Tooltip title="Xem chi tiết">
+                        <IconButton
+                          onClick={() => handleViewDetail(event)}
+                          size="small"
+                          sx={{ color: 'info.main', '&:hover': { bgcolor: 'info.main', color: 'white' } }}
+                        >
+                          <VisibilityIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Chỉnh sửa">
+                        <IconButton
+                          onClick={() => handleEdit(event)}
+                          size="small"
+                          sx={{ color: 'primary.main', '&:hover': { bgcolor: 'primary.main', color: 'white' } }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Danh sách đăng ký">
+                        <IconButton
+                          onClick={() => handleManageRegistrations(event)}
+                          size="small"
+                          sx={{ color: 'warning.main', '&:hover': { bgcolor: 'warning.main', color: 'white' } }}
+                        >
+                          <PeopleIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="Xóa sự kiện">
+                        <IconButton
+                          onClick={() => handleDeleteClick(event)}
+                          size="small"
+                          sx={{ color: 'error.main', '&:hover': { bgcolor: 'error.main', color: 'white' } }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}
@@ -332,50 +350,6 @@ const EventList = () => {
           </Table>
         </TableContainer>
       )}
-
-      {/* Action Menu */}
-      <Menu
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={handleMenuClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            ...glassSx,
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1.5,
-            border: '1px solid',
-            borderColor: 'divider',
-            '& .MuiMenuItem-root': {
-              px: 2,
-              py: 1.5,
-              borderRadius: 1,
-              mx: 1,
-              my: 0.5,
-            }
-          },
-        }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
-        <MenuItem onClick={handleViewDetail}>
-          <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Xem chi tiết</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleEdit}>
-          <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Chỉnh sửa</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleManageRegistrations}>
-          <ListItemIcon><PeopleIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Danh sách đăng ký</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
-          <ListItemIcon><DeleteIcon fontSize="small" color="error" /></ListItemIcon>
-          <ListItemText>Xóa sự kiện</ListItemText>
-        </MenuItem>
-      </Menu>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
