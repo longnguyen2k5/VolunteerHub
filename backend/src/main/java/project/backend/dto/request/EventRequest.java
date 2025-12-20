@@ -12,18 +12,22 @@ public class EventRequest {
     private String name;
 
     @NotBlank(message = "Description is required")
+    @Size(max = 5000, message = "Description must be less than 5000 characters")
     private String description;
 
     @NotBlank(message = "Location is required")
     @Size(max = 255)
     private String location;
 
+    @Size(max = 500)
     private String imageUrl;
 
     @NotNull(message = "Start time is required")
+    @Future(message = "Start time must be in the future")
     private LocalDateTime startTime;
 
     @NotNull(message = "End time is required")
+    @Future(message = "End time must be in the future")
     private LocalDateTime endTime;
 
     @NotNull(message = "Max participants is required")

@@ -31,4 +31,7 @@ public interface RegistrationRepository extends JpaRepository<EventRegistrations
 
     @Query("SELECT COUNT(r) FROM EventRegistrations r WHERE r.events.id = :eventId AND (r.status = project.backend.model.enums.RegistrationStatus.APPROVED OR r.status = project.backend.model.enums.RegistrationStatus.COMPLETED)")
     Long countApprovedByEventId(@Param("eventId") Long eventId);
+
+    @Query("SELECT COUNT(r) FROM EventRegistrations r WHERE r.events.manager.id = :managerId")
+    Long countByEventManagerId(@Param("managerId") Long managerId);
 }

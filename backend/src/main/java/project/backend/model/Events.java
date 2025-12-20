@@ -20,8 +20,13 @@ public class Events {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    
+    @Column(columnDefinition = "TEXT")
     private String description;
+    
     private String location;
+    
+    @Column(length = 500)
     private String imageUrl;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

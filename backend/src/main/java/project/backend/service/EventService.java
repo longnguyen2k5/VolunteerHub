@@ -31,6 +31,12 @@ public class EventService {
         if (request.getEndTime().isBefore(request.getStartTime())) {
             throw new BadRequestException("End time must be after start time");
         }
+        
+        // Validate MySQL TIMESTAMP limit (2038-01-19)
+        LocalDateTime MAX_TIMESTAMP = LocalDateTime.of(2038, 1, 19, 0, 0, 0);
+        if (request.getStartTime().isAfter(MAX_TIMESTAMP) || request.getEndTime().isAfter(MAX_TIMESTAMP)) {
+            throw new BadRequestException("Event time cannot exceed MySQL TIMESTAMP limit (2038-01-19)");
+        }
 
         Users manager = userRepository.findById(managerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Manager not found"));

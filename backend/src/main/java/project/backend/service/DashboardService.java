@@ -39,10 +39,8 @@ public class DashboardService {
             builder.totalUsers(userRepository.count());
             builder.totalRegistrations(registrationRepository.count());
         } else if (user.getRole() == UserRole.EVENT_MANAGER) {
-             // Basic counts for Manager's events could be added here if Repos support it
-             // For now leaving global counts 0 or implementing manager specific logic later
-             // Let's at least count THEIR events
              builder.totalEvents(eventRepository.findByManagerId(userId).size());
+             builder.totalRegistrations(registrationRepository.countByEventManagerId(userId));
         }
 
         // 2. Discovery Lists (For All Roles)
