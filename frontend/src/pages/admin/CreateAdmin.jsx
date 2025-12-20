@@ -25,25 +25,52 @@ const CreateAdmin = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { glassSx } = useThemeContext();
+    const [fieldErrors, setFieldErrors] = useState({});
+
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
+        // Clear errors when typing
+        if (fieldErrors[e.target.name]) {
+            setFieldErrors({
+                ...fieldErrors,
+                [e.target.name]: ''
+            });
+        }
         setError('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const newFieldErrors = {};
 
-        if (formData.password !== formData.confirmPassword) {
-            setError('Mật khẩu nhập lại không khớp');
-            return;
+        // Validate Email
+        if (!validateEmail(formData.email)) {
+            newFieldErrors.email = 'Email không hợp lệ';
         }
 
+        // Validate Password mismatch
+        if (formData.password !== formData.confirmPassword) {
+            newFieldErrors.confirmPassword = 'Mật khẩu nhập lại không khớp';
+        }
+
+        // Validate Password length
         if (formData.password.length < 6) {
-            setError('Mật khẩu phải có ít nhất 6 ký tự');
+            newFieldErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        }
+
+        if (Object.keys(newFieldErrors).length > 0) {
+            setFieldErrors(newFieldErrors);
             return;
         }
 
@@ -53,7 +80,7 @@ const CreateAdmin = () => {
                 fullName: formData.fullName,
                 email: formData.email,
                 password: formData.password,
-                role: 'ADMIN' // Backend ensures role is set, but DTO might need it
+                role: 'ADMIN'
             });
             toast.success('Tạo tài khoản Admin thành công!');
             navigate('/admin/users');
@@ -84,7 +111,7 @@ const CreateAdmin = () => {
 
                 {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} noValidate>
                     <Stack spacing={3}>
                         <TextField
                             label="Họ và tên"
@@ -113,6 +140,8 @@ const CreateAdmin = () => {
                             required
                             value={formData.email}
                             onChange={handleChange}
+                            error={!!fieldErrors.email}
+                            helperText={fieldErrors.email}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     color: 'text.primary',
@@ -133,6 +162,8 @@ const CreateAdmin = () => {
                             required
                             value={formData.password}
                             onChange={handleChange}
+                            error={!!fieldErrors.password}
+                            helperText={fieldErrors.password}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     color: 'text.primary',
@@ -153,6 +184,8 @@ const CreateAdmin = () => {
                             required
                             value={formData.confirmPassword}
                             onChange={handleChange}
+                            error={!!fieldErrors.confirmPassword}
+                            helperText={fieldErrors.confirmPassword}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     color: 'text.primary',
