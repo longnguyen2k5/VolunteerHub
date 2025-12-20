@@ -196,7 +196,7 @@ const EventDetailPage = () => {
                 }
             }}>
                 {/* Navigation (Back Button) absolute positioned on top */}
-                <Container maxWidth="xl" sx={{ position: 'absolute', top: 32, left: 0, right: 0, zIndex: 10, px: { xs: 2, md: 6 } }}>
+                <Container maxWidth="xl" sx={{ position: 'absolute', top: 80, left: 0, right: 0, zIndex: 10, px: { xs: 2, md: 6 } }}>
                     <Button
                         startIcon={<ArrowBack />}
                         onClick={() => navigate('/events')}

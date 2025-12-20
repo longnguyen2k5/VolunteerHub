@@ -50,9 +50,9 @@ const EventForm = ({
   const validationSchema = yup.object().shape({
     name: yup.string().required("Tên sự kiện không được để trống").trim(),
     category: yup.string().required("Vui lòng chọn danh mục"),
-    description: yup.string().required("Mô tả không được để trống").trim(),
+    description: yup.string().required("Mô tả không được để trống").trim().max(5000, "Mô tả không quá 5000 ký tự"),
     location: yup.string().required("Địa điểm không được để trống").trim(),
-    imageUrl: yup.string(),
+    imageUrl: yup.string().max(500, "Link ảnh quá dài"),
     maxParticipants: yup
       .number()
       .typeError("Vui lòng nhập số hợp lệ")
@@ -63,7 +63,8 @@ const EventForm = ({
       .date()
       .required("Thời gian bắt đầu không được để trống")
       .typeError("Thời gian không hợp lệ")
-      .min(new Date(), "Thời gian bắt đầu phải là thời gian tương lai"),
+      .min(new Date(), "Thời gian bắt đầu phải là thời gian tương lai")
+      .max(new Date("2100-01-01"), "Thời gian không hợp lệ (Năm quá xa)"),
     endTime: yup
       .date()
       .required("Thời gian kết thúc không được để trống")
@@ -71,7 +72,8 @@ const EventForm = ({
       .min(
         yup.ref("startTime"),
         "Thời gian kết thúc phải sau thời gian bắt đầu"
-      ),
+      )
+      .max(new Date("2100-01-01"), "Thời gian không hợp lệ (Năm quá xa)"),
   });
 
   useEffect(() => {

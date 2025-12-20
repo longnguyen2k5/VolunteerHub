@@ -18,10 +18,13 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useThemeContext } from '../../context/ThemeContext';
+import { toast } from 'react-toastify';
+import { useAuth } from '../../hooks/useAuth';
 
 const EventCard = ({ event, registration }) => {
     const navigate = useNavigate();
     const { glassSx } = useThemeContext();
+    const { user } = useAuth();
 
     const getStatusColor = (status) => {
         const colors = {
@@ -202,7 +205,13 @@ const EventCard = ({ event, registration }) => {
             <CardActions sx={{ p: 2, pt: 0 }}>
                 <Button
                     size="medium"
-                    onClick={() => navigate(`/events/${event.id}`)}
+                    onClick={() => {
+                        if (!user) {
+                            toast.info("Vui lòng đăng nhập để xem chi tiết sự kiện!");
+                            return;
+                        }
+                        navigate(`/events/${event.id}`);
+                    }}
                     fullWidth
                     variant="outlined"
                     sx={{
