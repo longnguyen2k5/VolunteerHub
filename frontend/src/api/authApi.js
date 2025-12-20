@@ -4,7 +4,7 @@ import { oauth2Config } from "../config/oauth2Config";
 
 export const authAPI = {
   /**
-   * Register new user
+   * Đăng ký người dùng mới
    */
   register: async (formData) => {
     try {
@@ -28,40 +28,8 @@ export const authAPI = {
     }
   },
 
-  // /**
-  //  * Login with email and password/ có thể sẽ xóa hàm này
-  //  */
-  // login: async (credentials) => {
-  //   try {
-  //     const response = await axiosInstance.post("/auth/login", credentials);
-
-  //     // Store tokens if returned
-  //     if (response.data.token) {
-  //       localStorage.setItem(oauth2Config.accessTokenKey, response.data.token);
-  //     }
-
-  //     return response;
-  //   } catch (error) {
-  //     console.error("Login error details:", {
-  //       message: error.message,
-  //       response: error.response?.data,
-  //       status: error.response?.status,
-  //     });
-  //     throw error;
-  //   }
-  // },
-
-  // /**
-  //  * Logout current user
-  //  */
-  // logout: () => {
-  //   localStorage.removeItem(oauth2Config.accessTokenKey);
-  //   localStorage.removeItem(oauth2Config.refreshTokenKey);
-  //   localStorage.removeItem(oauth2Config.codeVerifierKey);
-  // },
-
   /**
-   * Exchange authorization code for access token
+   * Đổi Authorization Code lấy Access Token (OAuth2)
    */
   exchangeCodeForToken: ({ code, codeVerifier, redirectUri }) => {
     const params = new URLSearchParams({
@@ -85,7 +53,7 @@ export const authAPI = {
   },
 
   /**
-   * Refresh access token
+   * Làm mới Access Token (Refresh Token)
    */
   refreshAccessToken: (refreshToken) => {
     const params = new URLSearchParams({
@@ -102,7 +70,7 @@ export const authAPI = {
   },
 
   /**
-   * Get current user info
+   * Lấy thông tin người dùng hiện tại
    */
   getUserInfo: (token) => {
     return axios
@@ -118,7 +86,7 @@ export const authAPI = {
   },
 
   /**
-   * Update user profile
+   * Cập nhật thông tin hồ sơ
    */
   updateProfile: (data) => {
     return axiosInstance.put("/users/profile", data);

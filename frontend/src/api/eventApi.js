@@ -2,7 +2,7 @@ import axiosInstance from "./axiosConfig";
 
 export const eventAPI = {
   /**
-   * Get all approved events with optional filters and pagination
+   * Lấy danh sách sự kiện (đã duyệt) với bộ lọc và phân trang
    * Query params: ?page=0&size=10&sort=startTime,desc&filter=...
    */
   getAll: (params) => {
@@ -10,64 +10,64 @@ export const eventAPI = {
   },
 
   /**
-   * Get all approved events (legacy/alternative endpoint)
+   * Lấy danh sách sự kiện công khai (endpoint thay thế)
    */
   getAllApproved: (params) => {
     return axiosInstance.get("/events/public", { params });
   },
 
   /**
-   * Get event details by ID
+   * Lấy chi tiết sự kiện theo ID
    */
   getById: (id) => {
     return axiosInstance.get(`/events/${id}`);
   },
 
   /**
-   * Get public event details by ID (no auth required)
+   * Lấy chi tiết sự kiện công khai (không cần đăng nhập)
    */
   getPublicById: (id) => {
     return axiosInstance.get(`/events/public/${id}`);
   },
 
   /**
-   * Get upcoming events
+   * Lấy danh sách sự kiện sắp diễn ra
    */
   getUpcoming: (params) => {
     return axiosInstance.get("/events/upcoming", { params });
   },
 
   /**
-   * EVENT_MANAGER: Create a new event
-   * Event will have status PENDING_APPROVAL
+   * EVENT_MANAGER: Tạo sự kiện mới
+   * Sự kiện sẽ có trạng thái PENDING_APPROVAL
    */
   create: (eventData) => {
     return axiosInstance.post("/events", eventData);
   },
 
   /**
-   * EVENT_MANAGER/ADMIN: Update event information
+   * EVENT_MANAGER/ADMIN: Cập nhật thông tin sự kiện
    */
   update: (id, eventData) => {
     return axiosInstance.put(`/events/${id}`, eventData);
   },
 
   /**
-   * EVENT_MANAGER/ADMIN: Delete an event
+   * EVENT_MANAGER/ADMIN: Xóa sự kiện
    */
   delete: (id) => {
     return axiosInstance.delete(`/events/${id}`);
   },
 
   /**
-   * EVENT_MANAGER: Get my created events
+   * EVENT_MANAGER: Lấy danh sách sự kiện tôi tạo
    */
   getMyEvents: (params) => {
     return axiosInstance.get("/events/my-events", { params });
   },
 
   /**
-   * EVENT_MANAGER: Get registrations for a specific event
+   * EVENT_MANAGER: Lấy danh sách đăng ký của sự kiện
    */
   getEventRegistrations: (eventId, params) => {
     return axiosInstance.get(`/manager/events/${eventId}/registrations`, {
@@ -76,28 +76,28 @@ export const eventAPI = {
   },
 
   /**
-   * ADMIN: Get all pending events
+   * ADMIN: Lấy danh sách sự kiện chờ duyệt
    */
   getPendingEvents: (params) => {
     return axiosInstance.get("/events/pending", { params });
   },
 
   /**
-   * ADMIN: Approve an event
+   * ADMIN: Duyệt sự kiện
    */
   approveEvent: (id) => {
     return axiosInstance.put(`/events/${id}/approve`);
   },
 
   /**
-   * ADMIN: Reject an event
+   * ADMIN: Từ chối sự kiện
    */
   rejectEvent: (id) => {
     return axiosInstance.put(`/events/${id}/reject`);
   },
 
   /**
-   * ADMIN: Export events to CSV (optional status filter)
+   * ADMIN: Xuất danh sách sự kiện ra CSV
    */
   exportEvents: async (status) => {
     const params = status ? { status } : {};
@@ -109,7 +109,7 @@ export const eventAPI = {
   },
 
   /**
-   * ADMIN: Revert an event to PENDING_APPROVAL
+   * ADMIN: Hoàn tác sự kiện về trạng thái chờ duyệt
    */
   revertEvent: (id) => {
     return axiosInstance.put(`/events/${id}/revert`);

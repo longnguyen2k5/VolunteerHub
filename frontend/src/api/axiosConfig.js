@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
     },
 });
 
-// Request interceptor - Auto attach access token
+// Request interceptor - Tự động đính kèm Access Token vào header
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem(oauth2Config.accessTokenKey);
@@ -26,18 +26,18 @@ axiosInstance.interceptors.request.use(
     }
 );
 
-// Response interceptor - Handle 401 (token expired)
+// Response interceptor - Xử lý lỗi 401 (Token hết hạn)
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // If 401 and not already retried
+        // Nếu lỗi 401 và chưa thử lại lần nào
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
-                // Try to refresh token
+                // Thử làm mới token (Refresh Token)
                 const refreshToken = localStorage.getItem(oauth2Config.refreshTokenKey);
 
                 if (refreshToken) {
@@ -56,12 +56,12 @@ axiosInstance.interceptors.response.use(
                     const { access_token } = response.data;
                     localStorage.setItem(oauth2Config.accessTokenKey, access_token);
 
-                    // Retry original request with new token
+                    // Thử lại request ban đầu với token mới
                     originalRequest.headers.Authorization = `Bearer ${access_token}`;
                     return axiosInstance(originalRequest);
                 }
             } catch (refreshError) {
-                // Refresh failed, logout
+                // Làm mới thất bại -> Đăng xuất
                 localStorage.clear();
                 window.location.href = '/login';
                 return Promise.reject(refreshError);

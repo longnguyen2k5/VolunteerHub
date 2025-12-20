@@ -1,4 +1,4 @@
-// Export all API modules for easy import
+// Export tất cả các API modules để dễ dàng import
 export { authAPI } from './authApi';
 export { eventAPI } from './eventApi';
 export { registrationAPI } from './registrationApi';

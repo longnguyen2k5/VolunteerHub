@@ -2,70 +2,70 @@ import axiosInstance from './axiosConfig';
 
 export const postAPI = {
     /**
-     * Get all posts in an event discussion
+     * Lấy danh sách bài viết trong sự kiện
      */
     getEventPosts: (eventId) => {
         return axiosInstance.get(`/events/${eventId}/posts`);
     },
 
     /**
-     * Create a new post in event discussion
+     * Đăng bài viết mới trong sự kiện
      */
     createPost: (eventId, content) => {
         return axiosInstance.post(`/events/${eventId}/posts`, { content });
     },
 
     /**
-     * Update a post
+     * Cập nhật bài viết
      */
     updatePost: (eventId, postId, content) => {
         return axiosInstance.put(`/events/${eventId}/posts/${postId}`, { content });
     },
 
     /**
-     * Delete a post
+     * Xóa bài viết
      */
     deletePost: (eventId, postId) => {
         return axiosInstance.delete(`/events/${eventId}/posts/${postId}`);
     },
 
     /**
-     * Like a post
+     * Thích bài viết
      */
     likePost: (eventId, postId) => {
         return axiosInstance.post(`/events/${eventId}/posts/${postId}/like`);
     },
 
     /**
-     * Unlike a post
+     * Bỏ thích bài viết
      */
     unlikePost: (eventId, postId) => {
         return axiosInstance.delete(`/events/${eventId}/posts/${postId}/like`);
     },
 
     /**
-     * Get comments of a post
+     * Lấy danh sách bình luận của bài viết
      */
     getComments: (eventId, postId) => {
         return axiosInstance.get(`/events/${eventId}/posts/${postId}/comments`);
     },
 
     /**
-     * Create a comment on a post
+     * Bình luận vào bài viết
      */
     createComment: (eventId, postId, content) => {
         return axiosInstance.post(`/events/${eventId}/posts/${postId}/comments`, { content });
     },
 
     /**
-     * Update a comment
+     * Cập nhật bình luận
      */
     updateComment: (eventId, postId, commentId, content) => {
         return axiosInstance.put(`/events/${eventId}/posts/${postId}/comments/${commentId}`, { content });
     },
 
     /**
-     * Delete a comment
+     * Xóa bình luận
      */
     deleteComment: (eventId, postId, commentId) => {
         return axiosInstance.delete(`/events/${eventId}/posts/${postId}/comments/${commentId}`);

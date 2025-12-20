@@ -2,14 +2,14 @@ import axiosInstance from './axiosConfig';
 
 export const userAPI = {
     /**
-     * Get current user profile
+     * Lấy thông tin hồ sơ người dùng hiện tại
      */
     getProfile: () => {
         return axiosInstance.get('/users/me');
     },
 
     /**
-     * Get volunteer's event history
+     * Lấy lịch sử hoạt động tình nguyện
      * (Các sự kiện đã đăng ký/tham gia)
      */
     getMyHistory: () => {
@@ -17,42 +17,42 @@ export const userAPI = {
     },
 
     /**
-     * Update user profile
+     * Cập nhật hồ sơ người dùng
      */
     updateProfile: (userData) => {
         return axiosInstance.put('/users/me', userData);
     },
 
     /**
-     * ADMIN: Get all users
+     * ADMIN: Lấy danh sách người dùng (kèm phân trang/lọc)
      */
     getAllUsers: (params) => {
         return axiosInstance.get('/admin/users', { params });
     },
 
     /**
-     * ADMIN: Lock a user account
+     * ADMIN: Khóa tài khoản người dùng
      */
     lockUser: (userId) => {
         return axiosInstance.post(`/admin/users/${userId}/lock`);
     },
 
     /**
-     * ADMIN: Unlock a user account
+     * ADMIN: Mở khóa tài khoản người dùng
      */
     unlockUser: (userId) => {
         return axiosInstance.post(`/admin/users/${userId}/unlock`);
     },
 
     /**
-     * ADMIN: Delete a user
+     * ADMIN: Xóa người dùng
      */
     deleteUser: (userId) => {
         return axiosInstance.delete(`/admin/users/${userId}`);
     },
 
     /**
-     * ADMIN: Update user role
+     * ADMIN: Cập nhật vai trò người dùng
      */
     updateUserRole: (userId, role) => {
         return axiosInstance.put(`/admin/users/${userId}/role`, { role });
