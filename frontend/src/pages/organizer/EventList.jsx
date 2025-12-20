@@ -15,7 +15,10 @@ import {
   Chip,
   IconButton,
   TextField,
+  Menu,
   MenuItem,
+  ListItemIcon,
+  ListItemText,
   Stack,
   Dialog,
   DialogTitle,
@@ -31,6 +34,7 @@ import {
   Delete as DeleteIcon,
   Visibility as VisibilityIcon,
   People as PeopleIcon,
+  MoreVert as MoreVertIcon,
 } from "@mui/icons-material";
 import { format } from "date-fns";
 import { eventAPI } from "../../api/eventApi";
@@ -42,8 +46,16 @@ const EventList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Menu State
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Dialog State
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
+
   const { glassSx } = useThemeContext();
 
   useEffect(() => {
@@ -63,7 +75,42 @@ const EventList = () => {
     }
   };
 
-  const handleDelete = async () => {
+  // Menu Handlers
+  const handleMenuOpen = (event, eventItem) => {
+    setMenuAnchor(event.currentTarget);
+    setSelectedEvent(eventItem);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchor(null);
+    setSelectedEvent(null);
+  };
+
+  // Action Handlers
+  const handleViewDetail = () => {
+    if (selectedEvent) navigate(`/events/${selectedEvent.id}`);
+    handleMenuClose();
+  };
+
+  const handleEdit = () => {
+    if (selectedEvent) navigate(`/events/edit/${selectedEvent.id}`);
+    handleMenuClose();
+  };
+
+  const handleManageRegistrations = () => {
+    if (selectedEvent) navigate(`/events/manage/${selectedEvent.id}/registrations`);
+    handleMenuClose();
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedEvent) {
+      setEventToDelete(selectedEvent);
+      setDeleteDialogOpen(true);
+    }
+    handleMenuClose();
+  };
+
+  const handleDeleteConfirm = async () => {
     if (!eventToDelete) return;
 
     try {
@@ -76,11 +123,6 @@ const EventList = () => {
       toast.error(error.response?.data?.message || "Không thể xóa sự kiện");
       console.error("Error deleting event:", error);
     }
-  };
-
-  const openDeleteDialog = (event) => {
-    setEventToDelete(event);
-    setDeleteDialogOpen(true);
   };
 
   const closeDeleteDialog = () => {
@@ -96,7 +138,7 @@ const EventList = () => {
     };
 
     const config = statusConfig[status] || { label: status, color: "default" };
-    return <Chip label={config.label} color={config.color} size="small" />;
+    return <Chip label={config.label} color={config.color} size="small" variant="filled" />;
   };
 
   const formatDateTime = (dateTime) => {
@@ -105,8 +147,9 @@ const EventList = () => {
   };
 
   const filteredEvents = events.filter((event) => {
-    if (statusFilter === "ALL") return true;
-    return event.status === statusFilter;
+    const matchesStatus = statusFilter === "ALL" || event.status === statusFilter;
+    const matchesSearch = event.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesStatus && matchesSearch;
   });
 
   if (loading) {
@@ -168,6 +211,26 @@ const EventList = () => {
 
       <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
         <TextField
+          label="Tìm kiếm theo tên"
+          placeholder="Nhập tên sự kiện..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{
+            flexGrow: 1, // Expand to fill available space
+            '& .MuiOutlinedInput-root': {
+              color: 'text.primary',
+              bgcolor: 'background.paper',
+              borderRadius: '12px',
+              '& fieldset': { borderColor: 'divider' },
+              '&:hover fieldset': { borderColor: 'text.primary' },
+              '&.Mui-focused fieldset': { borderColor: 'primary.main' },
+            },
+            '& .MuiInputLabel-root': { color: 'text.secondary' },
+            '& .MuiInputLabel-root.Mui-focused': { color: 'primary.main' },
+          }}
+          size="small"
+        />
+        <TextField
           select
           label="Trạng thái"
           value={statusFilter}
@@ -198,6 +261,7 @@ const EventList = () => {
       {filteredEvents.length === 0 ? (
         <Alert
           severity="info"
+          sx={{ borderRadius: 3 }}
         >
           {statusFilter === "ALL"
             ? 'Bạn chưa tạo sự kiện nào. Nhấn "Tạo sự kiện mới" để bắt đầu.'
@@ -210,19 +274,20 @@ const EventList = () => {
             ...glassSx,
             borderRadius: '24px',
             boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'action.hover' }}>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Tên sự kiện</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Địa điểm</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Bắt đầu</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Kết thúc</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Người tham gia</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 600 }}>Trạng thái</TableCell>
-                <TableCell align="center" sx={{ color: 'text.secondary', fontWeight: 600 }}>Thao tác</TableCell>
+              <TableRow sx={{ bgcolor: 'rgba(0,0,0,0.2)' }}>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px', py: 2 }}>Tên sự kiện</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px' }}>Địa điểm</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px' }}>Thời gian</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px' }}>Người tham gia</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px' }}>Trạng thái</TableCell>
+                <TableCell align="right" sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '1px' }}>Thao tác</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -234,7 +299,8 @@ const EventList = () => {
                     '&:hover': { bgcolor: 'action.hover' },
                     transition: 'background-color 0.2s',
                     borderBottom: '1px solid',
-                    borderColor: 'divider'
+                    borderColor: 'divider',
+                    '&:last-child td, &:last-child th': { border: 0 }
                   }}
                 >
                   <TableCell>
@@ -243,45 +309,22 @@ const EventList = () => {
                     </Typography>
                   </TableCell>
                   <TableCell sx={{ color: 'text.primary' }}>{event.location}</TableCell>
-                  <TableCell sx={{ color: 'text.secondary' }}>{formatDateTime(event.startTime)}</TableCell>
-                  <TableCell sx={{ color: 'text.secondary' }}>{formatDateTime(event.endTime)}</TableCell>
-                  <TableCell sx={{ color: 'text.primary', fontWeight: 600 }}>{event.currentParticipants || 0}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                        {formatDateTime(event.startTime)}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        đến {formatDateTime(event.endTime)}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell sx={{ color: 'text.primary', fontWeight: 600, pl: 4 }}>{event.currentParticipants || 0}</TableCell>
                   <TableCell>{getStatusChip(event.status)}</TableCell>
-                  <TableCell align="center">
-                    <Stack direction="row" spacing={1} justifyContent="center">
-                      <IconButton
-                        size="small"
-                        sx={{ color: 'text.secondary', '&:hover': { color: '#29b6f6', bgcolor: 'rgba(41, 182, 246, 0.1)' } }}
-                        onClick={() => navigate(`/events/${event.id}`)}
-                        title="Xem chi tiết"
-                      >
-                        <VisibilityIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        sx={{ color: 'text.secondary', '&:hover': { color: '#ffa726', bgcolor: 'rgba(255, 167, 38, 0.1)' } }}
-                        onClick={() => navigate(`/events/edit/${event.id}`)}
-                        title="Chỉnh sửa"
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        sx={{ color: 'text.secondary', '&:hover': { color: '#ab47bc', bgcolor: 'rgba(171, 71, 188, 0.1)' } }}
-                        onClick={() => navigate(`/events/manage/${event.id}/registrations`)}
-                        title="Quản lý đăng ký"
-                      >
-                        <PeopleIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        size="small"
-                        sx={{ color: 'text.secondary', '&:hover': { color: '#ef5350', bgcolor: 'rgba(239, 83, 80, 0.1)' } }}
-                        onClick={() => openDeleteDialog(event)}
-                        title="Xóa"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Stack>
+                  <TableCell align="right">
+                    <IconButton onClick={(e) => handleMenuOpen(e, event)} sx={{ color: 'text.secondary' }}>
+                      <MoreVertIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -289,6 +332,50 @@ const EventList = () => {
           </Table>
         </TableContainer>
       )}
+
+      {/* Action Menu */}
+      <Menu
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            ...glassSx,
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            border: '1px solid',
+            borderColor: 'divider',
+            '& .MuiMenuItem-root': {
+              px: 2,
+              py: 1.5,
+              borderRadius: 1,
+              mx: 1,
+              my: 0.5,
+            }
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleViewDetail}>
+          <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Xem chi tiết</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleEdit}>
+          <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Chỉnh sửa</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleManageRegistrations}>
+          <ListItemIcon><PeopleIcon fontSize="small" /></ListItemIcon>
+          <ListItemText>Danh sách đăng ký</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
+          <ListItemIcon><DeleteIcon fontSize="small" color="error" /></ListItemIcon>
+          <ListItemText>Xóa sự kiện</ListItemText>
+        </MenuItem>
+      </Menu>
 
       {/* Delete Confirmation Dialog */}
       <Dialog
@@ -314,7 +401,7 @@ const EventList = () => {
         </DialogContent>
         <DialogActions sx={{ p: 2, borderTop: '1px solid', borderColor: 'divider' }}>
           <Button onClick={closeDeleteDialog} sx={{ color: 'text.secondary' }}>Hủy</Button>
-          <Button onClick={handleDelete} color="error" variant="contained">
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
             Xóa
           </Button>
         </DialogActions>

@@ -278,7 +278,6 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
-        logout,
         handleCallback,
         refreshToken,
         refreshUser: async () => {
