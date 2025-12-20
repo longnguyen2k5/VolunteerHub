@@ -255,9 +255,15 @@ const EventDetailPage = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <CalendarToday sx={{ fontSize: 32, mr: 2, color: 'primary.main' }} />
                                 <Box>
-                                    <Typography variant="body2" sx={{ opacity: 0.7 }}>Khởi hành</Typography>
+                                    <Typography variant="body2" sx={{ opacity: 0.7 }}>Thời gian</Typography>
                                     <Typography variant="h6" fontWeight={600}>
                                         {format(new Date(event.startTime), 'HH:mm - dd/MM/yyyy', { locale: vi })}
+                                        {event.endTime && (
+                                            <>
+                                                <br />
+                                                đến {format(new Date(event.endTime), 'HH:mm - dd/MM/yyyy', { locale: vi })}
+                                            </>
+                                        )}
                                     </Typography>
                                 </Box>
                             </Box>

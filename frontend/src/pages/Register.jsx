@@ -21,8 +21,8 @@ const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
     fullName: "",
-    phone: "",
     role: "VOLUNTEER",
   });
   const [error, setError] = useState("");
@@ -45,12 +45,21 @@ const Register = () => {
       return;
     }
 
+    if (formData.password !== formData.confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp");
+      setLoading(false);
+      return;
+    }
+
     try {
+      // Create payload excluding confirmPassword
+      const { confirmPassword, ...payload } = formData;
+
       console.log(
         "Sending registration data:",
-        JSON.stringify(formData, null, 2)
+        JSON.stringify(payload, null, 2)
       );
-      const result = await register(formData);
+      const result = await register(payload);
       console.log("Registration response:", JSON.stringify(result, null, 2));
 
       if (result.success) {
@@ -176,26 +185,7 @@ const Register = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Số điện thoại"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        color: 'white',
-                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
-                        '&:hover fieldset': { borderColor: 'white' },
-                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
-                      },
-                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
-                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     label="Mật khẩu"
@@ -209,6 +199,27 @@ const Register = () => {
                         Tối thiểu 6 ký tự
                       </Typography>
                     }
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&:hover fieldset': { borderColor: 'white' },
+                        '&.Mui-focused fieldset': { borderColor: '#FF8E53' },
+                      },
+                      '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
+                      '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Mật khẩu xác nhận"
+                    name="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         color: 'white',
