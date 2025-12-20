@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập | VolunteerHub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -30,6 +31,7 @@
             background-size: cover;
             background-position: center;
         }
+
         .glass {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -46,7 +48,8 @@
 
     <div class="glass p-8 md:p-10 rounded-3xl w-full max-w-md relative z-10 mx-4">
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-orange mb-2">
+            <h1
+                class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-orange mb-2">
                 VolunteerHub
             </h1>
             <p class="text-gray-400 font-light">Đăng nhập để kết nối yêu thương</p>
@@ -54,18 +57,25 @@
 
         <!-- Error Message -->
         <div th:if="${param.error}"
-            class="bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl relative mb-6 text-sm" role="alert">
+            class="bg-red-500/10 border border-red-500/50 text-red-200 px-4 py-3 rounded-xl relative mb-6 text-sm"
+            role="alert">
             <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-400" viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clip-rule="evenodd" />
                 </svg>
-                <span class="block sm:inline">Email hoặc mật khẩu không đúng.</span>
+                <span th:if="${param.error[0] == 'locked'}" class="block sm:inline">Tài khoản đã bị khóa.</span>
+                <span th:unless="${param.error[0] == 'locked'}" class="block sm:inline">Email hoặc mật khẩu không
+                    đúng.</span>
             </div>
         </div>
 
         <!-- Logout Message -->
         <div th:if="${param.logout}"
-             class="bg-green-500/10 border border-green-500/50 text-green-200 px-4 py-3 rounded-xl relative mb-6 text-sm" role="alert">
+            class="bg-green-500/10 border border-green-500/50 text-green-200 px-4 py-3 rounded-xl relative mb-6 text-sm"
+            role="alert">
             <span class="block sm:inline">Bạn đã đăng xuất thành công.</span>
         </div>
 
@@ -103,15 +113,17 @@
         <div class="mt-8 text-center">
             <p class="text-sm text-gray-400">
                 Chưa có tài khoản?
-                <a href="http://localhost:3000/register" class="font-semibold text-brand-orange hover:text-brand-pink transition">
+                <a href="http://localhost:3000/register"
+                    class="font-semibold text-brand-orange hover:text-brand-pink transition">
                     Đăng ký ngay
                 </a>
             </p>
             <div class="mt-6 pt-6 border-t border-white/10">
                 <a href="http://localhost:3000/"
                     class="inline-flex items-center text-sm text-gray-500 hover:text-white transition group">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>

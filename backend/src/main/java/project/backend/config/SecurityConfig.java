@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import org.springframework.security.authentication.LockedException;
 import java.util.Arrays;
 
 @Configuration
@@ -56,6 +57,13 @@ public class SecurityConfig {
                 // QUAN TRỌNG: Dùng HTTP Basic để test với Postman
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .failureHandler((request, response, exception) -> {
+                            String errorParam = "?error";
+                            if (exception instanceof LockedException) {
+                                errorParam = "?error=locked";
+                            }
+                            response.sendRedirect("/login" + errorParam);
+                        })
                         .permitAll()
                 );
 
@@ -90,6 +98,13 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .failureHandler((request, response, exception) -> {
+                            String errorParam = "?error";
+                            if (exception instanceof LockedException) {
+                                errorParam = "?error=locked";
+                            }
+                            response.sendRedirect("/login" + errorParam);
+                        })
                         .permitAll()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
