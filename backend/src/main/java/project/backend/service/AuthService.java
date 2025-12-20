@@ -9,6 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service xử lý các nghiệp vụ xác thực (Đăng ký).
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -16,6 +19,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Đăng ký người dùng mới.
+     */
     @Transactional
     public void register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -32,32 +38,4 @@ public class AuthService {
         userRepository.save(user);
     }
 }
-//    public AuthResponse loginForOAuth2(LoginRequest request, HttpServletRequest httpRequest)
-//            throws Exception {
-//        try {
-//            // 1. Authenticate
-//            AuthenticationManager authManager = authenticationConfiguration.getAuthenticationManager();
-//            Authentication authentication = authManager.authenticate(
-//                    UsernamePasswordAuthenticationToken.unauthenticated(
-//                            request.email(),
-//                            request.password()
-//                    )
-//            );
-//
-//            // 2. Tạo SecurityContext
-//            SecurityContext context = SecurityContextHolder.createEmptyContext();
-//            context.setAuthentication(authentication);
-//            SecurityContextHolder.setContext(context);
-//
-//            // 3. LƯU vào SESSION (QUAN TRỌNG cho OAuth2 flow!)
-//            HttpSession session = httpRequest.getSession(true);
-//            session.setAttribute(
-//                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-//                    context
-//            );
-//            return AuthResponse.success(request.email(), session.getId());
-//        } catch (Exception e) {
-//            return AuthResponse.error(e.getMessage());
-//        }
-//    }
 

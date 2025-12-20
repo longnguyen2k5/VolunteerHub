@@ -20,6 +20,9 @@ import project.backend.repository.UserRepository;
 import java.security.Security;
 import java.util.List;
 
+/**
+ * Service xử lý thông báo (Web Push Notification).
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -47,13 +50,15 @@ public class NotificationService {
         pushService = new PushService(publicKey, privateKey, subject);
     }
 
+    /**
+     * Đăng ký nhận thông báo cho user.
+     */
     @Transactional
     public void subscribe(Long userId, String endpoint, String p256dh, String auth) {
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        // Check if subscription exists for this endpoint
-        // Handle potential duplicates (cleaning up dirty data)
+        // Kiểm tra subscription tồn tại để tránh trùng lặp
         List<PushSubscription> existingSubs = pushSubscriptionRepository.findByEndpoint(endpoint);
         
         PushSubscription subscription;
@@ -61,7 +66,7 @@ public class NotificationService {
             subscription = new PushSubscription();
         } else {
             subscription = existingSubs.get(0);
-            // Delete duplicates if any
+            // Xóa các bản ghi trùng lặp nếu có
             if (existingSubs.size() > 1) {
                 pushSubscriptionRepository.deleteAll(existingSubs.subList(1, existingSubs.size()));
             }
@@ -75,6 +80,9 @@ public class NotificationService {
         pushSubscriptionRepository.save(subscription);
     }
 
+    /**
+     * Hủy đăng ký nhận thông báo.
+     */
     @Transactional
     public void unsubscribe(String endpoint) {
         pushSubscriptionRepository.deleteByEndpoint(endpoint);
@@ -82,6 +90,9 @@ public class NotificationService {
 
     private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
+    /**
+     * Gửi thông báo push notification (bất đồng bộ).
+     */
     @Async
     public void sendPushNotification(Long userId, String title, String message) {
         List<PushSubscription> subscriptions = pushSubscriptionRepository.findByUserId(userId);
@@ -89,7 +100,7 @@ public class NotificationService {
             return;
         }
 
-        // Deduplicate by endpoint to prevent spam from existing duplicate records
+        // Loại bỏ trùng lặp endpoint
         java.util.Map<String, PushSubscription> uniqueSubscriptions = new java.util.HashMap<>();
         for (PushSubscription sub : subscriptions) {
             uniqueSubscriptions.putIfAbsent(sub.getEndpoint(), sub);

@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service xử lý logic nghiệp vụ cho sự kiện.
+ */
 @Service
 @RequiredArgsConstructor
 public class EventService {
@@ -27,16 +30,19 @@ public class EventService {
     private final RegistrationRepository registrationRepository;
     private final NotificationService notificationService;
 
+    /**
+     * Tạo sự kiện mới.
+     */
     @Transactional
     public EventResponse createEvent(EventRequest request, Long managerId) {
         if (request.getEndTime().isBefore(request.getStartTime())) {
-            throw new BadRequestException("End time must be after start time");
+            throw new BadRequestException("Thời gian kết thúc phải sau thời gian bắt đầu");
         }
         
-        // Validate MySQL TIMESTAMP limit (2038-01-19)
+        // Kiểm tra giới hạn MySQL TIMESTAMP (2038-01-19)
         LocalDateTime MAX_TIMESTAMP = LocalDateTime.of(2038, 1, 19, 0, 0, 0);
         if (request.getStartTime().isAfter(MAX_TIMESTAMP) || request.getEndTime().isAfter(MAX_TIMESTAMP)) {
-            throw new BadRequestException("Event time cannot exceed MySQL TIMESTAMP limit (2038-01-19)");
+            throw new BadRequestException("Thời gian sự kiện không được vượt quá giới hạn MySQL TIMESTAMP (2038-01-19)");
         }
 
         Users manager = userRepository.findById(managerId)
@@ -54,7 +60,7 @@ public class EventService {
             try {
                 event.setCategory(project.backend.model.enums.EventCategory.valueOf(request.getCategory()));
             } catch (IllegalArgumentException e) {
-                // Ignore invalid category or set default?
+                // Bỏ qua danh mục không hợp lệ
             }
         }
         event.setStatus(EventStatus.PENDING_APPROVAL);
@@ -62,7 +68,7 @@ public class EventService {
 
         Events savedEvent = eventRepository.save(event);
         
-        // --- Notify Admins ---
+        // --- Gửi thông báo cho Admin ---
         try {
             List<Users> admins = userRepository.findByRole(project.backend.model.enums.UserRole.ADMIN);
             String title = "Sự kiện mới chờ duyệt";
@@ -78,17 +84,20 @@ public class EventService {
         return mapToResponse(savedEvent);
     }
 
+    /**
+     * Cập nhật thông tin sự kiện.
+     */
     @Transactional
     public EventResponse updateEvent(Long eventId, EventRequest request, Long managerId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
         if (!event.getManager().getId().equals(managerId)) {
-            throw new UnauthorizedException("Unauthorized to update this event");
+            throw new UnauthorizedException("Bạn không có quyền cập nhật sự kiện này");
         }
 
         if (request.getEndTime().isBefore(request.getStartTime())) {
-            throw new BadRequestException("End time must be after start time");
+            throw new BadRequestException("Thời gian kết thúc phải sau thời gian bắt đầu");
         }
 
         event.setName(request.getName());
@@ -109,24 +118,29 @@ public class EventService {
         return mapToResponse(updatedEvent);
     }
 
+    /**
+     * Xóa sự kiện.
+     */
     @Transactional
     public void deleteEvent(Long eventId, Long managerId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
         if (!event.getManager().getId().equals(managerId)) {
-            throw new UnauthorizedException("Unauthorized to delete this event");
+            throw new UnauthorizedException("Bạn không có quyền xóa sự kiện này");
         }
 
         eventRepository.delete(event);
     }
 
+    @Transactional(readOnly = true)
     public EventResponse getEventById(Long eventId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         return mapToResponse(event);
     }
 
+    @Transactional(readOnly = true)
     public List<EventResponse> getAllApprovedEvents() {
         return eventRepository.findByStatus(EventStatus.APPROVED)
                 .stream()
@@ -134,6 +148,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<EventResponse> getEventsByManager(Long managerId) {
         return eventRepository.findByManagerId(managerId)
                 .stream()
@@ -141,6 +156,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<EventResponse> getUpcomingEvents() {
         return eventRepository.findUpcomingApprovedEvents(LocalDateTime.now())
                 .stream()
@@ -172,6 +188,7 @@ public class EventService {
         return mapToResponse(eventRepository.save(event));
     }
 
+    @Transactional(readOnly = true)
     public List<EventResponse> getPendingEvents() {
         return eventRepository.findByStatus(EventStatus.PENDING_APPROVAL)
                 .stream()
@@ -179,6 +196,7 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<EventResponse> getEventsByStatus(EventStatus status) {
         return eventRepository.findByStatus(status)
                 .stream()
@@ -186,10 +204,12 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<Events> getAllEventsEntity() {
         return eventRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<Events> getEventsByStatusEntity(EventStatus status) {
         return eventRepository.findByStatus(status);
     }

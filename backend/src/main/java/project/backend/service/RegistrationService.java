@@ -19,6 +19,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service xử lý đăng ký tham gia sự kiện.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,21 +32,23 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    // ... existing methods ...
+    // ... methods ...
 
+    /**
+     * Đăng ký tham gia sự kiện.
+     */
     @Transactional
     public RegistrationResponse registerForEvent(Long eventId, Long userId) {
-        // ... implementation ...
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         Users user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (event.getStatus() != EventStatus.APPROVED) {
-            throw new IllegalArgumentException("Event is not approved");
+            throw new IllegalArgumentException("Sự kiện chưa được duyệt");
         }
         
-        // Check if already registered
+        // Kiểm tra xem đã đăng ký chưa
         java.util.Optional<EventRegistrations> existingRegistrationOpt = registrationRepository.findByEventIdAndUserId(eventId, userId);
 
         if (existingRegistrationOpt.isPresent()) {
@@ -53,11 +58,11 @@ public class RegistrationService {
                 existingRegistration.getStatus() == RegistrationStatus.COMPLETED) {
                 throw new IllegalArgumentException("User already registered for this event");
             }
-            // If CANCELLED or REJECTED -> Reactivate
-             // Check capacity
+            // Nếu đã hủy hoặc bị từ chối -> Kích hoạt lại
+            // Kiểm tra số lượng người tham gia
             Long currentParticipants = registrationRepository.countApprovedByEventId(eventId);
             if (event.getMaxParticipants() != null && currentParticipants >= event.getMaxParticipants()) {
-                throw new IllegalArgumentException("Event is full");
+                throw new IllegalArgumentException("Sự kiện đã đủ số lượng người tham gia");
             }
 
             existingRegistration.setStatus(RegistrationStatus.PENDING);
@@ -66,13 +71,13 @@ public class RegistrationService {
             return RegistrationResponse.fromEntity(saved);
         }
 
-        // Check capacity
+        // Kiểm tra số lượng người tham gia
         Long currentParticipants = registrationRepository.countApprovedByEventId(eventId);
         if (event.getMaxParticipants() != null && currentParticipants >= event.getMaxParticipants()) {
-            throw new IllegalArgumentException("Event is full");
+            throw new IllegalArgumentException("Sự kiện đã đủ số lượng người tham gia");
         }
         
-        // Logic: Require approval? Let's assume PENDING by default
+        // Logic: Yêu cầu duyệt? Mặc định là PENDING
         EventRegistrations registration = new EventRegistrations();
         registration.setEvents(event);
         registration.setUser(user);
@@ -81,10 +86,10 @@ public class RegistrationService {
 
         EventRegistrations saved = registrationRepository.save(registration);
         
-        // --- Notify Manager ---
+        // --- Gửi thông báo cho Quản lý ---
         try {
             Long managerId = event.getManager().getId();
-            // Don't notify if manager registers for their own event (unlikely but possible)
+            // Không gửi thông báo nếu quản lý tự đăng ký (ít xảy ra nhưng check cho chắc)
             if (!managerId.equals(userId)) {
                 String title = "Đăng ký mới";
                 String message = String.format("Thành viên %s đã đăng ký tham gia sự kiện '%s'.", user.getFullName(), event.getName());
@@ -97,6 +102,9 @@ public class RegistrationService {
         return RegistrationResponse.fromEntity(saved);
     }
     
+    /**
+     * Hủy đăng ký.
+     */
     @Transactional
     public void cancelRegistration(Long registrationId, Long userId) {
         EventRegistrations registration = registrationRepository.findById(registrationId)
@@ -120,14 +128,13 @@ public class RegistrationService {
                 .collect(Collectors.toList());
     }
     
-    // For Event Manager
+    // Dành cho Quản lý sự kiện
     public List<RegistrationResponse> getEventRegistrations(Long eventId, Long managerId) {
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
                 
-        // Check if managerId is owner or Admin? 
-        // Logic might be in Controller PreAuthorize, but extra check here is good.
-        // For simplicity assuming Controller handles role check.
+        // Kiểm tra managerId có phải chủ sự kiện hoặc Admin không? 
+        // Logic phân quyền nằm ở Controller, đây là double-check.
         
         return registrationRepository.findByEventId(eventId).stream()
                  .map(RegistrationResponse::fromEntity)
@@ -135,16 +142,18 @@ public class RegistrationService {
     }
 
     public List<EventRegistrations> getEventRegistrationsEntity(Long eventId) {
-        // Validation check if needed, or trust Controller
         return registrationRepository.findByEventIdWithDetails(eventId);
     }
 
+    /**
+     * Cập nhật trạng thái đăng ký (Duyệt/Từ chối/Hoàn thành).
+     */
     @Transactional
     public RegistrationResponse updateStatus(Long registrationId, RegistrationStatus status) {
         EventRegistrations registration = registrationRepository.findById(registrationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Registration not found"));
         
-        // If approving, check capacity again?
+        // Nếu duyệt, kiểm tra lại số lượng
         if (status == RegistrationStatus.APPROVED) {
              Long current = registrationRepository.countApprovedByEventId(registration.getEvents().getId());
              if (registration.getEvents().getMaxParticipants() != null && current >= registration.getEvents().getMaxParticipants()) {
@@ -152,7 +161,7 @@ public class RegistrationService {
              }
         }
 
-        // Validate COMPLETION: Cannot mark as completed if event hasn't ended
+        // Validate COMPLETION: Không thể đánh dấu hoàn thành nếu sự kiện chưa kết thúc
         if (status == RegistrationStatus.COMPLETED) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime endTime = registration.getEvents().getEndTime();
@@ -166,7 +175,7 @@ public class RegistrationService {
         registration.setStatus(status);
         EventRegistrations saved = registrationRepository.save(registration);
         
-        // Notify User
+        // Gửi thông báo cho User
         try {
             String title = "Cập nhật trạng thái đăng ký";
             String message = String.format("Sự kiện '%s': Trạng thái mới là %s.", 
@@ -185,7 +194,7 @@ public class RegistrationService {
 
             notificationService.sendPushNotification(registration.getUser().getId(), title, message);
         } catch (Exception e) {
-            // Log but don't fail the transaction
+            // Log nhưng không làm fail transaction
             log.error("Failed to send push notification: {}", e.getMessage());
         }
 

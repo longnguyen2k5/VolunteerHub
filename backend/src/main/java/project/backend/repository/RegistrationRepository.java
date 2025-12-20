@@ -9,6 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository thao tác với bảng event_registrations.
+ */
 @Repository
 public interface RegistrationRepository extends JpaRepository<EventRegistrations, Long> {
 

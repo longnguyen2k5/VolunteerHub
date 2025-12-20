@@ -1,19 +1,24 @@
 package project.backend.utils;
 
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
+/**
+ * Utility class hỗ trợ xuất dữ liệu ra file CSV.
+ */
 public class CsvExportUtil {
 
+    /**
+     * Xuất danh sách người dùng ra CSV.
+     */
     public static byte[] exportUsersToCsv(List<project.backend.model.Users> users) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8))) {
             
-            // BOM for Excel compatibility
+            // BOM for Excel compatibility (UTF-8 with BOM)
             baos.write(0xEF);
             baos.write(0xBB);
             baos.write(0xBF);
@@ -39,6 +44,9 @@ public class CsvExportUtil {
         }
     }
 
+    /**
+     * Xuất danh sách đăng ký tham gia sự kiện ra CSV.
+     */
     public static byte[] exportRegistrationsToCsv(List<project.backend.model.EventRegistrations> registrations) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8))) {
@@ -70,6 +78,9 @@ public class CsvExportUtil {
         }
     }
 
+    /**
+     * Xuất danh sách sự kiện ra CSV.
+     */
     public static byte[] exportEventsToCsv(List<project.backend.model.Events> events) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
              PrintWriter writer = new PrintWriter(new OutputStreamWriter(baos, StandardCharsets.UTF_8))) {
@@ -103,6 +114,9 @@ public class CsvExportUtil {
         }
     }
 
+    /**
+     * Xử lý ký tự đặc biệt trong CSV để tránh lỗi format.
+     */
     private static String escapeSpecialCharacters(String data) {
         if (data == null) {
             return "";

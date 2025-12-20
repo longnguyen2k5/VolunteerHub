@@ -6,6 +6,9 @@ import project.backend.model.PushSubscription;
 
 import java.util.List;
 
+/**
+ * Repository thao tác với bảng push_subscriptions.
+ */
 @Repository
 public interface PushSubscriptionRepository extends JpaRepository<PushSubscription, Long> {
     List<PushSubscription> findByUserId(Long userId);

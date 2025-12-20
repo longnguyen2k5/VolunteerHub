@@ -1,7 +1,6 @@
 package project.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.dto.response.UserResponse;
@@ -12,7 +11,9 @@ import project.backend.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/**
+ * Service xử lý logic nghiệp vụ cho người dùng.
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -38,7 +39,7 @@ public class UserService {
     }
 
     /**
-     * ADMIN: Get all users
+     * ADMIN: Lấy danh sách tất cả người dùng.
      */
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
@@ -51,7 +52,7 @@ public class UserService {
     }
 
     /**
-     * ADMIN: Lock a user account
+     * ADMIN: Khóa tài khoản người dùng.
      */
     @Transactional
     public UserResponse lockUser(Long userId) {
@@ -63,7 +64,7 @@ public class UserService {
     }
 
     /**
-     * ADMIN: Unlock a user account
+     * ADMIN: Mở khóa tài khoản người dùng.
      */
     @Transactional
     public UserResponse unlockUser(Long userId) {
@@ -73,8 +74,9 @@ public class UserService {
         userRepository.save(user);
         return UserResponse.success(user, "User unlocked successfully");
     }
+    
     /**
-     * ADMIN: Create another Admin account
+     * ADMIN: Tạo tài khoản Admin mới.
      */
     @Transactional
     public Users createAdmin(project.backend.dto.request.RegisterRequest request) {
@@ -85,7 +87,6 @@ public class UserService {
         Users user = new Users();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        // Note: PasswordEncoder needs to be injected. Since checking existing fields, let's inject it.
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(project.backend.model.enums.UserRole.ADMIN);
         user.setIsLocked(false);

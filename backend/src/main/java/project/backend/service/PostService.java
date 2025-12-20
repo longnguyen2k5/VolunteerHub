@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service xử lý bài viết, bình luận, và lượt thích.
+ */
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -30,12 +33,12 @@ public class PostService {
     private final RegistrationRepository registrationRepository;
     private final NotificationService notificationService;
 
-    // --- Posts ---
+    // --- Bài viết (Posts) ---
 
+    /**
+     * Lấy danh sách bài viết trong sự kiện.
+     */
     public List<PostResponse> getEventPosts(Long eventId, Long currentUserId) {
-// ... existing getEventPosts code ...
-        // Verify event exists and is approved (optional: check if user is participant? requirement says "cac thanh vien")
-        // For now, allow viewing if event is approved.
         Events event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
 
@@ -47,6 +50,9 @@ public class PostService {
         return posts.stream().map(post -> mapToPostResponse(post, currentUserId)).collect(Collectors.toList());
     }
 
+    /**
+     * Tạo bài viết mới.
+     */
     @Transactional
     public PostResponse createPost(Long eventId, PostRequest request, Long userId) {
         Events event = eventRepository.findById(eventId)
@@ -68,18 +74,18 @@ public class PostService {
 
         Posts savedPost = postRepository.save(post);
 
-        // --- Send Notifications ---
+        // --- Gửi thông báo ---
         try {
             String title = "Có bài viết mới!";
             String message = String.format("Thành viên %s vừa đăng bài trong sự kiện '%s'.", user.getFullName(), event.getName());
 
-            // Use Set to deduplicate recipients (Manager could also be a Participant)
+            // Dùng Set để tránh gửi trùng lặp
             java.util.Set<Long> recipientIds = new java.util.HashSet<>();
 
-            // 1. Add Manager
+            // 1. Thêm quản lý
             recipientIds.add(event.getManager().getId());
 
-            // 2. Add Participants (Approved/Completed)
+            // 2. Thêm người tham gia (Đã duyệt/Hoàn thành)
             List<EventRegistrations> registrations = registrationRepository.findByEventId(eventId);
             for (EventRegistrations reg : registrations) {
                 if (reg.getStatus() == project.backend.model.enums.RegistrationStatus.APPROVED || 
@@ -88,21 +94,24 @@ public class PostService {
                 }
             }
 
-            // 3. Remove the Author (if present)
+            // 3. Loại bỏ tác giả bài viết
             recipientIds.remove(userId);
 
-            // 4. Send to all unique recipients
+            // 4. Gửi thông báo
             for (Long recipientId : recipientIds) {
                 notificationService.sendPushNotification(recipientId, title, message);
             }
         } catch (Exception e) {
-            // Log error but do not fail the transaction
+            // Log lỗi nhưng không rollback transaction
             System.err.println("Failed to send post notifications: " + e.getMessage());
         }
 
         return mapToPostResponse(savedPost, userId);
     }
     
+    /**
+     * Xóa bài viết.
+     */
     @Transactional
     public void deletePost(Long eventId, Long postId, Long userId, boolean isAdminOrManager) {
         Posts post = postRepository.findById(postId)
@@ -116,19 +125,23 @@ public class PostService {
             throw new UnauthorizedException("You are not authorized to delete this post");
         }
 
-        // Delete related comments and likes? JPA Cascade should handle if configured, manual if not.
-        // Assuming cascade or delete manually. Safe to delete.
         postRepository.delete(post);
     }
 
-    // --- Comments ---
+    // --- Bình luận (Comments) ---
 
+    /**
+     * Lấy danh sách bình luận của bài viết.
+     */
     public List<CommentResponse> getPostComments(Long postId) {
         return commentRepository.findByPostIdOrderByCreatedAtAsc(postId).stream()
                 .map(this::mapToCommentResponse)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Tạo bình luận mới.
+     */
     @Transactional
     public CommentResponse createComment(Long eventId, Long postId, CommentRequest request, Long userId) {
         Posts post = postRepository.findById(postId)
@@ -151,6 +164,9 @@ public class PostService {
         return mapToCommentResponse(commentRepository.save(comment));
     }
     
+    /**
+     * Xóa bình luận.
+     */
     @Transactional
     public void deleteComment(Long postId, Long commentId, Long userId, boolean isAdminOrManager) {
         Comments comment = commentRepository.findById(commentId)
@@ -167,8 +183,11 @@ public class PostService {
         commentRepository.delete(comment);
     }
 
-    // --- Likes ---
+    // --- Lượt thích (Likes) ---
 
+    /**
+     * Thích bài viết.
+     */
     @Transactional
     public project.backend.dto.response.LikeStatusResponse likePost(Long eventId, Long postId, Long userId) {
         Posts post = postRepository.findById(postId)
@@ -188,13 +207,16 @@ public class PostService {
          like.setUser(user);
          likeRepository.save(like);
          
-         // Return new status
+         // Trả về trạng thái mới
          return project.backend.dto.response.LikeStatusResponse.builder()
                  .isLiked(true)
                  .likeCount(likeRepository.countByPostId(postId)) 
                  .build();
     }
 
+    /**
+     * Bỏ thích bài viết.
+     */
     @Transactional
     public project.backend.dto.response.LikeStatusResponse unlikePost(Long eventId, Long postId, Long userId) {
         Posts post = postRepository.findById(postId)

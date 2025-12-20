@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
+/**
+ * Service xử lý lưu trữ tệp (File Upload).
+ */
 @Service
 public class FileStorageService {
 
@@ -24,19 +27,22 @@ public class FileStorageService {
         }
     }
 
+    /**
+     * Lưu file vào server.
+     */
     public String storeFile(MultipartFile file) {
         try {
-            // Normalize file name
+            // Chuẩn hóa tên file
             String originalFileName = file.getOriginalFilename();
             String fileExtension = "";
             if (originalFileName != null && originalFileName.contains(".")) {
                 fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
             }
             
-            // Generate unique file name
+            // Tạo tên file duy nhất (UUID)
             String fileName = UUID.randomUUID().toString() + fileExtension;
 
-            // Copy file to the target location (Replacing existing file with the same name)
+            // Copy file vào thư mục đích (Ghi đè nếu trùng tên)
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
