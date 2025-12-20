@@ -19,12 +19,14 @@ import {
     CalendarToday,
     Edit,
     Save,
-    Cancel
+    Cancel,
+    LocationOn
 } from '@mui/icons-material';
 import { useAuth } from '../hooks/useAuth';
 import { format } from 'date-fns';
 import { useThemeContext } from '../context/ThemeContext';
 import { authAPI } from '../api/authApi';
+import { registrationAPI } from '../api/registrationApi';
 import { toast } from 'react-toastify';
 
 const UserProfile = () => {
@@ -36,6 +38,22 @@ const UserProfile = () => {
         fullName: '',
         email: ''
     });
+    const [registrations, setRegistrations] = useState([]);
+
+    useEffect(() => {
+        const fetchRegistrations = async () => {
+            try {
+                const response = await registrationAPI.getMyRegistrations();
+                setRegistrations(response.data);
+            } catch (error) {
+                console.error("Failed to fetch registrations:", error);
+            }
+        };
+
+        if (user) {
+            fetchRegistrations();
+        }
+    }, [user]);
 
     useEffect(() => {
         if (user) {
@@ -222,24 +240,39 @@ const UserProfile = () => {
                     </Grid>
 
                     <Grid item xs={12}>
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start', mt: 2 }}>
-                            <Box sx={{
-                                bgcolor: 'action.hover',
-                                p: 2,
-                                borderRadius: '16px',
-                                mr: 3,
-                                color: 'text.primary'
-                            }}>
-                                <Person fontSize="large" color="inherit" />
-                            </Box>
-                            <Box sx={{ flexGrow: 1 }}>
+                        <Box sx={{ mt: 2 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                                <Box sx={{
+                                    bgcolor: 'action.hover',
+                                    p: 2,
+                                    borderRadius: '16px',
+                                    mr: 3,
+                                    color: 'text.primary'
+                                }}>
+                                    <Badge fontSize="large" color="inherit" />
+                                </Box>
                                 <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 1 }}>
-                                    Giới thiệu
-                                </Typography>
-                                <Typography variant="body1" sx={{ color: 'text.secondary', fontStyle: 'italic', mt: 1, lineHeight: 1.6 }}>
-                                    (Chưa có thông tin giới thiệu)
+                                    Sự kiện đã tham gia
                                 </Typography>
                             </Box>
+
+                            {registrations.filter(reg => ['APPROVED', 'COMPLETED'].includes(reg.status)).length === 0 ? (
+                                <Typography variant="body1" sx={{ color: 'text.secondary', fontStyle: 'italic', textAlign: 'center', py: 4 }}>
+                                    (Chưa tham gia sự kiện nào)
+                                </Typography>
+                            ) : (
+                                <Box component="ul" sx={{ pl: 2, m: 0 }}>
+                                    {registrations
+                                        .filter(reg => ['APPROVED', 'COMPLETED'].includes(reg.status))
+                                        .map((reg) => (
+                                            <Box component="li" key={reg.id} sx={{ mb: 1 }}>
+                                                <Typography variant="body1" fontWeight={500}>
+                                                    {reg.eventName}
+                                                </Typography>
+                                            </Box>
+                                        ))}
+                                </Box>
+                            )}
                         </Box>
                     </Grid>
                 </Grid>
