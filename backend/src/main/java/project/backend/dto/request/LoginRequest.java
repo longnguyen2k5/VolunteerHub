@@ -4,6 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * DTO yêu cầu đăng nhập.
+ */
 @Data
 public class LoginRequest {
 

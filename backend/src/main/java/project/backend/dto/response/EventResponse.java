@@ -5,6 +5,9 @@ import project.backend.model.enums.EventCategory;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/**
+ * DTO phản hồi thông tin sự kiện.
+ */
 @Data
 public class EventResponse {
     private Long id;

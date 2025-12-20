@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO phản hồi trạng thái like.
+ */
 @Data
 @Builder
 @AllArgsConstructor

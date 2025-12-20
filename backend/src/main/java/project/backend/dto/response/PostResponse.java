@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO phản hồi thông tin bài viết thảo luận.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -21,7 +24,7 @@ public class PostResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    // Statistics
+    // Thống kê
     private int likeCount;
     private int commentCount;
     

@@ -4,6 +4,9 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/**
+ * DTO yêu cầu tạo/cập nhật sự kiện.
+ */
 @Data
 public class EventRequest {
 

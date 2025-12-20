@@ -4,6 +4,9 @@ import project.backend.model.enums.UserRole;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+/**
+ * DTO yêu cầu đăng ký tài khoản.
+ */
 @Data
 public class RegisterRequest {
 

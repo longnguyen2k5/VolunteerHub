@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import project.backend.model.EventRegistrations;
 import java.time.LocalDateTime;
 
+/**
+ * DTO phản hồi thông tin đăng ký tham gia sự kiện.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,7 +23,7 @@ public class RegistrationResponse {
     private String status;
     private LocalDateTime registeredAt;
     
-    // New fields for Participation History
+    // Thông tin thêm cho lịch sử tham gia
     private LocalDateTime eventStartTime;
     private String eventLocation;
 
