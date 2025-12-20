@@ -1,5 +1,8 @@
 package project.backend.model.enums;
 
+/**
+ * Enum trạng thái đăng ký tham gia.
+ */
 public enum RegistrationStatus {
     PENDING,    // Chờ duyệt
     APPROVED,   // Đã duyệt

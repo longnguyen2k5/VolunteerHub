@@ -9,6 +9,9 @@ import project.backend.model.enums.EventStatus;
 import project.backend.model.enums.EventCategory;
 import java.time.LocalDateTime;
 
+/**
+ * Entity lưu trữ thông tin về sự kiện.
+ */
 @Entity
 @Table(name = "events")
 @AllArgsConstructor

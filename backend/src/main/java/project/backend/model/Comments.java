@@ -5,6 +5,9 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity lưu trữ bình luận của bài viết.
+ */
 @Entity
 @Table(name = "comments")
 @AllArgsConstructor

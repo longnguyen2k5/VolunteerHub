@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity lưu trữ thông tin đăng ký Web Push Notification.
+ */
 @Entity
 @Table(name = "push_subscriptions")
 @Getter
@@ -24,44 +27,4 @@ public class PushSubscription {
     private String p256dh;
 
     private String auth;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Users getUser() {
-        return user;
-    }
-
-    public void setUser(Users user) {
-        this.user = user;
-    }
-
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    public String getP256dh() {
-        return p256dh;
-    }
-
-    public void setP256dh(String p256dh) {
-        this.p256dh = p256dh;
-    }
-
-    public String getAuth() {
-        return auth;
-    }
-
-    public void setAuth(String auth) {
-        this.auth = auth;
-    }
 }

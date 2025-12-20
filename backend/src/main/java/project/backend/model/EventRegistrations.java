@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import project.backend.model.enums.RegistrationStatus;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Entity lưu trữ thông tin đăng ký tham gia sự kiện của người dùng.
+ */
 @Entity
 @Table(name = "event_registrations")
 @AllArgsConstructor

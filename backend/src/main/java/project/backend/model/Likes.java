@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.security.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * Entity lưu trữ lượt thả tim (like) bài viết.
+ */
 @Entity
 @Table(name = "likes")
 @AllArgsConstructor

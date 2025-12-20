@@ -1,7 +1,10 @@
 package project.backend.model.enums;
 
+/**
+ * Enum vai trò người dùng.
+ */
 public enum UserRole {
-    VOLUNTEER,
-    EVENT_MANAGER,
-    ADMIN
+    VOLUNTEER,      // Tình nguyện viên
+    EVENT_MANAGER,  // Quản lý sự kiện
+    ADMIN           // Quản trị viên
 }

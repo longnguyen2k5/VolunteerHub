@@ -8,6 +8,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity lưu trữ bài viết thảo luận trong sự kiện.
+ */
 @Entity
 @Table(name = "posts")
 @AllArgsConstructor

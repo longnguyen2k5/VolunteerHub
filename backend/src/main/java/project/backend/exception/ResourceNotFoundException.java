@@ -3,7 +3,9 @@ package project.backend.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-// Tự động trả về lỗi 404 NOT_FOUND
+/**
+ * Exception cho lỗi không tìm thấy tài nguyên (404 Not Found).
+ */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 

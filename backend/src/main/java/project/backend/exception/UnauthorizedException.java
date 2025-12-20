@@ -3,9 +3,10 @@ package project.backend.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-// Tự động trả về lỗi 403 FORBIDDEN (Không có quyền)
-// (Lưu ý: 401 UNAUTHORIZED là khi "chưa đăng nhập",
-// còn 403 FORBIDDEN là khi "đã đăng nhập nhưng không có quyền")
+/**
+ * Exception cho lỗi không có quyền truy cập (403 Forbidden).
+ * (Sử dụng 403 thay vì 401 khi user đã đăng nhập nhưng thiếu quyền).
+ */
 @ResponseStatus(HttpStatus.FORBIDDEN)
 public class UnauthorizedException extends RuntimeException {
 
