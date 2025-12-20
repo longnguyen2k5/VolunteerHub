@@ -1,6 +1,10 @@
 import React from "react";
 import { Button as MuiButton, CircularProgress } from "@mui/material";
 
+/**
+ * Component Button thống nhất cho toàn bộ ứng dụng.
+ * Bao gồm trạng thái loading, disable, icon, v.v.
+ */
 const Button = ({
   children,
   loading = false,
@@ -33,6 +37,7 @@ const Button = ({
       }}
       {...props}
     >
+      {/* Hiển thị loading spinner nếu đang xử lý */}
       {loading && (
         <CircularProgress
           size={20}
@@ -44,6 +49,7 @@ const Button = ({
           }}
         />
       )}
+      {/* Ẩn nội dung khi đang loading để giữ kích thước button */}
       <span style={{ visibility: loading ? "hidden" : "visible" }}>
         {children}
       </span>

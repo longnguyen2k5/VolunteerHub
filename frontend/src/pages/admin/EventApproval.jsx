@@ -34,6 +34,10 @@ import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
 import { useThemeContext } from "../../context/ThemeContext";
 
+/**
+ * Trang duyệt sự kiện (dành cho Admin).
+ * Cho phép xem, duyệt, hoặc từ chối các sự kiện do Event Manager tạo.
+ */
 const EventApproval = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +48,7 @@ const EventApproval = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [actionType, setActionType] = useState(null); // 'approve', 'reject', or 'revert'
 
+  // Load danh sách sự kiện khi tab thay đổi
   useEffect(() => {
     loadEvents();
   }, [currentTab]);
@@ -78,6 +83,7 @@ const EventApproval = () => {
     setActionType(null);
   };
 
+  // Xử lý duyệt/từ chối/hoàn tác sự kiện
   const handleAction = async () => {
     if (!selectedEvent) return;
 

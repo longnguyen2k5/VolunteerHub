@@ -29,6 +29,11 @@ import { authAPI } from '../api/authApi';
 import { registrationAPI } from '../api/registrationApi';
 import { toast } from 'react-toastify';
 
+/**
+ * Trang hồ sơ người dùng (Profile).
+ * Cho phép xem và chỉnh sửa thông tin cá nhân.
+ * Hiển thị lịch sử tham gia sự kiện (nếu là Volunteer).
+ */
 const UserProfile = () => {
     const { user, refreshUser } = useAuth();
     const { glassSx } = useThemeContext();
@@ -40,6 +45,7 @@ const UserProfile = () => {
     });
     const [registrations, setRegistrations] = useState([]);
 
+    // Lấy danh sách sự kiện đã đăng ký
     useEffect(() => {
         const fetchRegistrations = async () => {
             try {
@@ -55,6 +61,7 @@ const UserProfile = () => {
         }
     }, [user]);
 
+    // Cập nhật form data khi user thay đổi
     useEffect(() => {
         if (user) {
             setFormData({

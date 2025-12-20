@@ -4,7 +4,7 @@ import { Container, Box, Typography, Button, Grid, Card, CardContent } from '@mu
 import { Handshake, Event, Group, Link } from '@mui/icons-material';
 import { useThemeContext } from '../context/ThemeContext';
 
-// 1. ĐỊNH NGHĨA DANH SÁCH ẢNH CỦA BẠN
+// 1. DANH SÁCH ẢNH SLIDER
 const images = [
     'https://images.unsplash.com/photo-1582826310241-0cd9cc92dbb1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1633',
     'https://plus.unsplash.com/premium_photo-1661775317533-2163ba4dbc93?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1174',
@@ -12,7 +12,7 @@ const images = [
     'https://images.pexels.com/photos/28662952/pexels-photo-28662952.jpeg'
 ];
 
-// 2. KEYFRAMES
+// 2. KEYFRAMES ANIMATION (Ken Burns effect)
 const kenburns = {
     '@keyframes kenburns': {
         '0%': { transform: 'scale(1)' },
@@ -20,11 +20,16 @@ const kenburns = {
     },
 };
 
+/**
+ * Trang chủ của ứng dụng (Landing Page).
+ * Giới thiệu về nền tảng VolunteerHub.
+ */
 const Home = () => {
     const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const { glassSx } = useThemeContext();
 
+    // Tự động chuyển slide ảnh nền mỗi 5s
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentSlide(prev => (prev + 1) % images.length);
@@ -35,7 +40,7 @@ const Home = () => {
 
     return (
         <Box sx={{ bgcolor: 'background.default', color: 'text.primary' }}>
-            {/* Hero Section - Always Dark Text due to image bg */}
+            {/* Hero Section - Phần hiển thị chính đầu trang */}
             <Box
                 sx={{
                     position: 'relative',
@@ -72,7 +77,7 @@ const Home = () => {
                     ))}
                 </Box>
 
-                {/* Dark Overlay Gradient */}
+                {/* Dark Overlay Gradient - Lớp phủ tối để làm nổi bật text */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -85,7 +90,7 @@ const Home = () => {
                     }}
                 />
 
-                {/* Hero Content */}
+                {/* Hero Content - Nội dung tiêu đề và nút kêu gọi hành động */}
                 <Container sx={{ position: 'relative', zIndex: 2 }}>
                     <Typography
                         variant="h1"
@@ -112,7 +117,7 @@ const Home = () => {
                             mx: 'auto',
                             lineHeight: 1.6,
                             textShadow: '0 2px 4px rgba(0,0,0,0.8)',
-                            color: 'white' // Explicitly white on dark overlay
+                            color: 'white'
                         }}
                     >
                         Nhiệt huyết tình nguyện viên - Kết nối yêu thương
@@ -170,8 +175,7 @@ const Home = () => {
             </Box>
 
 
-
-            {/* Fields of Action Section */}
+            {/* Các lĩnh vực hoạt động */}
             <Box sx={{ py: 10, bgcolor: 'background.default', position: 'relative' }}>
                 <Box sx={{
                     position: 'absolute',
@@ -202,7 +206,7 @@ const Home = () => {
                                 <Card
                                     sx={{
                                         width: '100%',
-                                        minHeight: '320px', // Fixed minimum height for all cards
+                                        minHeight: '320px',
                                         display: 'flex',
                                         flexDirection: 'column',
                                         textAlign: 'center',
@@ -238,7 +242,7 @@ const Home = () => {
                                         </Box>
                                         <Typography variant="h6" gutterBottom sx={{
                                             fontWeight: 700,
-                                            minHeight: '3.5rem', // Fixed height for Title (2 lines)
+                                            minHeight: '3.5rem',
                                             display: 'flex',
                                             alignItems: 'center',
                                             mb: 1
@@ -248,7 +252,7 @@ const Home = () => {
                                         <Typography variant="body2" sx={{
                                             color: 'text.secondary',
                                             lineHeight: 1.6,
-                                            minHeight: '3rem' // Fixed height for Description (approx 2 lines)
+                                            minHeight: '3rem'
                                         }}>
                                             {item.desc}
                                         </Typography>
@@ -260,7 +264,7 @@ const Home = () => {
                 </Container>
             </Box>
 
-            {/* How It Works Section */}
+            {/* Quy trình tham gia */}
             <Box sx={{ py: 10, bgcolor: 'background.paper' }}>
                 <Container>
                     <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 700, color: 'text.primary', mb: 6 }}>
@@ -302,7 +306,7 @@ const Home = () => {
                 </Container>
             </Box>
 
-            {/* CTA Section */}
+            {/* CTA Section - Kêu gọi tham gia cuối trang */}
             <Box sx={{
                 py: 12,
                 bgcolor: 'background.paper',

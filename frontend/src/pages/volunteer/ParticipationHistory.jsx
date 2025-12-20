@@ -19,6 +19,10 @@ import { registrationAPI } from "../../api/registrationApi";
 import { toast } from "react-toastify";
 import { useThemeContext } from "../../context/ThemeContext";
 
+/**
+ * Trang xem lịch sử tham gia sự kiện của Tình nguyện viên.
+ * Hiển thị danh sách các sự kiện đã đăng ký và trạng thái của chúng.
+ */
 const ParticipationHistory = () => {
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,6 +32,7 @@ const ParticipationHistory = () => {
         loadRegistrations();
     }, []);
 
+    // Tải danh sách đăng ký của user
     const loadRegistrations = async () => {
         try {
             setLoading(true);

@@ -13,6 +13,10 @@ import {
     Box,
 } from '@mui/material';
 
+/**
+ * Component Sidebar (Drawer bên trái) để điều hướng.
+ * Hỗ trợ các item menu động và trạng thái active.
+ */
 const Sidebar = ({ items = [], open = true, onClose, variant = 'permanent', width = 240 }) => {
     const location = useLocation();
 

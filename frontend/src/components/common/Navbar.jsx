@@ -2,11 +2,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Box, Tabs, Tab } from '@mui/material';
 
+/**
+ * Component Navbar phụ (Tabs) thường dùng trong các trang con (ví dụ: Profile, Dashboard).
+ */
 const Navbar = ({ items = [] }) => {
     const location = useLocation();
     const currentPath = location.pathname;
 
-    // Tìm index của tab hiện tại
+    // Tìm index của tab hiện tại dựa trên đường dẫn
     const currentIndex = items.findIndex(item => item.path === currentPath);
 
     return (

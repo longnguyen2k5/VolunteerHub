@@ -42,6 +42,10 @@ import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
 import { useThemeContext } from "../../context/ThemeContext";
 
+/**
+ * Trang danh sách sự kiện của người tổ chức (Event Manager).
+ * Hiển thị các sự kiện đã tạo, trạng thái duyệt, và các hành động (Sửa, Xóa, Xem đăng ký).
+ */
 const EventList = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);

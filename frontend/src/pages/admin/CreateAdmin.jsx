@@ -14,6 +14,10 @@ import adminApi from '../../api/adminApi';
 import { toast } from 'react-toastify';
 import { useThemeContext } from '../../context/ThemeContext';
 
+/**
+ * Trang tạo tài khoản Admin mới.
+ * Chỉ dành cho Super Admin (hoặc Admin hiện tại nếu được phép).
+ */
 const CreateAdmin = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({

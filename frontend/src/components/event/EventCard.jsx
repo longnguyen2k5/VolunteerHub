@@ -21,11 +21,17 @@ import { useThemeContext } from '../../context/ThemeContext';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/useAuth';
 
+/**
+ * Component thẻ sự kiện (Card).
+ * Hiển thị thông tin tóm tắt của sự kiện và trạng thái đăng ký.
+ * Hỗ trợ hiệu ứng hover để hiện chi tiết thêm.
+ */
 const EventCard = ({ event, registration }) => {
     const navigate = useNavigate();
     const { glassSx } = useThemeContext();
     const { user } = useAuth();
 
+    // Xác định màu sắc cho trạng thái đăng ký
     const getStatusColor = (status) => {
         const colors = {
             PENDING: 'warning',
@@ -36,6 +42,7 @@ const EventCard = ({ event, registration }) => {
         return colors[status] || 'default';
     };
 
+    // Chuyển đổi mã trạng thái sang tiếng Việt
     const getStatusText = (status) => {
         const texts = {
             PENDING: 'Chờ duyệt',
@@ -82,12 +89,12 @@ const EventCard = ({ event, registration }) => {
                     boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
                     '& .hover-panel-left': { transform: 'translateX(0)', opacity: 1 },
                     '& .hover-panel-right': { transform: 'translateX(0)', opacity: 1 },
-                    '& .card-content-overlay': { transform: 'translateY(100%)', opacity: 0 }, // Optional: Hide title on hover to show details clearly? Or keep it? Let's keep it visible but maybe move it. Actually, if panels cover everything, let's fade out the original bottom title.
+                    '& .card-content-overlay': { transform: 'translateY(100%)', opacity: 0 },
                     '& .bg-image': { transform: 'scale(1.1)' }
                 }
             }}
         >
-            {/* Background Image */}
+            {/* Ảnh nền */}
             <CardMedia
                 className="bg-image"
                 component="img"
@@ -109,7 +116,7 @@ const EventCard = ({ event, registration }) => {
                 }}
             />
 
-            {/* Gradient Overlay for Title (Always visible initially) */}
+            {/* Lớp phủ Gradient cho tiêu đề (Luôn hiển thị ban đầu) */}
             <Box
                 className="card-content-overlay"
                 sx={{
@@ -165,14 +172,14 @@ const EventCard = ({ event, registration }) => {
                 </Typography>
             </Box>
 
-            {/* Left Hover Panel */}
+            {/* Panel thông tin bên trái khi hover (Thời gian & Địa điểm) */}
             <Box className="hover-panel-left" sx={{
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: '55%', // Slightly more than half to blend well
+                width: '55%',
                 height: '100%',
-                background: 'linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%)', // Fades to transparent
+                background: 'linear-gradient(90deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0) 100%)',
                 transform: 'translateX(-100%)',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                 display: 'flex',
@@ -201,7 +208,7 @@ const EventCard = ({ event, registration }) => {
                 </Box>
             </Box>
 
-            {/* Right Hover Panel */}
+            {/* Panel thông tin bên phải khi hover (Số người & Người tạo) */}
             <Box className="hover-panel-right" sx={{
                 position: 'absolute',
                 top: 0,
@@ -214,7 +221,7 @@ const EventCard = ({ event, registration }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                alignItems: 'flex-end', // Align text to right for this panel
+                alignItems: 'flex-end',
                 p: 3,
                 zIndex: 2,
                 opacity: 0,
@@ -239,7 +246,7 @@ const EventCard = ({ event, registration }) => {
                 </Box>
             </Box>
 
-            {/* Category Chip (Top Right, Always Visible) */}
+            {/* Chip danh mục (Góc trên phải, luôn hiển thị) */}
             <Box sx={{
                 position: 'absolute',
                 top: 16,

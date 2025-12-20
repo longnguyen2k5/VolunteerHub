@@ -33,6 +33,10 @@ import { registrationAPI } from '../../api/registrationApi';
 import { useAuth } from '../../hooks/useAuth';
 import { useThemeContext } from '../../context/ThemeContext';
 
+/**
+ * Trang chi tiết sự kiện.
+ * Hiển thị thông tin đầy đủ của sự kiện và cho phép tình nguyện viên đăng ký/hủy đăng ký.
+ */
 const EventDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -51,6 +55,7 @@ const EventDetailPage = () => {
         }
     }, [id]);
 
+    // Lấy thông tin chi tiết sự kiện
     const fetchEventDetails = async () => {
         try {
             const response = await eventAPI.getById(id);
@@ -63,6 +68,7 @@ const EventDetailPage = () => {
         }
     };
 
+    // Kiểm tra trạng thái đăng ký của user hiện tại
     const checkMyRegistration = async () => {
         try {
             const response = await registrationAPI.getMyRegistrations();
@@ -73,6 +79,7 @@ const EventDetailPage = () => {
         }
     };
 
+    // Xử lý đăng ký tham gia
     const handleRegister = async () => {
         setRegistering(true);
         try {
@@ -88,6 +95,7 @@ const EventDetailPage = () => {
         }
     };
 
+    // Xử lý hủy đăng ký
     const handleCancelRegistration = async () => {
         setRegistering(true);
         try {
@@ -134,6 +142,7 @@ const EventDetailPage = () => {
         OTHER: "Khác",
     };
 
+    // Kiểm tra điều kiện để được phép đăng ký
     const canRegister = () => {
         if (!user || user.role !== 'VOLUNTEER') return false;
         // Allow if not registered OR if registered but status is CANCELLED/REJECTED
@@ -145,6 +154,7 @@ const EventDetailPage = () => {
         return true;
     };
 
+    // Kiểm tra điều kiện để được phép hủy
     const canCancel = () => {
         if (!myRegistration) return false;
         if (myRegistration.status === 'COMPLETED' || myRegistration.status === 'CANCELLED') return false;

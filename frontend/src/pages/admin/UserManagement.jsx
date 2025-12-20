@@ -27,6 +27,10 @@ import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
 import { useThemeContext } from "../../context/ThemeContext";
 
+/**
+ * Trang quản lý người dùng (dành cho Admin).
+ * Cho phép xem danh sách user, lọc theo vai trò/tìm kiếm, và khóa/mở khóa tài khoản.
+ */
 const UserManagement = () => {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
@@ -61,7 +65,6 @@ const UserManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      setLoading(true);
       const response = await getAllUsers();
       setUsers(response.data || []);
     } catch (error) {
@@ -72,6 +75,7 @@ const UserManagement = () => {
     }
   };
 
+  // Khóa/Mở khóa tài khoản
   const handleToggleLock = async (userId, isLocked) => {
     // Prevent admin from locking themselves
     if (userId === currentUser?.id) {
@@ -112,6 +116,7 @@ const UserManagement = () => {
     return format(new Date(dateTime), "dd/MM/yyyy HH:mm");
   };
 
+  // Lọc user theo role và từ khóa tìm kiếm
   const filteredUsers = users.filter((user) => {
     // Role filter
     if (roleFilter !== "ALL" && user.role !== roleFilter) {

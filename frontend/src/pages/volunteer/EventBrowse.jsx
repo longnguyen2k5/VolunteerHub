@@ -20,6 +20,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 import { useThemeContext } from '../../context/ThemeContext';
 
+/**
+ * Trang khám phá sự kiện cho Tình nguyện viên (và khách).
+ * Hiển thị danh sách sự kiện, hỗ trợ tìm kiếm và lọc theo danh mục, thời gian.
+ */
 const EventBrowse = () => {
     const CATEGORY_LABELS = {
         EDUCATION: "Giáo dục",
@@ -49,6 +53,7 @@ const EventBrowse = () => {
         filterEvents();
     }, [searchTerm, categoryFilter, startDate, endDate, events]);
 
+    // Lấy danh sách sự kiện và đăng ký của user (nếu có)
     const fetchEvents = async () => {
         try {
             const response = await eventAPI.getAllApproved();
@@ -66,6 +71,7 @@ const EventBrowse = () => {
         }
     };
 
+    // Lọc sự kiện dựa trên các tiêu chí (tên, danh mục, ngày tháng)
     const filterEvents = () => {
         let filtered = [...events];
 

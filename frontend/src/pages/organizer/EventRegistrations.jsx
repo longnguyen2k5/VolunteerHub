@@ -36,6 +36,10 @@ import { eventAPI } from '../../api/eventApi';
 
 import { useThemeContext } from '../../context/ThemeContext';
 
+/**
+ * Trang quản lý đăng ký của một sự kiện cụ thể (dành cho Event Manager).
+ * Hiển thị danh sách tình nguyện viên đăng ký, cho phép duyệt/từ chối/xác nhận hoàn thành tham gia.
+ */
 const EventRegistrations = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -66,6 +70,7 @@ const EventRegistrations = () => {
         }
     };
 
+    // Xử lý các hành động: Duyệt, Từ chối, Hoàn thành
     const handleAction = async (registrationId, action) => {
         setProcessing(registrationId);
         try {

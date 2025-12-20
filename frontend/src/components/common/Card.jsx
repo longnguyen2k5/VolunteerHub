@@ -8,6 +8,9 @@ import {
     Divider,
 } from '@mui/material';
 
+/**
+ * Component Card tái sử dụng, hỗ trợ header, media, content và actions.
+ */
 const Card = ({
     title,
     subtitle,
@@ -43,6 +46,7 @@ const Card = ({
             }}
             {...props}
         >
+            {/* Header của Card (Tiêu đề, Avatar, Action) */}
             {(title || subtitle || avatar || action) && (
                 <CardHeader
                     avatar={avatar}
@@ -58,6 +62,7 @@ const Card = ({
 
             {divider && <Divider />}
 
+            {/* Hình ảnh minh họa */}
             {image && (
                 <CardMedia
                     component="img"
@@ -70,6 +75,7 @@ const Card = ({
                 />
             )}
 
+            {/* Nội dung chính */}
             {children && (
                 <CardContent
                     sx={{
@@ -81,6 +87,7 @@ const Card = ({
                 </CardContent>
             )}
 
+            {/* Các hành động (Nút bấm) */}
             {actions && (
                 <CardActions
                     sx={{

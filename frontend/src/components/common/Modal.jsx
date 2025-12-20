@@ -10,6 +10,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+/**
+ * Component Modal wrapper cho MUI Dialog.
+ * Cung cấp cấu trúc chuẩn gồm Title, Content, Actions và nút đóng.
+ */
 const Modal = ({
     open = false,
     onClose,

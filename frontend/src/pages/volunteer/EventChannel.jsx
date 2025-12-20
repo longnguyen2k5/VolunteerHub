@@ -32,6 +32,10 @@ import { eventAPI } from '../../api/eventApi';
 import { useAuth } from '../../hooks/useAuth';
 import { useThemeContext } from '../../context/ThemeContext';
 
+/**
+ * Trang kênh thảo luận của sự kiện.
+ * Cho phép người tham gia và BTC đăng bài, bình luận, và tương tác.
+ */
 const EventChannel = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -52,6 +56,7 @@ const EventChannel = () => {
         fetchData();
     }, [id]);
 
+    // Lấy dữ liệu sự kiện và các bài viết
     const fetchData = async () => {
         try {
             const [eventRes, postsRes] = await Promise.all([
@@ -70,6 +75,7 @@ const EventChannel = () => {
         }
     };
 
+    // Đăng bài viết mới
     const handleCreatePost = async () => {
         if (!newPostContent.trim()) return;
         try {
@@ -93,6 +99,7 @@ const EventChannel = () => {
         }
     };
 
+    // Xử lý like/unlike bài viết
     const handleLikePost = async (postId, currentLikeStatus) => {
         // Optimistic update (providing instant feedback)
         const updatedPosts = posts.map(p => {
@@ -139,6 +146,7 @@ const EventChannel = () => {
         }
     };
 
+    // Mở/đóng phần bình luận của bài viết
     const toggleComments = async (postId) => {
         const isExpanded = !!expandedComments[postId];
         setExpandedComments({
@@ -160,6 +168,7 @@ const EventChannel = () => {
         }
     };
 
+    // Đăng bình luận mới
     const handleCreateComment = async (postId) => {
         const content = newCommentContent[postId];
         if (!content?.trim()) return;

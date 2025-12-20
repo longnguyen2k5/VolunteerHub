@@ -1,6 +1,10 @@
 import React from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
+/**
+ * Component LoadingSpinner hiển thị vòng quay loading.
+ * Hỗ trợ chế độ toàn màn hình hoặc nằm trong container.
+ */
 const LoadingSpinner = ({
     size = 40,
     thickness = 4,

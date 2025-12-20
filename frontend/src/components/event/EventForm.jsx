@@ -17,6 +17,11 @@ import { uploadApi } from "../../api/uploadApi";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 
+/**
+ * Component Form sự kiện.
+ * Sử dụng để Tạo mới hoặc Chỉnh sửa sự kiện.
+ * Bao gồm validate dữ liệu và upload ảnh.
+ */
 const EventForm = ({
   initialData,
   onSubmit,
@@ -46,7 +51,7 @@ const EventForm = ({
 
   const [errors, setErrors] = useState({});
 
-  // Define Yup Schema
+  // Schema validate dữ liệu với Yup
   const validationSchema = yup.object().shape({
     name: yup.string().required("Tên sự kiện không được để trống").trim(),
     category: yup.string().required("Vui lòng chọn danh mục"),
@@ -76,9 +81,9 @@ const EventForm = ({
       .max(new Date("2100-01-01"), "Thời gian không hợp lệ (Năm quá xa)"),
   });
 
+  // Load dữ liệu ban đầu nếu là chế độ Sửa
   useEffect(() => {
     if (initialData) {
-      // Convert backend LocalDateTime format to datetime-local format
       setFormData({
         name: initialData.name || "",
         description: initialData.description || "",
@@ -97,8 +102,7 @@ const EventForm = ({
   }, [initialData]);
 
   const formatToDateTimeLocal = (dateTime) => {
-    // Backend sends: "2024-12-25T10:00:00"
-    // datetime-local needs: "2024-12-25T10:00"
+    // Chuyển đổi định dạng LocalDateTime từ backend sang datetime-local của input
     if (!dateTime) return "";
     const date = new Date(dateTime);
     return format(date, "yyyy-MM-dd'T'HH:mm");
@@ -110,7 +114,7 @@ const EventForm = ({
       ...prev,
       [name]: value,
     }));
-    // Clear error when user types (optional, or rely on submit)
+    // Xóa lỗi khi người dùng nhập lại
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -119,10 +123,9 @@ const EventForm = ({
     }
   };
 
-
-
   const [uploadLoading, setUploadLoading] = useState(false);
 
+  // Xử lý upload ảnh
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -130,7 +133,6 @@ const EventForm = ({
     try {
       setUploadLoading(true);
       const response = await uploadApi.uploadImage(file);
-      // Assuming backend returns { fileName: "...", fileUrl: "http://..." }
       const newImageUrl = response.data.fileUrl;
 
       setFormData(prev => ({
@@ -143,18 +145,16 @@ const EventForm = ({
       toast.error("Tải ảnh thất bại!");
     } finally {
       setUploadLoading(false);
-      // Reset input so same file can be selected again if needed
-      e.target.value = null;
+      e.target.value = null; // Reset input file
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Validate with Yup
+      // Validate toàn bộ form
       await validationSchema.validate(formData, { abortEarly: false });
 
-      // If valid, clear errors and submit
       setErrors({});
 
       const submitData = {
@@ -162,7 +162,7 @@ const EventForm = ({
         description: formData.description.trim(),
         location: formData.location.trim(),
         imageUrl: formData.imageUrl ? formData.imageUrl.trim() : "",
-        startTime: formData.startTime, // Send local string "YYYY-MM-DDTHH:mm"
+        startTime: formData.startTime,
         endTime: formData.endTime,
         maxParticipants: parseInt(formData.maxParticipants),
         category: formData.category,
@@ -172,7 +172,7 @@ const EventForm = ({
 
     } catch (err) {
       if (err instanceof yup.ValidationError) {
-        // Transform Yup errors to object
+        // Hiển thị lỗi validate
         const newErrors = {};
         err.inner.forEach((error) => {
           newErrors[error.path] = error.message;
@@ -198,7 +198,7 @@ const EventForm = ({
     '& .MuiFormHelperText-root': { color: 'text.secondary' },
     '& .MuiSvgIcon-root': { color: 'text.secondary' },
     '& input[type="datetime-local"]::-webkit-calendar-picker-indicator': {
-      filter: 'invert(0.5)', // Adjust for light/dark
+      filter: 'invert(0.5)',
       cursor: 'pointer'
     }
   };

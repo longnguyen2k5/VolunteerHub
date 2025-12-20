@@ -3,12 +3,12 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 /**
- * RoleGuard - Protects routes based on user roles
+ * RoleGuard - Bảo vệ các route dựa trên vai trò người dùng
  *
- * @param {string[]} allowedRoles - Array of roles allowed to access (e.g., ['ADMIN', 'EVENT_MANAGER'])
- * @param {ReactNode} children - The component to render if authorized
+ * @param {string[]} allowedRoles - Danh sách vai trò được phép truy cập (vd: ['ADMIN', 'EVENT_MANAGER'])
+ * @param {ReactNode} children - Component con sẽ được hiển thị nếu có quyền
  *
- * Usage:
+ * Sử dụng:
  * <RoleGuard allowedRoles={['ADMIN']}>
  *   <AdminDashboard />
  * </RoleGuard>
@@ -16,22 +16,22 @@ import { useAuth } from "../../hooks/useAuth";
 const RoleGuard = ({ allowedRoles, children }) => {
   const { user, loading } = useAuth();
 
-  // Wait for auth check to complete
+  // Chờ kiểm tra xác thực hoàn tất
   if (loading) {
-    return null; // or a loading spinner
+    return null; // hoặc hiển thị loading spinner
   }
 
-  // User not authenticated - redirect to login
+  // Chưa đăng nhập -> Chuyển hướng về trang đăng nhập
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // User doesn't have required role - redirect to forbidden
+  // Không có quyền truy cập -> Chuyển hướng về trang forbidden
   if (!allowedRoles.includes(user.role)) {
     return <Navigate to="/forbidden" replace />;
   }
 
-  // User has required role - render children
+  // Có quyền -> Hiển thị nội dung
   return children;
 };
 

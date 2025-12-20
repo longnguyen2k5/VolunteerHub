@@ -1,6 +1,10 @@
 import React from 'react';
 import { Snackbar, Alert, AlertTitle } from '@mui/material';
 
+/**
+ * Component Notification hiển thị thông báo dạng Snackbar/Toast.
+ * Hỗ trợ các loại thông báo: success, error, warning, info.
+ */
 const Notification = ({
     open = false,
     onClose,

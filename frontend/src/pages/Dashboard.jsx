@@ -38,6 +38,10 @@ import {
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 
+/**
+ * Component hiển thị thẻ thống kê.
+ * Sử dụng để hiển thị các con số quan trọng (số lượng event, user, registration).
+ */
 const StatCard = ({ title, value, icon, color }) => {
     const { glassSx } = useThemeContext();
     return (
@@ -61,7 +65,7 @@ const StatCard = ({ title, value, icon, color }) => {
                     color: 'white',
                     mr: 3,
                     display: 'flex',
-                    boxShadow: `0 4px 20px -5px ${color}` // Colored shadow
+                    boxShadow: `0 4px 20px -5px ${color}`
                 }}>
                     {icon}
                 </Box>
@@ -78,6 +82,11 @@ const StatCard = ({ title, value, icon, color }) => {
     );
 };
 
+/**
+ * Trang Dashboard chính.
+ * Hiển thị thống kê cho Admin/Manager.
+ * Hiển thị danh sách sự kiện và hoạt động cá nhân cho Volunteer.
+ */
 const Dashboard = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -87,6 +96,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [tabValue, setTabValue] = useState(0);
 
+    // Fetch dữ liệu dashboard khi component mount hoặc user thay đổi
     useEffect(() => {
         if (!user) {
             navigate('/auth/login');
@@ -126,6 +136,7 @@ const Dashboard = () => {
         );
     }
 
+    // Lọc sự kiện hiển thị theo tab
     const currentEvents = stats ? (
         tabValue === 0 ? stats.discussedEvents :
             tabValue === 1 ? stats.newEvents :
@@ -181,7 +192,6 @@ const Dashboard = () => {
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary">Sự kiện đã đăng ký</Typography>
                                 </Paper>
-                                {/* Calculate completed if feasible, otherwise mock or remove */}
                             </Grid>
                         )}
                     </Grid>

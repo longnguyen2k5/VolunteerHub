@@ -13,6 +13,10 @@ import EventForm from "../../components/event/EventForm";
 import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
 
+/**
+ * Trang chỉnh sửa sự kiện (dành cho Event Manager).
+ * Tải thông tin sự kiện hiện tại và cho phép cập nhật.
+ */
 const EditEvent = () => {
   const navigate = useNavigate();
   const { id } = useParams();

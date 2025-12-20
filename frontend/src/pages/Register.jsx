@@ -17,6 +17,10 @@ import {
   Grid
 } from "@mui/material";
 
+/**
+ * Trang đăng ký tài khoản mới.
+ * Cho phép người dùng đăng ký dưới vai trò Volunteer hoặc Event Manager.
+ */
 const Register = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -39,6 +43,7 @@ const Register = () => {
     setError("");
     setLoading(true);
 
+    // Validate mật khẩu
     if (formData.password.length < 6) {
       setError("Mật khẩu phải có ít nhất 6 ký tự");
       setLoading(false);
@@ -52,7 +57,7 @@ const Register = () => {
     }
 
     try {
-      // Create payload excluding confirmPassword
+      // Loại bỏ confirmPassword khỏi payload gửi lên server
       const { confirmPassword, ...payload } = formData;
 
       console.log(

@@ -9,6 +9,10 @@ import {
   Alert,
 } from "@mui/material";
 
+/**
+ * Trang xử lý callback của OAuth2 (Google Login).
+ * Nhận authorization code từ URL, trao đổi lấy token và đăng nhập user.
+ */
 const OAuthCallback = () => {
   const [searchParams] = useSearchParams();
   const { handleCallback } = useAuth();
@@ -18,7 +22,7 @@ const OAuthCallback = () => {
   const hasProcessed = useRef(false);
 
   useEffect(() => {
-    // Prevent React Strict Mode from running this twice
+    // Ngăn chặn React Strict Mode chạy effect 2 lần
     if (hasProcessed.current) {
       return;
     }
@@ -26,13 +30,13 @@ const OAuthCallback = () => {
     hasProcessed.current = true;
 
     const processCallback = async () => {
-      // Get authorization code and state from URL
+      // Lấy code và state từ URL
       const code = searchParams.get("code");
       const state = searchParams.get("state");
       const errorParam = searchParams.get("error");
       const errorDescription = searchParams.get("error_description");
 
-      // Check for errors from authorization server
+      // Kiểm tra lỗi từ authorization server trả về
       if (errorParam) {
         setError(errorDescription || errorParam);
         setProcessing(false);
@@ -40,7 +44,7 @@ const OAuthCallback = () => {
         return;
       }
 
-      // Check if code exists
+      // Kiểm tra xem có code không
       if (!code) {
         setError("Authorization code not found");
         setProcessing(false);
@@ -48,7 +52,7 @@ const OAuthCallback = () => {
         return;
       }
 
-      // Handle callback and exchange code for token
+      // Xử lý callback: đổi code lấy token
       try {
         const result = await handleCallback(code, state);
 
@@ -56,7 +60,7 @@ const OAuthCallback = () => {
           setError(result.error);
           setTimeout(() => navigate("/login"), 3000);
         }
-        // Success case handled in handleCallback (navigates to dashboard)
+        // Thành công: handleCallback sẽ tự điều hướng (về dashboard hoặc trang trước đó)
       } catch (err) {
         setError(err.message);
         setTimeout(() => navigate("/login"), 3000);

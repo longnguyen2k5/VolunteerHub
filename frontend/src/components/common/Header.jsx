@@ -67,7 +67,7 @@ const Header = () => {
     handleClose();
   };
 
-  // Drawer Content
+  // Nội dung Drawer cho Mobile
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2, fontWeight: 700, color: 'primary.main' }}>
@@ -143,9 +143,7 @@ const Header = () => {
   );
 
   return (
-    // --- THAY ĐỔI CHÍNH LÀ Ở ĐÂY ---
-    // Bỏ 'color="transparent"'
-    // Thêm sx={{ bgcolor: 'rgba(0, 0, 0, 0.4)' }}
+    // Header chính với hiệu ứng Glassmorphism
     <AppBar
       position="fixed"
       elevation={0}
@@ -160,7 +158,7 @@ const Header = () => {
     >
       <Toolbar sx={{ justifyContent: "space-between", py: 0.5 }}>
 
-        {/* Mobile Menu Button */}
+        {/* Nút Mobile Menu */}
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -171,7 +169,7 @@ const Header = () => {
           <MenuIcon />
         </IconButton>
 
-        {/* Logo Area */}
+        {/* Logo */}
         <Box component={Link} to="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: 1.5 }}>
           <Box
             component="img"

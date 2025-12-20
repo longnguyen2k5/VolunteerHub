@@ -6,10 +6,15 @@ import EventForm from "../../components/event/EventForm";
 import { eventAPI } from "../../api/eventApi";
 import { toast } from "react-toastify";
 
+/**
+ * Trang tạo sự kiện mới (dành cho Event Manager).
+ * Sử dụng EventForm để thu thập thông tin và gửi yêu cầu tạo sự kiện.
+ */
 const CreateEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // Xử lý submit form tạo sự kiện
   const handleSubmit = async (eventData) => {
     try {
       setLoading(true);

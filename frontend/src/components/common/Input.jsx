@@ -1,6 +1,10 @@
 import React from 'react';
 import { TextField } from '@mui/material';
 
+/**
+ * Component Input wrapper cho MUI TextField.
+ * Hỗ trợ các props chung như label, error, helperText, v.v.
+ */
 const Input = ({
     label,
     name,

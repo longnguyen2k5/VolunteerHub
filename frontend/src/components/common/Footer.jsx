@@ -2,6 +2,9 @@ import React from 'react';
 import { Box, Container, Typography, Link, Grid, Stack, IconButton } from '@mui/material';
 import { Facebook, Instagram, LinkedIn, Twitter, Email, Phone, LocationOn } from '@mui/icons-material';
 
+/**
+ * Component Footer hiển thị thông tin liên hệ, liên kết nhanh và mạng xã hội.
+ */
 const Footer = () => {
     return (
         <Box
@@ -19,7 +22,7 @@ const Footer = () => {
         >
             <Container maxWidth="xl">
                 <Grid container spacing={5}>
-                    {/* Brand Column */}
+                    {/* Cột thông tin thương hiệu */}
                     <Grid item xs={12} md={4}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
                             <Box
@@ -54,7 +57,7 @@ const Footer = () => {
                         </Stack>
                     </Grid>
 
-                    {/* Quick Links */}
+                    {/* Liên kết nhanh */}
                     <Grid item xs={12} sm={6} md={2}>
                         <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Khám phá
@@ -77,7 +80,7 @@ const Footer = () => {
                         </Stack>
                     </Grid>
 
-                    {/* Help/Support */}
+                    {/* Hỗ trợ */}
                     <Grid item xs={12} sm={6} md={2}>
                         <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Hỗ trợ
@@ -100,7 +103,7 @@ const Footer = () => {
                         </Stack>
                     </Grid>
 
-                    {/* Contact Info */}
+                    {/* Thông tin liên hệ */}
                     <Grid item xs={12} md={4}>
                         <Typography variant="h6" fontWeight={700} color="text.primary" gutterBottom>
                             Liên hệ

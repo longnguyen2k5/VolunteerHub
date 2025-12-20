@@ -4,7 +4,8 @@ import { Container, Box, Typography, Button } from "@mui/material";
 import { Block as BlockIcon } from "@mui/icons-material";
 
 /**
- * Forbidden (403) page - shown when user tries to access unauthorized route
+ * Trang thông báo từ chối truy cập (Lỗi 403).
+ * Hiển thị khi người dùng cố truy cập đường dẫn không được phép.
  */
 const Forbidden = () => {
   return (
