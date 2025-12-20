@@ -10,8 +10,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Divider,
 } from "@mui/material";
-import { AccountCircle, Brightness4, Brightness7 } from "@mui/icons-material";
+import { AccountCircle, Brightness4, Brightness7, Menu as MenuIcon } from "@mui/icons-material";
 import { useThemeContext } from "../../context/ThemeContext";
 
 // Helper component for consistent nav button styling
@@ -41,6 +47,11 @@ const Header = () => {
   const { mode, toggleTheme } = useThemeContext();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -55,6 +66,81 @@ const Header = () => {
     navigate("/login");
     handleClose();
   };
+
+  // Drawer Content
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2, fontWeight: 700, color: 'primary.main' }}>
+        VolunteerHub
+      </Typography>
+      <Divider />
+      <List>
+        {user ? (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/events">
+                <ListItemText primary="Sự kiện" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/dashboard">
+                <ListItemText primary="Dashboard" />
+              </ListItemButton>
+            </ListItem>
+
+            {user.role === "EVENT_MANAGER" && (
+              <ListItem disablePadding>
+                <ListItemButton component={Link} to="/events/manage">
+                  <ListItemText primary="Quản lý sự kiện" />
+                </ListItemButton>
+              </ListItem>
+            )}
+
+            {user.role === "VOLUNTEER" && (
+              <ListItem disablePadding>
+                <ListItemButton component={Link} to="/my-registrations">
+                  <ListItemText primary="Lịch sử tham gia" />
+                </ListItemButton>
+              </ListItem>
+            )}
+
+            {user.role === "ADMIN" && (
+              <>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/admin/events">
+                    <ListItemText primary="Duyệt sự kiện" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/admin/users">
+                    <ListItemText primary="Quản lý users" />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                  <ListItemButton component={Link} to="/admin/users/create">
+                    <ListItemText primary="Tạo Admin" />
+                  </ListItemButton>
+                </ListItem>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/login">
+                <ListItemText primary="Đăng nhập" />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton component={Link} to="/register">
+                <ListItemText primary="Đăng ký" />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
+      </List>
+    </Box>
+  );
 
   return (
     // --- THAY ĐỔI CHÍNH LÀ Ở ĐÂY ---
@@ -73,6 +159,18 @@ const Header = () => {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between", py: 0.5 }}>
+
+        {/* Mobile Menu Button */}
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { md: "none" } }}
+        >
+          <MenuIcon />
+        </IconButton>
+
         {/* Logo Area */}
         <Typography
           variant="h5"
@@ -88,6 +186,7 @@ const Header = () => {
             "&:hover": {
               opacity: 0.9,
             },
+            // On mobile, flex-grow to center if needed, or keeping explicit
           }}
         >
           VolunteerHub
@@ -162,6 +261,7 @@ const Header = () => {
                       bgcolor: "background.paper", // Semantic bg
                       transform: "translateY(-50%) rotate(45deg)",
                       zIndex: 0,
+                      align: "right"
                     },
                   },
                 }}
@@ -190,36 +290,39 @@ const Header = () => {
             </>
           ) : (
             <Box sx={{ display: "flex", gap: 1.5 }}>
-              <Button
-                color="inherit"
-                onClick={() => login && login()}
-                sx={{
-                  color: "text.primary",
-                  textTransform: "none",
-                  fontWeight: 500,
-                  "&:hover": { color: "primary.main" },
-                }}
-              >
-                Đăng nhập
-              </Button>
-              <Button
-                component={Link}
-                to="/register"
-                variant="contained"
-                sx={{
-                  bgcolor: "white",
-                  color: "black",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  borderRadius: "20px",
-                  px: 3,
-                  "&:hover": {
-                    bgcolor: "rgba(255, 255, 255, 0.9)",
-                  },
-                }}
-              >
-                Đăng ký
-              </Button>
+              {/* Desktop Auth Buttons */}
+              <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1.5 }}>
+                <Button
+                  color="inherit"
+                  onClick={() => login && login()}
+                  sx={{
+                    color: "text.primary",
+                    textTransform: "none",
+                    fontWeight: 500,
+                    "&:hover": { color: "primary.main" },
+                  }}
+                >
+                  Đăng nhập
+                </Button>
+                <Button
+                  component={Link}
+                  to="/register"
+                  variant="contained"
+                  sx={{
+                    bgcolor: "white",
+                    color: "black",
+                    textTransform: "none",
+                    fontWeight: 600,
+                    borderRadius: "20px",
+                    px: 3,
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.9)",
+                    },
+                  }}
+                >
+                  Đăng ký
+                </Button>
+              </Box>
             </Box>
           )}
 
@@ -229,6 +332,24 @@ const Header = () => {
           </IconButton>
         </Box>
       </Toolbar>
+
+      {/* Mobile Drawer */}
+      <Box component="nav">
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </Box>
     </AppBar>
   );
 };
