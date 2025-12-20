@@ -21,15 +21,22 @@ const Footer = () => {
                 <Grid container spacing={5}>
                     {/* Brand Column */}
                     <Grid item xs={12} md={4}>
-                        <Typography variant="h4" fontWeight={800} sx={{
-                            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            mb: 2,
-                            display: 'inline-block'
-                        }}>
-                            VolunteerHub
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                            <Box
+                                component="img"
+                                src="/logo.png"
+                                alt="Logo"
+                                sx={{ width: 45, height: 45, objectFit: 'contain', borderRadius: '50%' }}
+                            />
+                            <Typography variant="h4" fontWeight={800} sx={{
+                                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                display: 'inline-block'
+                            }}>
+                                VolunteerHub
+                            </Typography>
+                        </Box>
                         <Typography variant="body1" sx={{ maxWidth: 300, mb: 3, lineHeight: 1.8, color: 'text.secondary' }}>
                             Nền tảng kết nối tình nguyện viên hàng đầu, nơi lan tỏa yêu thương và tạo nên những thay đổi tích cực cho cộng đồng.
                         </Typography>
@@ -110,14 +117,14 @@ const Footer = () => {
                                 <Email sx={{ color: 'secondary.main', mt: 0.5 }} />
                                 <Box>
                                     <Typography variant="subtitle2" color="text.primary" fontWeight={600}>Email</Typography>
-                                    <Typography variant="body2">contact@volunteerhub.com</Typography>
+                                    <Typography variant="body2">23020128@vnu.edu.vn</Typography>
                                 </Box>
                             </Box>
                             <Box sx={{ display: 'flex', gap: 2 }}>
                                 <Phone sx={{ color: 'primary.main', mt: 0.5 }} />
                                 <Box>
                                     <Typography variant="subtitle2" color="text.primary" fontWeight={600}>Hotline</Typography>
-                                    <Typography variant="body2">+84 123 456 789</Typography>
+                                    <Typography variant="body2">+84 971 544 618</Typography>
                                 </Box>
                             </Box>
                         </Stack>

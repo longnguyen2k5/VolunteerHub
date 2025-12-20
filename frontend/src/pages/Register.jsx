@@ -114,6 +114,14 @@ const Register = () => {
           }}
         >
           <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Box
+                component="img"
+                src="/logo.png"
+                alt="Logo"
+                sx={{ width: 60, height: 60, objectFit: 'contain', borderRadius: '50%' }}
+              />
+            </Box>
             <Typography
               variant="h4"
               align="center"

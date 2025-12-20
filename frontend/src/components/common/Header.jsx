@@ -172,25 +172,26 @@ const Header = () => {
         </IconButton>
 
         {/* Logo Area */}
-        <Typography
-          variant="h5"
-          component={Link}
-          to="/"
-          sx={{
-            textDecoration: "none",
-            fontWeight: 700,
-            letterSpacing: "0.5px",
-            background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            "&:hover": {
-              opacity: 0.9,
-            },
-            // On mobile, flex-grow to center if needed, or keeping explicit
-          }}
-        >
-          VolunteerHub
-        </Typography>
+        <Box component={Link} to="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', gap: 1.5 }}>
+          <Box
+            component="img"
+            src="/logo.png"
+            alt="Logo"
+            sx={{ width: 40, height: 40, objectFit: 'contain', borderRadius: '50%' }}
+          />
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "0.5px",
+              background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            VolunteerHub
+          </Typography>
+        </Box>
 
         {/* Navigation & User Actions */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
