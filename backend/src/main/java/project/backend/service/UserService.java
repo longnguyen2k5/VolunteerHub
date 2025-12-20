@@ -28,6 +28,15 @@ public class UserService {
         return UserResponse.success(users,null);
     }
 
+    @Transactional
+    public UserResponse updateProfile(String email, String fullName) {
+        Users user = userRepository.findUsersByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setFullName(fullName);
+        userRepository.save(user);
+        return UserResponse.success(user, "Profile updated successfully");
+    }
+
     /**
      * ADMIN: Get all users
      */

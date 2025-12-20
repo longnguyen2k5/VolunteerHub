@@ -29,6 +29,12 @@ public class UserController {
         }
     }
 
+    @PutMapping("/users/profile")
+    public ResponseEntity<UserResponse> updateProfile(JwtAuthenticationToken jwtAuthenticationToken, @RequestBody project.backend.dto.request.RegisterRequest request) { // Reuse RegisterRequest for fullName for simplicity, or create specific DTO. Using RegisterRequest for now as it has fullName
+        String email = jwtAuthenticationToken.getToken().getSubject();
+        return ResponseEntity.ok(userService.updateProfile(email, request.getFullName()));
+    }
+
     /**
      * ADMIN: Get all users
      */
