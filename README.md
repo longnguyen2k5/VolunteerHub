@@ -1,7 +1,7 @@
 # VolunteerHub - Nền Tảng Kết Nối Tình Nguyện Viên
 
 <p align="center">
-  <img src="frontend/public/logo.png" alt="VolunteerHub Logo" width="120">
+  <img src="logo.png" alt="VolunteerHub Logo" width="120">
 </p>
 
 **VolunteerHub** là một nền tảng web toàn diện giúp kết nối các tổ chức tình nguyện với cộng đồng những người mong muốn đóng góp sức lực cho xã hội. Ứng dụng cung cấp giải pháp trọn gói từ việc quản lý sự kiện, tuyển tình nguyện viên, đến việc tạo môi trường tương tác xã hội cho các thành viên.
@@ -157,4 +157,5 @@ Dự án được thực hiện cho môn học Phát triển Ứng dụng Web - 
 | 6 | **Xử lý nhập liệu** | 0.05 | ✅ Đã làm | • **Frontend:** Validation realtime với **Yup** và **React Hook Form**. <br> • **Backend:** Validation với Hibernate Validator (`@NotNull`, `@Size`, `@Future`). |
 | 7 | **An ninh** | 0.05 | ✅ Đã làm | • **Spring Security 6** & **OAuth2 Resource Server**. <br> • **JWT** cho xác thực & phân quyền. <br> • **PKCE** flow chống tấn công đánh cắp mã. <br> • Mã hóa mật khẩu BCrypt. |
 | 8 | **Định tuyến URL** | 0.05 | ✅ Đã làm | Sử dụng **React Router v6**. Định tuyến động (`/events/:id`), Private Route, Role-based Guard. |
+
 | 9 | **Thao tác CSDL (ORM)** | 0.05 | ✅ Đã làm | Sử dụng **Spring Data JPA (Hibernate)**. Độc lập hệ quản trị CSDL (có thể chuyển đổi MySQL/PostgreSQL dễ dàng). |
