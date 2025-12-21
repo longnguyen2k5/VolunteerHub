@@ -94,7 +94,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register").permitAll()
                         .requestMatchers("/api/events/public/**").permitAll()
                         .requestMatchers("/api/events/upcoming").permitAll()
-                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/webjars/**", "/uploads/**").permitAll()
+                        .requestMatchers("/api/events/upcoming").permitAll()
+                        .requestMatchers("/login", "/error", "/css/**", "/js/**", "/images/**", "/webjars/**", "/uploads/**", "/.well-known/**").permitAll()
 
                         // Endpoint dành riêng cho Admin
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
