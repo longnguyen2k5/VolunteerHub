@@ -16,61 +16,77 @@ import {
   MenuItem,
   Grid
 } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+// Validation Schema
+const schema = yup.object().shape({
+  fullName: yup
+    .string()
+    .required("Vui lòng nhập họ và tên")
+    .min(2, "Họ tên phải có ít nhất 2 ký tự"),
+  email: yup
+    .string()
+    .required("Vui lòng nhập email")
+    .email("Email không hợp lệ"),
+  password: yup
+    .string()
+    .required("Vui lòng nhập mật khẩu")
+    .min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  confirmPassword: yup
+    .string()
+    .required("Vui lòng xác nhận mật khẩu")
+    .oneOf([yup.ref("password"), null], "Mật khẩu xác nhận không khớp"),
+  role: yup
+    .string()
+    .required("Vui lòng chọn vai trò")
+});
 
 /**
  * Trang đăng ký tài khoản mới.
  * Cho phép người dùng đăng ký dưới vai trò Volunteer hoặc Event Manager.
  */
 const Register = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    fullName: "",
-    role: "VOLUNTEER",
-  });
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { register, login } = useAuth();
+  const { register: registerAuth, login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "VOLUNTEER"
+    }
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  const onSubmit = async (data) => {
+    setServerError("");
     setLoading(true);
-
-    // Validate mật khẩu
-    if (formData.password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự");
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError("Mật khẩu xác nhận không khớp");
-      setLoading(false);
-      return;
-    }
 
     try {
       // Loại bỏ confirmPassword khỏi payload gửi lên server
-      const { confirmPassword, ...payload } = formData;
+      const { confirmPassword, ...payload } = data;
 
       console.log(
         "Sending registration data:",
         JSON.stringify(payload, null, 2)
       );
-      const result = await register(payload);
+      const result = await registerAuth(payload);
       console.log("Registration response:", JSON.stringify(result, null, 2));
 
       if (result.success) {
         navigate("/dashboard");
       } else {
-        setError(result.error);
+        setServerError(result.error);
       }
     } catch (err) {
       console.error("Registration error details:", {
@@ -79,10 +95,10 @@ const Register = () => {
         statusText: err.response?.statusText,
         message: err.message,
       });
-      setError(err.response?.data?.message || "Đã xảy ra lỗi khi đăng ký");
+      setServerError(err.response?.data?.message || "Đã xảy ra lỗi khi đăng ký");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -149,22 +165,21 @@ const Register = () => {
               Tham gia cộng đồng tình nguyện viên lớn nhất Việt Nam
             </Typography>
 
-            {error && (
+            {serverError && (
               <Alert severity="error" sx={{ mb: 3, bgcolor: 'rgba(211, 47, 47, 0.1)', color: '#ffcdd2', border: '1px solid #e57373' }}>
-                {error}
+                {serverError}
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Họ và tên"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    required
+                    {...register("fullName")}
+                    error={!!errors.fullName}
+                    helperText={errors.fullName?.message}
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         color: 'white',
@@ -174,6 +189,7 @@ const Register = () => {
                       },
                       '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
                       '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                      '& .MuiFormHelperText-root': { color: '#ffcdd2' }
                     }}
                   />
                 </Grid>
@@ -181,11 +197,10 @@ const Register = () => {
                   <TextField
                     fullWidth
                     label="Email"
-                    name="email"
                     type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
+                    {...register("email")}
+                    error={!!errors.email}
+                    helperText={errors.email?.message}
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         color: 'white',
@@ -195,6 +210,7 @@ const Register = () => {
                       },
                       '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
                       '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                      '& .MuiFormHelperText-root': { color: '#ffcdd2' }
                     }}
                   />
                 </Grid>
@@ -202,16 +218,10 @@ const Register = () => {
                   <TextField
                     fullWidth
                     label="Mật khẩu"
-                    name="password"
                     type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    helperText={
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.5)' }}>
-                        Tối thiểu 6 ký tự
-                      </Typography>
-                    }
+                    {...register("password")}
+                    error={!!errors.password}
+                    helperText={errors.password?.message || "Tối thiểu 6 ký tự"}
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         color: 'white',
@@ -221,6 +231,7 @@ const Register = () => {
                       },
                       '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
                       '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                      '& .MuiFormHelperText-root': { color: errors.password ? '#ffcdd2' : 'rgba(255,255,255,0.5)' }
                     }}
                   />
                 </Grid>
@@ -228,11 +239,10 @@ const Register = () => {
                   <TextField
                     fullWidth
                     label="Mật khẩu xác nhận"
-                    name="confirmPassword"
                     type="password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
+                    {...register("confirmPassword")}
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
                     sx={{
                       '& .MuiOutlinedInput-root': {
                         color: 'white',
@@ -242,16 +252,16 @@ const Register = () => {
                       },
                       '& .MuiInputLabel-root': { color: 'rgba(255,255,255,0.7)' },
                       '& .MuiInputLabel-root.Mui-focused': { color: '#FF8E53' },
+                      '& .MuiFormHelperText-root': { color: '#ffcdd2' }
                     }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth error={!!errors.role}>
                     <InputLabel sx={{ color: 'rgba(255,255,255,0.7)', '&.Mui-focused': { color: '#FF8E53' } }}>Vai trò</InputLabel>
                     <Select
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
+                      defaultValue="VOLUNTEER"
+                      {...register("role")}
                       label="Vai trò"
                       sx={{
                         color: 'white',
@@ -274,6 +284,11 @@ const Register = () => {
                       <MenuItem value="VOLUNTEER">Tình nguyện viên</MenuItem>
                       <MenuItem value="EVENT_MANAGER">Nhà tổ chức sự kiện</MenuItem>
                     </Select>
+                    {errors.role && (
+                      <Typography variant="caption" color="#ffcdd2" sx={{ ml: 1.5, mt: 0.5 }}>
+                        {errors.role.message}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Grid>
               </Grid>
