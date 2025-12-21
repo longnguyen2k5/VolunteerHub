@@ -56,7 +56,7 @@ const UserProfile = () => {
             }
         };
 
-        if (user) {
+        if (user && user.role === 'VOLUNTEER') {
             fetchRegistrations();
         }
     }, [user]);
