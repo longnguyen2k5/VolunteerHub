@@ -332,6 +332,7 @@ const Dashboard = () => {
                                                             {reg.eventName || "Sự kiện #" + reg.eventId}
                                                         </Typography>
                                                     }
+                                                    secondaryTypographyProps={{ component: 'div' }}
                                                     secondary={
                                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                                                             <Chip
