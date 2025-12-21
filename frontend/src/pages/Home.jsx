@@ -176,7 +176,7 @@ const Home = () => {
 
 
             {/* Các lĩnh vực hoạt động */}
-            <Box sx={{ py: 10, bgcolor: 'background.default', position: 'relative' }}>
+            <Box sx={{ py: 10, bgcolor: 'background.default', position: 'relative', overflow: 'hidden' }}>
                 <Box sx={{
                     position: 'absolute',
                     top: '10%',
