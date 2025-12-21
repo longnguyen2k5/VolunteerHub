@@ -6,10 +6,10 @@
 
 **VolunteerHub** là một nền tảng web toàn diện giúp kết nối các tổ chức tình nguyện với cộng đồng những người mong muốn đóng góp sức lực cho xã hội. Ứng dụng cung cấp giải pháp trọn gói từ việc quản lý sự kiện, tuyển tình nguyện viên, đến việc tạo môi trường tương tác xã hội cho các thành viên.
 
-### � Logo & Nhận Diện Thương Hiệu
+### Logo & Nhận Diện Thương Hiệu
 Logo của VolunteerHub được thiết kế với hình ảnh **các bàn tay đan xen vào nhau**, tượng trưng cho tinh thần **đoàn kết, hợp tác và sẻ chia** – những giá trị cốt lõi của hoạt động tình nguyện. Màu sắc chủ đạo là gam màu cam – hồng ấm áp, thể hiện sự nhiệt huyết và năng lượng tích cực của cộng đồng tình nguyện viên.
 
-## �🌟 Tính Năng Chính
+## 🌟 Tính Năng Chính
 
 ### 1. Tình nguyện viên (Volunteer)
 *   **Đăng ký/Đăng nhập:** Tạo tài khoản, đăng nhập an toàn bằng email/password.
@@ -44,9 +44,9 @@ Logo của VolunteerHub được thiết kế với hình ảnh **các bàn tay 
 
 ### Backend
 *   **Ngôn ngữ:** Java 21
-*   **Framework:** Spring Boot 3.3.4
+*   **Framework:** Spring Boot 3.x
 *   **Bảo mật:** Spring Security, OAuth2 Resource Server, JWT (JSON Web Token).
-*   **Database:** MySQL 8.0 (Quản lý migration bằng Flyway).
+*   **Database:** MySQL 8.x (Quản lý migration bằng Flyway).
 *   **Thông báo:** Web Push API (VAPID).
 
 ### Frontend
@@ -63,7 +63,7 @@ Logo của VolunteerHub được thiết kế với hình ảnh **các bàn tay 
 ### Yêu cầu hệ thống
 *   Java JDK 21
 *   Node.js (v18 trở lên)
-*   MySQL 8.0
+*   MySQL 8.x
 *   Maven
 
 ### 1. Cấu hình Database
@@ -141,7 +141,7 @@ Hệ thống đã có sẵn dữ liệu mẫu trong `V3__Insert_Mock_Data.sql`.
 ---
 
 ## 📄 License
-Dự án được thực hiện cho môn học Phát triển Ứng dụng Web - INT3306.
+Dự án được thực hiện cho môn học Phát triển Ứng dụng Web - INT3306_2.
 
 ---
 
@@ -158,6 +158,7 @@ Dự án được thực hiện cho môn học Phát triển Ứng dụng Web - 
 | 7 | **An ninh** | 0.05 | ✅ Đã làm | • **Spring Security 6** & **OAuth2 Resource Server**. <br> • **JWT** cho xác thực & phân quyền. <br> • **PKCE** flow chống tấn công đánh cắp mã. <br> • Mã hóa mật khẩu BCrypt. |
 | 8 | **Định tuyến URL** | 0.05 | ✅ Đã làm | Sử dụng **React Router v6**. Định tuyến động (`/events/:id`), Private Route, Role-based Guard. |
 | 9 | **Thao tác CSDL (ORM)** | 0.05 | ✅ Đã làm | Sử dụng **Spring Data JPA (Hibernate)**. Độc lập hệ quản trị CSDL (có thể chuyển đổi MySQL/PostgreSQL dễ dàng). |
+
 
 
 
