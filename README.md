@@ -152,12 +152,13 @@ Dự án được thực hiện cho môn học Phát triển Ứng dụng Web - 
 | 1 | **Chức năng và các features** | 0.35 | ✅ Đã làm | Đầy đủ 3 role (Volunteer, Manager, Admin). <br> • **Volunteer:** Đăng ký, thoái đăng, xem lịch sử, kênh trao đổi, thông báo. <br> • **Manager:** CRUD sự kiện, duyệt đăng ký, xuất CSV. <br> • **Admin:** Quản lý User, duyệt sự kiện. |
 | 2 | **Thiết kế: Logic, dễ sử dụng** | 0.1 | ✅ Đã làm | Luồng nghiệp vụ chặt chẽ: Sự kiện PENDING -> Duyệt -> Public -> Đăng ký -> Duyệt tham gia. Giao diện thân thiện, UX tối ưu. |
 | 3 | **Giao diện: Responsive, đẹp, hiện đại** | 0.2 | ✅ Đã làm | • Sử dụng **Material UI v5** với thiết kế hiện đại (Gradient, Glassmorphism). <br> • **Responsive 100%**: Mobile (Drawer Menu), Tablet, Desktop. <br> • Theme đồng bộ, font chữ Be Vietnam Pro. |
-| 4 | **Hiệu năng (AJAX/Fetch)** | 0.1 | ✅ Đã làm | • **Single Page Application (SPA)** với ReactJS & Vite. <br> • Sử dụng **Axios** gọi API, dữ liệu JSON. <br> • Cập nhật DOM ảo, không reload trang. |
+| 4 | **Hiệu năng (AJAX/Fetch)** | 0.1 | ✅ Đã làm | • **Single Page Application (SPA)** với ReactJS & Vite. <br> • Sử dụng **Axios** gọi API, dữ liệu JSON. <br> • Cập nhật DOM, không reload trang. |
 | 5 | **Phong cách lập trình** | 0.05 | ✅ Đã làm | • **Backend:** Mô hình Layered (Controller - Service - Repository). DTO pattern. <br> • **Frontend:** Component-based, Custom Hooks, Context API. <br> • Code sạch, comment đầy đủ. |
 | 6 | **Xử lý nhập liệu** | 0.05 | ✅ Đã làm | • **Frontend:** Validation realtime với **Yup** và **React Hook Form**. <br> • **Backend:** Validation với Hibernate Validator (`@NotNull`, `@Size`, `@Future`). |
-| 7 | **An ninh** | 0.05 | ✅ Đã làm | • **Spring Security 6** & **OAuth2 Resource Server**. <br> • **JWT** cho xác thực & phân quyền. <br> • **PKCE** flow chống tấn công đánh cắp mã. <br> • Mã hóa mật khẩu BCrypt. |
+| 7 | **An ninh** | 0.05 | ✅ Đã làm | • **Spring Security** & **OAuth2 Resource Server**. <br> • **JWT** cho xác thực & phân quyền. <br> • **PKCE** flow chống tấn công đánh cắp mã. <br> • Mã hóa mật khẩu BCrypt. |
 | 8 | **Định tuyến URL** | 0.05 | ✅ Đã làm | Sử dụng **React Router v6**. Định tuyến động (`/events/:id`), Private Route, Role-based Guard. |
 | 9 | **Thao tác CSDL (ORM)** | 0.05 | ✅ Đã làm | Sử dụng **Spring Data JPA (Hibernate)**. Độc lập hệ quản trị CSDL (có thể chuyển đổi MySQL/PostgreSQL dễ dàng). |
+
 
 
 
